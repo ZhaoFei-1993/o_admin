@@ -1,0 +1,29 @@
+{
+  "apps": [
+    {
+      "name": "mall_admin",
+      "script": "server/index.js",
+      "instances": 1,
+      "exec_MODE": "cluster",
+      "watch": false,
+      "ignore_watch": [
+        "logs",
+        ".nuxt"
+      ],
+      "error_file": "logs/mall_admin.stderr.log",
+      "out_file": "logs/mall_admin.stdout.log",
+      "env_development": {
+        "NODE_ENV": "development",
+        "MODE": "development"
+      },
+      "env_production": {
+        "NODE_ENV": "production",
+        "MODE": "development1111"
+      },
+      "env_pre": {
+        "NODE_ENV": "production",
+        "MODE": "pre"
+      }
+    }
+  ]
+}

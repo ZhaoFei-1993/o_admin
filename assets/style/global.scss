@@ -1,0 +1,173 @@
+@import "./override_bootstrap";
+@import "~bootstrap/scss/bootstrap";
+@import "../spritesmith/sprite.scss";
+
+@font-face {
+  font-family: ubuntu;
+  src: url('~assets/font/Ubuntu-R.woff') format('woff'),
+  url('~assets/font/Ubuntu-R.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Droid Sans Mono';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Droid Sans Mono'), local('DroidSansMono'), url('~assets/font/Droid_Sans_Mono/Droid_Sans_Mono.woff') format('woff'), url('~assets/font/Droid_Sans_Mono/Droid_Sans_Mono.ttf') format('truetype'), url('~assets/font/Droid_Sans_Mono/Droid_Sans_Mono.svg') format('svg')
+}
+
+* {
+  outline: none;
+}
+
+$color-primary: #52cbca;
+$color-warning: #ffbc32;
+$color-danger: #e35555;
+
+html,
+body {
+  padding-bottom: 0 !important;
+  font-family: ubuntu, PingFangSC-regular, Helvetica Neue, Helvetica, Arial, Microsoft YaHei, Tahoma, sans-serif;
+  height: 100%;
+}
+
+body {
+  background-color: #f9f9f9;
+  -webkit-font-smoothing: antialiased;
+}
+
+p {
+  margin-bottom: 0;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+header.el-header {
+  z-index: 999;
+  padding: 0;
+}
+
+main.el-main {
+  padding: 0;
+  height: 100%;
+}
+
+.admin-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+#__nuxt {
+  height: 100%;
+}
+
+.main-content {
+  padding: 1rem;
+}
+
+.with-margin-top {
+  margin-top: 1.5rem;
+}
+
+.with-margin-left {
+  margin-left: 1.5rem;
+}
+
+.el-pagination {
+  text-align: center;
+}
+
+#app {
+  & > .el-container {
+    height: 100%;
+  }
+}
+
+.total-resource-num {
+  height: 40px;
+  line-height: 40px;
+}
+
+.resource-filter {
+  padding: 0 0.5rem;
+}
+
+.el-input-group {
+  margin-bottom: 1rem;
+}
+
+.item-control {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1rem 0;
+}
+
+.section-tip {
+  color: #333;
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+.item-description {
+  .section-tip {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+  }
+}
+
+.el-table {
+  table {
+    width: 100% !important;
+    thead tr th {
+      color: #fff;
+      background-color: #545c64;
+    }
+  }
+}
+
+.admin-iframe-container {
+  width: 100%;
+  height: 100%;
+  .admin-iframe {
+    margin-top: -60px;
+  }
+  .comment {
+    line-height: 60px;
+    text-align: center;
+  }
+}
+
+.prop-value {
+  min-height: 39px;
+}
+
+.announcement {
+  .ql-container.ql-snow {
+    font-size: 14px;
+    height: 450px;
+    overflow-y: auto;
+  }
+}
+
+.el-button.is-disabled {
+  color: #eee !important;
+  background-color: #fff !important;
+  border-color: #ddd !important;
+}
+
+i {
+  margin-right: 1rem;
+}
+
+button:focus {
+  outline: none;
+}

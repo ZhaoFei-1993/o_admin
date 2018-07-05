@@ -1,0 +1,87 @@
+<template>
+    <div class="header">
+        <div class="left-side">
+            <i v-if="!iframeMode"
+               :class="[sidenavOpened?'icon-left-circle-o':'icon-right-circle-o','toggle','iconfont']"
+               @click="toggleSidenav"></i>
+            <router-link to="/"><img class="logo" src="~assets/img/logo/hd_logo.png"/></router-link>
+        </div>
+        <div hidden class="center-nav">
+            <el-menu :router="true" class="el-menu-demo" mode="horizontal">
+                <el-menu-item index="/">矿机</el-menu-item>
+                <el-menu-item index="/pool">矿池</el-menu-item>
+                <el-menu-item index="/coinex">交易所</el-menu-item>
+            </el-menu>
+        </div>
+        <div class="right-side" v-if="!iframeMode">
+            <el-button v-if="loggedIn" @click="logout">退出登录</el-button>
+            <el-button v-else @click="login">登录</el-button>
+        </div>
+    </div>
+</template>
+<script>
+  import {
+    mapState
+  } from "vuex";
+  import {deleteAllCookies} from "../common/utilities";
+  import cookies from "../plugins/cookies";
+  import {loginURL} from "../common/constants";
+
+  export default {
+    computed: {
+      ...mapState(["loggedIn"])
+    },
+    methods: {
+      toggleSidenav() {
+        this.$emit('toggleSidenav')
+      },
+      login() {
+        window.location.href = loginURL;
+      },
+      logout() {
+        this.$axios.post('/logout', {}).then(
+          response => {
+            if (response.data.code === 0) {
+              console.log('logout');
+              this.$store.commit('sign', false);
+              this.$store.commit('authorize', false);
+              cookies.removeItem(window.document, 'token', '/', '.viabtc.com');
+              this.$router.push('/forbidden');
+            }
+          }
+        );
+      }
+    },
+    props: ['sidenavOpened', 'iframeMode'],
+  }
+</script>
+<style lang="scss" scoped>
+    .header {
+        height: 100%;
+        width: 100%;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: white;
+        box-shadow: 0 2px 4px 0 rgba(94, 94, 94, 0.15);
+        .left-side {
+            display: flex;
+            align-items: center;
+            i.toggle {
+                margin-right: 1rem;
+                width: 36px;
+                font-size: 36px;
+                cursor: pointer;
+                color: #e6e6e6;
+                &:hover {
+                    color: #ddd;
+                }
+            }
+            .logo {
+                height: 36px;
+            }
+        }
+
+    }
+</style>
