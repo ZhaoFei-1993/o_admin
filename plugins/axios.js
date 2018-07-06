@@ -5,19 +5,6 @@ export default function ({app, $axios, store, redirect}) {
   $axios.onResponse(response => {
     const $message = Vue.prototype.$message || console.log;
     console.log('response', response);
-    // 转换本地的jsonserver数据，适配后端的数据结构,axios本身有一层data包裹，后端如果是list将会有另外data包裹
-    if (response.data.message === undefined) {
-      const transformedData = {
-        "code": (response.status >= 200 && response.status < 300) ? 0 : response.status,
-        "message": "OK",
-        "data": response.data.length ? {
-          total: response.headers['x-total-count'] || 1000,
-          data: response.data,
-        } : response.data,
-      };
-      response.data = transformedData;
-      return response;
-    }
     if (response.data && response.data.code === 401) {
       $message({message: '请登录之后再尝试', type: 'warning', duration: 8000});
       window.location.href = loginURL;

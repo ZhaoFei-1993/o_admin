@@ -518,8 +518,6 @@ export const statsProps = {
     link: 'report/income',
   },
 };
-export const poolUsersList = baseDomain.poolAdmin + '/admin/user/list/?admin_level=1';
-export const poolUserById = baseDomain.poolAdmin + '/admin/?account=';
 export const loginURL = baseDomain.loginURL;
 export const languages = [{key: 'cn', label: '简体中文'}, {key: 'hk', label: '繁体中文'}, {key: 'en', label: 'English'}];
 export const authTypes = {
