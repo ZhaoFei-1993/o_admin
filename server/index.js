@@ -21,9 +21,9 @@ if (process.env.MODE === 'development') {
 }
 
 const host = process.env.HOST || '127.0.0.1'
-const port = process.env.PORT || 5000
+const port = process.env.PORT || 5008
 
-if (process.env.MODE === 'local') { //本地开发
+if (process.env.MODE === 'development') { //本地开发
   const jsonServer = require('json-server'); // 基于express的
   const cookieParser = require('cookie-parser');
   const db = require('./mock/db');
@@ -38,11 +38,20 @@ if (process.env.MODE === 'local') { //本地开发
   server.use((req, res, next) => {
     return middleware(req, res, next);
   });
+  router.render = (req, res) => {
+    const length = res.locals.data.length
+    // 转换成后端使用的数据结构
+    res.jsonp({
+      data: length ? {data: res.locals.data, total: res.locals.data.length} : res.locals.data,
+      code: 0,
+      message: 'ok',
+    })
+  }
   server.use(defaultMiddlewares);
   server.use(router);
 
-  server.listen(4000, () => {
-    console.log('JSON Server is running on localhost:4000')
+  server.listen(4008, () => {
+    console.log('JSON Server is running on localhost:4008')
   });
 }
 

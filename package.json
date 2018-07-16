@@ -6,11 +6,10 @@
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_ENV=development MODE=development DEBUG=nuxt:* node server/index.js",
-    "build-online": "npm run build-lang && cross-env NODE_ENV=production MODE=production nuxt build --config-file config/nuxt.prd.js",
-    "build-pre": "npm run build-lang && cross-env NODE_ENV=production MODE=pre nuxt build --config-file config/nuxt.pre.js",
+    "build-online": "cross-env NODE_ENV=production MODE=production nuxt build --config-file config/nuxt.prd.js",
+    "build-pre": "cross-env NODE_ENV=production MODE=pre nuxt build --config-file config/nuxt.pre.js",
     "deploy-online": "git pull && npm i && npm run build-online && pm2 startOrRestart ecosystem.json --update-env --env production",
-    "deploy-pre": "git pull && npm i && npm run build-pre &&  pm2 startOrRestart ecosystem.json --update-env --env pre",
-    "build-lang": "nuxt build --config-file config/nuxt.lang.js"
+    "deploy-pre": "git pull && npm i && npm run build-pre &&  pm2 startOrRestart ecosystem.json --update-env --env pre"
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.3.1",
@@ -22,7 +21,6 @@
     "cookie-parser": "^1.4.3",
     "cross-env": "^3.2.4",
     "element-ui": "2.3.8",
-    "i18n-cn-autotrans-loader": "1.3.3",
     "js-cookie": "^2.2.0",
     "koa": "2.3.0",
     "koa-compress": "2.0.0",
@@ -30,13 +28,13 @@
     "koa-static": "3.0.0",
     "log4js": "1.1.1",
     "numeral": "2.0.6",
-    "nuxt": "1.0.0-rc11",
+    "nuxt": "1.4.0",
     "qr.js": "0.0.0",
     "query-string": "5.0.1",
     "vue": "2.5.16",
     "vue-echarts": "^3.0.7",
     "vue-functional-data-merge": "2.0.3",
-    "vue-loader": "13.6.2",
+    "vue-loader": "^15.2.4",
     "vue-quill-editor": "^3.0.6",
     "vue-router": "2.8.1",
     "vue-server-renderer": "2.5.16",

@@ -6,13 +6,13 @@
                @click="toggleSidenav"></i>
             <router-link to="/"><img class="logo" src="~assets/img/logo/hd_logo.png"/></router-link>
         </div>
-        <div hidden class="center-nav">
-            <el-menu :router="true" class="el-menu-demo" mode="horizontal">
-                <el-menu-item index="/">矿机</el-menu-item>
-                <el-menu-item index="/pool">矿池</el-menu-item>
-                <el-menu-item index="/coinex">交易所</el-menu-item>
-            </el-menu>
-        </div>
+        <!--<div hidden class="center-nav">-->
+            <!--<el-menu :router="true" class="el-menu-demo" mode="horizontal">-->
+                <!--<el-menu-item index="/">矿机</el-menu-item>-->
+                <!--<el-menu-item index="/pool">矿池</el-menu-item>-->
+                <!--<el-menu-item index="/coinex">交易所</el-menu-item>-->
+            <!--</el-menu>-->
+        <!--</div>-->
         <div class="right-side" v-if="!iframeMode">
             <el-button v-if="loggedIn" @click="logout">退出登录</el-button>
             <el-button v-else @click="login">登录</el-button>

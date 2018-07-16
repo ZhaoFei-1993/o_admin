@@ -18,7 +18,7 @@
       },
       "env_production": {
         "NODE_ENV": "production",
-        "MODE": "development1111"
+        "MODE": "production"
       },
       "env_pre": {
         "NODE_ENV": "production",

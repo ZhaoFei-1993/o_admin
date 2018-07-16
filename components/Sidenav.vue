@@ -12,7 +12,7 @@
                 <i class="iconfont icon-dashboard"></i>
                 <span>状态监控</span>
             </el-menu-item>
-            <el-submenu index="/statistics">
+            <el-submenu hidden index="/statistics">
                 <template slot="title">
                     <i class="iconfont icon-snippets"></i>
                     <span>统计报表</span>
@@ -22,7 +22,7 @@
                 <el-menu-item index="/statistics/incomes">收入统计</el-menu-item>
                 <el-menu-item index="/statistics/users">用户统计</el-menu-item>
             </el-submenu>
-            <el-submenu index="/accounting">
+            <el-submenu hidden index="/accounting">
                 <template slot="title">
                     <i class="iconfont icon-YUAN"></i>
                     <span>财务管理</span>
@@ -31,7 +31,7 @@
                 <el-menu-item index="/accounting/settlements">卖家结算</el-menu-item>
                 <el-menu-item index="/accounting/refunds">买家退款</el-menu-item>
             </el-submenu>
-            <el-submenu index="/sells">
+            <el-submenu hidden index="/sells">
                 <template slot="title">
                     <i class="iconfont icon-idcard"></i>
                     <span>卖家管理</span>
@@ -47,19 +47,19 @@
                 <i class="iconfont icon-detail"></i>
                 <span slot="title">订单管理</span>
             </el-menu-item>
-            <el-menu-item index="/incomes">
+            <el-menu-item hidden index="/incomes">
                 <i class="iconfont icon-moneycollect"></i>
                 <span slot="title">广告收入</span>
             </el-menu-item>
-            <el-menu-item index="/announcements">
+            <el-menu-item hidden index="/announcements">
                 <i class="iconfont icon-notification"></i>
                 <span slot="title">公告管理</span>
             </el-menu-item>
-            <el-menu-item index="/brands">
+            <el-menu-item hidden index="/brands">
                 <i class="iconfont icon-tag"></i>
                 <span slot="title">品牌型号</span>
             </el-menu-item>
-            <el-menu-item index="/users" hidden>
+            <el-menu-item index="/users">
                 <i class="iconfont icon-team"></i>
                 <span slot="title">用户管理</span>
             </el-menu-item>

@@ -1,4 +1,3 @@
-@import "./override_bootstrap";
 @import "~bootstrap/scss/bootstrap";
 @import "../spritesmith/sprite.scss";
 
@@ -27,6 +26,10 @@ html,
 body {
   padding-bottom: 0 !important;
   font-family: ubuntu, PingFangSC-regular, Helvetica Neue, Helvetica, Arial, Microsoft YaHei, Tahoma, sans-serif;
+  height: 100%;
+}
+
+#__nuxt, #__layout {
   height: 100%;
 }
 
@@ -157,6 +160,7 @@ main.el-main {
     overflow-y: auto;
   }
 }
+
 
 .el-button.is-disabled {
   color: #eee !important;

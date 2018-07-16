@@ -1,3 +1,5 @@
+const VueLoader = require("vue-loader");
+
 const baseDomain = require("./baseURL");
 const webpack = require('webpack');
 const SpritesmithPlugin = require("webpack-spritesmith");
@@ -50,7 +52,7 @@ module.exports = {
 
   router: {
     base: '/',
-    middleware: ["i18n", "webp"],
+    middleware: ["webp"],
   },
 
   /*
@@ -103,7 +105,8 @@ module.exports = {
         apiOptions: {
           cssImageRef: "~assets/spritesmith/sprite.png"
         }
-      })
+      }),
+      new VueLoader.VueLoaderPlugin()
     ],
     /*
      ** Run ESLint on save
@@ -175,30 +178,6 @@ module.exports = {
           }
         });
       }
-
-      //多语言自动替换
-      config.module.rules.push({
-        test: /\.vue$/,
-        exclude: [
-          /node_modules/,
-          /\.nuxt/,
-          /examples\//
-        ],
-        loader: "i18n-cn-autotrans-loader",
-        enforce: "pre",
-        options: {
-          hashLength: 8,
-          repeatFlag: "\\[R\\]",
-          writeFile: false,
-          root: "locales",
-          prefix: "",
-          upgradeLangs: false,
-          originalLang: "zh_Hans_CN",
-          targetLangs: ["zh_Hant_HK", "en_US"],
-          deprecatedMark: '****DEPRECATED****',
-          cacheTime: 5000
-        }
-      });
     }
   },
   modules: [
@@ -211,7 +190,6 @@ module.exports = {
     credentials: true,
   },
   plugins: [
-    "~/plugins/i18n",
     // {src: "~/plugins/quill", ssr: false},
     "~/plugins/axios",
     "~/plugins/echarts",

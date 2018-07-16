@@ -39,14 +39,15 @@ export default ({app, store, redirect}) => {
       if (window.location.href.indexOf('/forbidden') >= 0) {
         return;
       }
-      if (store.state.loggedIn) {
-        if (!store.state.authorized) {
-          redirect('/forbidden');
-        }
-        // loggedIn && authorized => do nothing
-      } else if (!store.state.checkingAuth) {
-        checkAuth(app.$axios, store);
-      }
+      // TODO
+      // if (store.state.loggedIn) {
+      //   if (!store.state.authorized) {
+      //     redirect('/forbidden');
+      //   }
+      //   // loggedIn && authorized => do nothing
+      // } else if (!store.state.checkingAuth) {
+      //   checkAuth(app.$axios, store);
+      // }
     },
     computed: {},
     methods: {
@@ -93,7 +94,6 @@ export default ({app, store, redirect}) => {
       },
       initStats(statsName, loadedCallback) {
         this.statsName = statsName;
-        this.pageStatsNum = 1;
         this.resources = [];
         this.statsFilters = {};
         if (statsName.indexOf('income') >= 0) {
