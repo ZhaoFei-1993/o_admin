@@ -1,5 +1,5 @@
 <template>
-    <div class="main-content">
+    <div class="main-content page-users">
         <h1>用户管理</h1>
         <el-row>
             <el-col :md="4" :lg="2">
@@ -16,19 +16,6 @@
             <el-col :md="24" :lg="12">
                 <el-row type="flex" justify="end">
                     <el-col :md="8" :lg="6" class="resource-filter">
-                        <el-select v-model="resourceFilters.role"
-                                   @change="getFilteredResources"
-                                   clearable
-                                   placeholder="用户身份">
-                            <el-option
-                                    v-for="(role,index) in roles"
-                                    :key="index"
-                                    :label="role.text"
-                                    :value="role.name">
-                            </el-option>
-                        </el-select>
-                    </el-col>
-                    <el-col :md="8" :lg="6" class="resource-filter">
                         <el-select v-model="resourceFilters.status"
                                    @change="getFilteredResources"
                                    clearable
@@ -38,6 +25,19 @@
                                     :key="index"
                                     :label="status.text"
                                     :value="status.name">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :md="8" :lg="6" class="resource-filter">
+                        <el-select v-model="resourceFilters.merchant_status"
+                                   @change="getFilteredResources"
+                                   clearable
+                                   placeholder="商家审核">
+                            <el-option
+                                    v-for="(role,index) in roles"
+                                    :key="index"
+                                    :label="role.text"
+                                    :value="role.name">
                             </el-option>
                         </el-select>
                     </el-col>
@@ -92,12 +92,16 @@
             <el-table-column
                     key="action"
                     label="操作"
-                    min-width="80"
+                    min-width="180"
             >
                 <template slot-scope="scope">
-                    <router-link :to="'/users/'+scope.row['id']"
+                    <router-link :to="'/users/'+scope.row.id"
                                  append>
                         <el-button type="primary" class="view-detail">查看详情</el-button>
+                    </router-link>
+                    <router-link :to="`/users/${scope.row.id}?tab=merchant`"
+                                 append>
+                        <el-button type="primary" class="view-detail">审核商家</el-button>
                     </router-link>
                 </template>
             </el-table-column>
@@ -113,8 +117,8 @@
     </div>
 </template>
 <script>
-  import {roles, kycStatusTypes, userStatusTypes} from "../../common/constants";
-  import {timeToLocale} from "../../common/utilities";
+  import {roles, kycStatusTypes, userStatusTypes, merchantAuthStatusTypes} from "../../common/constants";
+  import {itemText, timeToLocale} from "../../common/utilities";
 
   export default {
     layout: 'default',
@@ -130,12 +134,11 @@
           link: '/users'
         }, {
           prop: 'create_time',
-          label: 'OTC注册时间',
+          label: '注册时间',
           width: 96,
           formatter: (row, column, cellValue) => {
             return timeToLocale(cellValue)
           },
-          sortable: true,
           className: 'time',
         }, {
           prop: 'name',
@@ -148,15 +151,7 @@
           formatter: (row, column, cellValue) => {
             return cellValue || '未实名'
           },
-        }, {
-          prop: 'role',
-          label: '身份',
-          width: 72,
-          formatter: (row, column, cellValue) => {
-            const role = this.roles.find(r => r.name === cellValue)
-            return role ? role.text : '--'
-          },
-        }, {
+        },  {
           prop: 'mobile',
           label: '手机',
           width: 120,
@@ -164,12 +159,18 @@
           prop: 'email',
           label: '邮箱',
           width: 240,
+        },{
+          prop: 'merchant_auth_status',
+          label: '商家认证',
+          width: 72,
+          formatter: (row, column, cellValue) => {
+            itemText(cellValue, merchantAuthStatusTypes)
+          },
         }, {
           prop: 'status',
-          label: '状态',
+          label: '交易状态',
           formatter: (row, column, cellValue) => {
-            const status = this.userStatusTypes.find(r => r.name === cellValue)
-            return status ? status.text : '--'
+            itemText(cellValue, userStatusTypes)
           },
         },],
       }
@@ -184,15 +185,12 @@
     }
   }
 </script>
-<style lang="scss" scoped>
 
-</style>
 <style lang="scss">
-    td.time .cell {
-        word-break: normal;
-    }
-
-    tr.ready {
-        background-color: #D5FFF3;
+    .page-users {
+        .view-detail {
+            width: 80px;
+            padding: 12px;
+        }
     }
 </style>

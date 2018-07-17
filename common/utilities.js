@@ -31,6 +31,11 @@ export const timeToLocale = (timestamp, showOnlyDay) => {
   })
 };
 
+export const itemText=(name,options)=>{
+  const item = options.find(r => r.name === name)
+  return item ? (item.text) : '--'
+}
+
 export const timeToDateString = (time, withoutDay) => {
   return time.getFullYear() + '-' + (time.getMonth() + 1) + (withoutDay ? '' : ('-' + time.getDate()));
 };

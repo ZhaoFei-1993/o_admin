@@ -6,17 +6,29 @@ export const roles = [{
   name: 'normal', text: '普通用户',
 }];
 export const userStatusTypes = [{
-  name: 'forbidden', text: '限制交易',
-}, {
   name: 'normal', text: '正常',
-}];
+}, {
+  name: 'forbidden', text: '限制交易',
+},];
+export const merchantStatusTypes = [{
+  name: 'normal', text: '正常',
+}, {
+  name: 'forbidden', text: '限制发布广告',
+},];
+export const merchantAuthStatusTypes = [{
+  name: 'no', text: '普通用户',
+}, {
+  name: 'processing', text: '商家认证中',
+}, {
+  name: 'passed', text: '认证商家',
+},];
 export const kycStatusTypes = [{
+  name: 'no', text: '未实名',
+}, {
   name: 'processing', text: '认证中',
 }, {
   name: 'passed', text: '已认证',
-}, {
-  name: 'no', text: '普通买家',
-}];
+},];
 export const orderStatusTypes = [{
   name: 'created', text: '已下单',
 }, {
@@ -41,3 +53,11 @@ export const appealStatusTypes = [{
 }];
 
 export const coinTypes = ['BTC', 'BCH', 'ETH', 'USDT'];
+
+export const paymentTypes = [{
+  name: 'alipay', text: '支付宝',
+}, {
+  name: 'wechat', text: '微信支付',
+}, {
+  name: 'bankcard', text: '申诉处理中',
+},]

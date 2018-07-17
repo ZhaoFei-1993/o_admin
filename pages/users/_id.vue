@@ -11,8 +11,11 @@
                             <el-col :span="3">账号状态</el-col>
                             <el-col :span="9" :class="currentResource.status">
                                 {{userStatus}}
-                                <el-button type="danger" @click="toggleStatus()">
-                                    {{currentResource.status==='normal'?'限制交易':'取消限制'}}
+                                <el-button v-if="currentResource.status==='normal'" type="danger" @click="forbidUser()">
+                                    限制交易
+                                </el-button>
+                                <el-button v-else type="danger" @click="allowUser()">
+                                    取消限制
                                 </el-button>
                             </el-col>
                         </el-row>
@@ -80,12 +83,26 @@
                             </el-table-column>
                         </el-table>
                     </div>
-
-
                 </el-tab-pane>
                 <el-tab-pane label="商家信息" name="merchant">
                     <div class="info-block" v-if="merchant">
-                        <div class="info-header">商家认证</div>
+                        <div class="info-header">商家详情</div>
+                        <el-row>
+                            <el-col :span="3">是否接单</el-col>
+                            <el-col :span="9">
+                                {{merchant.is_available?"是":"否"}}
+                            </el-col>
+                            <el-col :span="3">商家状态</el-col>
+                            <el-col :span="9">
+                                {{merchantStatus}}
+                                <el-button v-if="merchant.status==='normal'" type="danger" @click="forbidMerchant()">
+                                    限制发布广告
+                                </el-button>
+                                <el-button v-else type="danger" @click="allowMerchant()">
+                                    取消限制
+                                </el-button>
+                            </el-col>
+                        </el-row>
                         <el-row>
                             <el-col :span="3">认证状态</el-col>
                             <el-col :span="9">
@@ -97,19 +114,14 @@
                             </el-col>
                         </el-row>
                         <el-row>
-                            <el-col :span="3">发布广告</el-col>
+                            <el-col :span="3">保证金</el-col>
                             <el-col :span="9">
                                 {{merchant.guaranty_amount}}
                             </el-col>
-                            <el-col :span="3">是否接单</el-col>
-                            <el-col :span="9">
-                                {{merchant.is_available?"是":"否"}}
-                            </el-col>
-                        </el-row>
-                        <el-row>
                             <el-col :span="3">微信</el-col>
                             <el-col :span="9">{{merchant.wechat}}</el-col>
                         </el-row>
+
                     </div>
                     <div class="info-block" v-if="setting">
                         <div class="info-header">交易设置</div>
@@ -170,11 +182,40 @@
                     </div>
                 </el-tab-pane>
             </el-tabs>
-
+            <el-dialog
+                    title="限制交易"
+                    :visible.sync="forbidUserDialogVisible"
+                    width="30%">
+                <p>确认限制用户{{currentResource.name}}交易吗？该用户将无法创建订单。</p>
+                <el-input :rows="4" type="textarea" placeholder="请填写限制用户交易的原因(五个字符以上)"
+                          v-model="forbidUserRemark"></el-input>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="forbidUserDialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="confirmForbidUser"
+                               :disabled="!forbidUserRemark||forbidUserRemark.length<5">确 定
+                    </el-button>
+                </div>
+            </el-dialog>
+            <el-dialog
+                    title="限制发布广告"
+                    :visible.sync="forbidMerchantDialogVisible"
+                    width="30%">
+                <p>确认限制商家{{currentResource.name}}发布广告吗？该商家将无法发布广告。</p>
+                <el-input :rows="4" type="textarea" placeholder="请填写限制发布广告的原因(五个字符以上)"
+                          v-model="forbidMerchantRemark"></el-input>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="forbidMerchantDialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="confirmForbidMerchant"
+                               :disabled="!forbidMerchantRemark||forbidMerchantRemark.length<5">确 定
+                    </el-button>
+                </div>
+            </el-dialog>
 
         </template>
         <div v-else>加载中</div>
+
     </div>
+
 </template>
 <script>
   import {userStatusTypes, roles, kycStatusTypes} from '~/common/constants'
@@ -183,7 +224,7 @@
     data() {
       return {
         id: this.$route.params.id,
-        currentTab: 'basic',
+        currentTab: this.$route.query.tab || 'basic',
         balance: [
           {
             "coin_type": "BTC",             // 币种
@@ -213,24 +254,29 @@
         merchant: {},
         setting: {},
         paymentMethods: [],
+        forbidUserRemark: null,
+        forbidUserDialogVisible: false,
+        forbidMerchantRemark: null,
+        forbidMerchantDialogVisible: false,
       }
     },
     mounted() {
       this.initCurrentResource('users', this.id);
+      this.getMerchantInfo();
+      this.getMerchantSetting();
     },
     computed: {
       userStatus() {
-        const status = userStatusTypes.find(r => r.name === this.currentResource.status)
-        return status ? (status.text) : '--'
+        return itemText(this.currentResource.status, userStatusTypes)
       },
       kycStatus() {
-        const status = kycStatusTypes.find(r => r.name === this.currentResource.kyc_status)
-        return status ? (status.text) : '--'
+        return itemText(this.currentResource.kyc_status, kycStatusTypes)
       },
       merchantStatus() {
-        return 'TODO'
-        // const status = kycStatusTypes.find(r => r.name === this.currentResource.kyc_status)
-        // return status ? (status.text) : '--'
+        return itemText(this.merchant.status, merchantStatusTypes)
+      },
+      merchantAuthStatusTypes() {
+        return itemText(this.merchant.status, merchantAuthStatusTypes)
       },
       counterparty_limit() {
         return '' + this.setting.counterparty_limit
@@ -240,14 +286,53 @@
       },
     },
     methods: {
-      toggleStatus() {
-        this.$confirm(this.currentResource.status === 'forbidden' ? `确认解除用户 ${this.currentResource.name} 交易限制?` : `确认限制用户 ${this.currentResource.name} 交易?`, '改变用户状态', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          // TODO
-        });
+      getMerchantInfo() {
+        this.axios.get(`/users/${this.id}/merchant`).then(response => {
+          this.merchant = response.data.data;
+        })
+      },
+      getMerchantSetting() {
+        this.axios.get(`/users/${this.id}/setting`).then(response => {
+          this.setting = response.data.data;
+        })
+      },
+      allowUser() {
+        this.toggleUserStatus(true, '')
+      },
+      forbidUser() {
+        this.forbidUserRemark = null;
+        this.forbidUserDialogVisible = true;
+      },
+      confirmForbidUser() {
+        this.toggleUserStatus(false, this.forbidUserRemark);
+      },
+      toggleUserStatus(isAllow, remark) {
+        this.$axios.patch('/user/status/' + this.currentResource.id, {
+          status: isAllow ? 'normal' : 'forbidden',
+          remark
+        }).then(response => {
+          this.$message({message: '用户交易权限已修改', type: 'success'});
+          this.initCurrentResource('users', this.id);
+        })
+      },
+      allowMerchant() {
+        this.toggleMerchantStatus(true, '')
+      },
+      forbidMerchant() {
+        this.forbidMerchantRemark = null;
+        this.forbidMerchantDialogVisible = true;
+      },
+      confirmForbidMerchant() {
+        this.toggleMerchantStatus(false, this.forbidMerchantRemark);
+      },
+      toggleMerchantStatus(isAllow, remark) {
+        this.$axios.patch('/user/merchant_status/' + this.currentResource.id, {
+          status: isAllow ? 'normal' : 'forbidden',
+          remark
+        }).then(response => {
+          this.$message({message: '商家发布广告权限已修改', type: 'success'});
+          this.getMerchantInfo();
+        })
       },
       markAsMerchant() {
         this.$confirm(`确认以超级管理员权限将此用户 ${this.currentResource.name} 设置为认证商家?`, '认证商家提示', {
@@ -268,33 +353,6 @@
         .el-tabs__item {
             font-size: 20px;
             font-weight: bold;
-        }
-        .info-block {
-            margin-bottom: 2rem;
-            .info-header {
-                color: $color-primary;
-                font-size: 18px;
-                margin-bottom: 0.5rem;
-            }
-
-            .el-row {
-                border-bottom: 1px solid #eeeeee;
-                padding: 0.5rem;
-                &:nth-of-type(even) {
-                    background-color: #f5f5f5;
-                }
-                .el-col {
-                    &:nth-of-type(odd) {
-                        font-weight: bold;
-                    }
-                    height: 40px;
-                    line-height: 40px;
-                }
-                .el-button {
-                    margin: 0 0.5rem;
-                }
-            }
-
         }
 
     }
