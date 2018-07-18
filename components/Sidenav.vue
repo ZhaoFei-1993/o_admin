@@ -39,6 +39,14 @@
                 <el-menu-item index="/sellers">卖家列表</el-menu-item>
                 <el-menu-item index="/sellers/authentication">卖家审核</el-menu-item>
             </el-submenu>
+            <el-submenu index="/operations">
+                <template slot="title">
+                    <i class="iconfont icon-fileprotect"></i>
+                    <span>运营中心</span>
+                </template>
+                <el-menu-item index="/operations/merchants"><i class="iconfont icon-audit"></i>商家审核</el-menu-item>
+                <el-menu-item index="/operations/appeals"><i class="iconfont icon-customerservice"></i>申诉管理</el-menu-item>
+            </el-submenu>
             <el-menu-item index="/items">
                 <i class="iconfont icon-barcode"></i>
                 <span slot="title">广告管理</span>
@@ -63,6 +71,7 @@
                 <i class="iconfont icon-team"></i>
                 <span slot="title">用户管理</span>
             </el-menu-item>
+
         </el-menu>
     </div>
 </template>

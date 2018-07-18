@@ -6,41 +6,13 @@
                 <p class="total-resource-num">共 {{totalNum}} 个</p>
             </el-col>
             <el-col :md="20" :lg="10">
-
                 <el-input placeholder="输入 用户名/用户ID/手机号/邮箱 查询" clearable v-model="resourceFilters.search"
                           @clear="getFilteredResources">
                     <el-button slot="append" icon="el-icon-search" @click="getFilteredResources"></el-button>
                 </el-input>
-
             </el-col>
             <el-col :md="24" :lg="12">
                 <el-row type="flex" justify="end">
-                    <el-col :md="8" :lg="6" class="resource-filter">
-                        <el-select v-model="resourceFilters.status"
-                                   @change="getFilteredResources"
-                                   clearable
-                                   placeholder="用户状态">
-                            <el-option
-                                    v-for="(status,index) in userStatusTypes"
-                                    :key="index"
-                                    :label="status.text"
-                                    :value="status.name">
-                            </el-option>
-                        </el-select>
-                    </el-col>
-                    <el-col :md="8" :lg="6" class="resource-filter">
-                        <el-select v-model="resourceFilters.merchant_status"
-                                   @change="getFilteredResources"
-                                   clearable
-                                   placeholder="商家审核">
-                            <el-option
-                                    v-for="(role,index) in roles"
-                                    :key="index"
-                                    :label="role.text"
-                                    :value="role.name">
-                            </el-option>
-                        </el-select>
-                    </el-col>
                     <el-col :md="8" :lg="6" class="resource-filter">
                         <el-select v-model="resourceFilters.kyc_status"
                                    @change="getFilteredResources"
@@ -54,6 +26,32 @@
                             </el-option>
                         </el-select>
                     </el-col>
+                    <el-col :md="8" :lg="6" class="resource-filter">
+                        <el-select v-model="resourceFilters.merchant_auth_status"
+                                   @change="getFilteredResources"
+                                   clearable
+                                   placeholder="商家认证">
+                            <el-option
+                                    v-for="(status,index) in merchantAuthStatusTypes"
+                                    :key="index"
+                                    :label="status.text"
+                                    :value="status.name">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :md="8" :lg="6" class="resource-filter">
+                        <el-select v-model="resourceFilters.status"
+                                   @change="getFilteredResources"
+                                   clearable
+                                   placeholder="用户状态">
+                            <el-option
+                                    v-for="(status,index) in userStatusTypes"
+                                    :key="index"
+                                    :label="status.text"
+                                    :value="status.name">
+                            </el-option>
+                        </el-select>
+                    </el-col>
                 </el-row>
             </el-col>
         </el-row>
@@ -61,8 +59,7 @@
                 class="with-margin-top"
                 :data="resources"
                 style="width: 100%"
-                @sort-change="sortChange"
-                :row-class-name="itemRowClassName">
+                @sort-change="sortChange">
             <el-table-column v-for="(column, index) in itemColumns"
                              v-if="column.link && !column.hidden"
                              :key="index"
@@ -92,16 +89,12 @@
             <el-table-column
                     key="action"
                     label="操作"
-                    min-width="180"
+                    min-width="90"
             >
                 <template slot-scope="scope">
                     <router-link :to="'/users/'+scope.row.id"
                                  append>
                         <el-button type="primary" class="view-detail">查看详情</el-button>
-                    </router-link>
-                    <router-link :to="`/users/${scope.row.id}?tab=merchant`"
-                                 append>
-                        <el-button type="primary" class="view-detail">审核商家</el-button>
                     </router-link>
                 </template>
             </el-table-column>
@@ -127,6 +120,7 @@
         roles,
         userStatusTypes,
         kycStatusTypes,
+        merchantAuthStatusTypes,
         itemColumns: [{
           prop: 'id',
           label: 'ID',
@@ -151,15 +145,15 @@
           formatter: (row, column, cellValue) => {
             return cellValue || '未实名'
           },
-        },  {
+        }, {
           prop: 'mobile',
           label: '手机',
           width: 120,
         }, {
           prop: 'email',
           label: '邮箱',
-          width: 240,
-        },{
+          width: 200,
+        }, {
           prop: 'merchant_auth_status',
           label: '商家认证',
           width: 72,
@@ -168,7 +162,7 @@
           },
         }, {
           prop: 'status',
-          label: '交易状态',
+          label: '用户状态',
           formatter: (row, column, cellValue) => {
             itemText(cellValue, userStatusTypes)
           },
@@ -178,11 +172,7 @@
     mounted() {
       this.initResources('users');
     },
-    methods: {
-      itemRowClassName({row, rowIndex}) {
-        return ''
-      }
-    }
+    methods: {}
   }
 </script>
 

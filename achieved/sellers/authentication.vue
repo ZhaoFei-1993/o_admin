@@ -64,7 +64,6 @@
           auth_status: isSuccess ? 2 : 3,
           reason: comment
         }).then(response => {
-          console.log(response);
           this.$message({message: '审核结果已提交', type: 'success'})
           this.getRecord();
         })
