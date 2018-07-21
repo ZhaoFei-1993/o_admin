@@ -74,8 +74,8 @@
     </div>
 </template>
 <script>
-  import {timeToLocale} from "../../common/utilities";
-  import {coinNames} from "../../common/constants";
+  import {timeToLocale} from "~/common/utilities";
+  import {coinNames} from "~/common/constants";
 
   export default {
     layout: 'default',

@@ -49,8 +49,8 @@
 </template>
 <script>
   import DetailTable from "~/components/DetailTable";
-  import {itemProps} from "../../../common/constants";
-  import API from "../../../config/api";
+  import {itemProps} from "~/common/constants";
+  import API from "~/config/api";
   import xss from 'xss';
 
   const xssConfig = {

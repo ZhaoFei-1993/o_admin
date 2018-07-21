@@ -1,63 +1,84 @@
 const baseDomain = require("../config/baseURL");
 export const loginURL = baseDomain.loginURL;
 export const roles = [{
-  name: 'merchant', text: '认证商家',
+  value: 'merchant', text: '认证商家',
 }, {
-  name: 'normal', text: '普通用户',
+  value: 'normal', text: '普通用户',
 }];
 export const userStatusTypes = [{
-  name: 'normal', text: '正常',
+  value: 'normal', text: '正常',
 }, {
-  name: 'forbidden', text: '限制交易',
+  value: 'forbidden', text: '限制交易',
 },];
 export const merchantStatusTypes = [{
-  name: 'normal', text: '正常',
+  value: 'normal', text: '正常',
 }, {
-  name: 'forbidden', text: '限制发布广告',
+  value: 'forbidden', text: '限制发布广告',
 },];
 export const merchantAuthStatusTypes = [{
-  name: 'no', text: '普通用户',
+  value: 'no', text: '普通用户',
 }, {
-  name: 'processing', text: '商家认证中',
+  value: 'processing', text: '商家认证中',
 }, {
-  name: 'passed', text: '认证商家',
+  value: 'passed', text: '认证商家',
 },];
 export const kycStatusTypes = [{
-  name: 'no', text: '未实名',
+  value: 'no', text: '未实名',
 }, {
-  name: 'processing', text: '认证中',
+  value: 'processing', text: '认证中',
 }, {
-  name: 'passed', text: '已认证',
+  value: 'passed', text: '已认证',
 },];
 export const orderStatusTypes = [{
-  name: 'created', text: '已下单',
+  value: 'created', text: '已下单',
 }, {
-  name: 'paid', text: '已付款',
+  value: 'paid', text: '已付款',
 }, {
-  name: 'success', text: '已完成',
+  value: 'success', text: '已完成',
 }, {
-  name: 'cancel', text: '已取消',
+  value: 'cancel', text: '已取消',
 }, {
-  name: 'closed', text: '已关闭',
+  value: 'closed', text: '已关闭',
 }];
 export const appealStatusTypes = [{
-  name: '', text: '未申诉',
+  value: '', text: '未申诉',
 }, {
-  name: 'created', text: '申诉等待中',
+  value: 'created', text: '申诉等待中',
 }, {
-  name: 'success', text: '申诉处理中',
+  value: 'success', text: '申诉处理中',
 }, {
-  name: 'cancel', text: '已取消申诉',
+  value: 'cancel', text: '已取消申诉',
 }, {
-  name: 'completed', text: '已申诉解决',
+  value: 'completed', text: '已申诉解决',
+}];
+
+export const appealResultTypes = [{
+  value: 'draw', text: '平局',
+}, {
+  value: 'buyer_win', text: '买家胜诉',
+}, {
+  value: 'seller_win', text: '卖家胜诉',
+}];
+
+export const orderResultTypes = [{
+  value: 'none', text: '无',
+}, {
+  value: 'cancel_order', text: '订单取消',
+}, {
+  value: 'receipt_order', text: '订单成交',
 }];
 
 export const coinTypes = ['BTC', 'BCH', 'ETH', 'USDT'];
 
 export const paymentTypes = [{
-  name: 'alipay', text: '支付宝',
+  value: 'alipay', text: '支付宝',
 }, {
-  name: 'wechat', text: '微信支付',
+  value: 'wechat', text: '微信支付',
 }, {
-  name: 'bankcard', text: '申诉处理中',
+  value: 'bankcard', text: '申诉处理中',
+},]
+export const sides =[{
+  value: 'buy', text: '买家',
+}, {
+  value: 'sell', text: '卖家',
 },]

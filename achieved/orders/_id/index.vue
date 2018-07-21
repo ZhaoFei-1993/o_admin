@@ -114,8 +114,8 @@
 </template>
 <script>
   import DetailTable from "~/components/DetailTable";
-  import {adminUsers, manageOrder, orderOperationTypes, orderProps} from "../../../common/constants";
-  import {formatOrder, timeToLocale} from "../../../common/utilities";
+  import {adminUsers, manageOrder, orderOperationTypes, orderProps} from "~/common/constants";
+  import {formatOrder, timeToLocale} from "~/common/utilities";
 
   export default {
     components: {

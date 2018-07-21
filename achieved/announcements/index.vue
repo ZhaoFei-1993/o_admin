@@ -71,8 +71,8 @@
     </div>
 </template>
 <script>
-  import {getItemStatusOfIndex, s2t, timeToLocale} from "../../common/utilities";
-  import {coinNames, orderStatus, productTypes, adminUsers} from "../../common/constants";
+  import {getItemStatusOfIndex, s2t, timeToLocale} from "~/common/utilities";
+  import {coinNames, orderStatus, productTypes, adminUsers} from "~/common/constants";
 
   export default {
     layout: 'default',

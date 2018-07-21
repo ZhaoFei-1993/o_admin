@@ -40,8 +40,8 @@
     </div>
 </template>
 <script>
-  import {timeToLocale} from "../../../common/utilities";
-  import {itemOperationTypes, adminUsers} from "../../../common/constants";
+  import {timeToLocale} from "~/common/utilities";
+  import {itemOperationTypes, adminUsers} from "~/common/constants";
 
   export default {
     data() {

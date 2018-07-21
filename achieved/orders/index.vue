@@ -125,8 +125,8 @@
     </div>
 </template>
 <script>
-  import {getItemStatusOfIndex, timeToLocale} from "../../common/utilities";
-  import {orderStatus, productTypes, adminUsers, priceNames, freezeStatus} from "../../common/constants";
+  import {getItemStatusOfIndex, timeToLocale} from "~/common/utilities";
+  import {orderStatus, productTypes, adminUsers, priceNames, freezeStatus} from "~/common/constants";
 
   export default {
     layout: 'default',

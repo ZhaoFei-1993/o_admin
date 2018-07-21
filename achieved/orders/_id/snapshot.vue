@@ -32,7 +32,7 @@
 </template>
 <script>
   import DetailTable from "~/components/DetailTable";
-  import {snapshotProps} from "../../../common/constants";
+  import {snapshotProps} from "~/common/constants";
 
   export default {
     components: {

@@ -45,8 +45,8 @@
 </template>
 <script>
   import AuthInfo from '~/components/AuthInfo'
-  import {businessType, payFlowStatus} from "../../../common/constants";
-  import {timeToLocale} from "../../../common/utilities";
+  import {businessType, payFlowStatus} from "~/common/constants";
+  import {timeToLocale} from "~/common/utilities";
 
   export default {
     data() {

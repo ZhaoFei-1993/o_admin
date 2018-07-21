@@ -22,7 +22,7 @@
                                     v-for="(status,index) in kycStatusTypes"
                                     :key="index"
                                     :label="status.text"
-                                    :value="status.name">
+                                    :value="status.value">
                             </el-option>
                         </el-select>
                     </el-col>
@@ -35,7 +35,7 @@
                                     v-for="(status,index) in merchantAuthStatusTypes"
                                     :key="index"
                                     :label="status.text"
-                                    :value="status.name">
+                                    :value="status.value">
                             </el-option>
                         </el-select>
                     </el-col>
@@ -48,7 +48,7 @@
                                     v-for="(status,index) in userStatusTypes"
                                     :key="index"
                                     :label="status.text"
-                                    :value="status.name">
+                                    :value="status.value">
                             </el-option>
                         </el-select>
                     </el-col>
@@ -110,8 +110,8 @@
     </div>
 </template>
 <script>
-  import {roles, kycStatusTypes, userStatusTypes, merchantAuthStatusTypes} from "../../common/constants";
-  import {itemText, timeToLocale} from "../../common/utilities";
+  import {roles, kycStatusTypes, userStatusTypes, merchantAuthStatusTypes} from "~/common/constants";
+  import {itemText, timeToLocale} from "~/common/utilities";
 
   export default {
     layout: 'default',

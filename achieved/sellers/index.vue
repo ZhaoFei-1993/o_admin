@@ -51,7 +51,7 @@
     </div>
 </template>
 <script>
-  import {timeToLocale} from "../../common/utilities";
+  import {timeToLocale} from "~/common/utilities";
 
   export default {
     layout: 'default',

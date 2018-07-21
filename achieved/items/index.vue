@@ -110,8 +110,8 @@
     </div>
 </template>
 <script>
-  import {coinNames, itemStatus, priceNames, adminUsers, productTypes} from "../../common/constants";
-  import {getItemStatusOfIndex, mapCoinType, timeToLocale} from "../../common/utilities";
+  import {coinNames, itemStatus, priceNames, adminUsers, productTypes} from "~/common/constants";
+  import {getItemStatusOfIndex, mapCoinType, timeToLocale} from "~/common/utilities";
 
   export default {
     layout: 'default',

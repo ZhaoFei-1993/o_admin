@@ -101,8 +101,8 @@
     </div>
 </template>
 <script>
-  import {exportCSVFile, timeToDateString} from "../../common/utilities";
-  import {settlementHeaders} from "../../common/constants";
+  import {exportCSVFile, timeToDateString} from "~/common/utilities";
+  import {settlementHeaders} from "~/common/constants";
 
   export default {
     data() {

@@ -1,4 +1,4 @@
-import {coinNames, loginURL} from "./constants";
+import {loginURL} from "./constants";
 import cookies from "../plugins/cookies";
 import {locations} from "./locations";
 import chineseConverter from './chineseConverter';
@@ -31,8 +31,8 @@ export const timeToLocale = (timestamp, showOnlyDay) => {
   })
 };
 
-export const itemText=(name,options)=>{
-  const item = options.find(r => r.name === name)
+export const itemText=(value,options)=>{
+  const item = options.find(r => r.value === value)
   return item ? (item.text) : '--'
 }
 
@@ -44,9 +44,6 @@ export const getApproxCny = (price, price_type) => {
   return parseInt(price) * (parseInt(price_type) === 2 ? 6.5 : 1)
 };
 
-export const mapCoinType = (coinTypes) => {
-  return coinTypes.map(c => coinNames[c]).join(', ');
-};
 
 export const getItemStatusOfIndex = (index, list) => {
   if (index !== undefined && index < list.length - 1) {

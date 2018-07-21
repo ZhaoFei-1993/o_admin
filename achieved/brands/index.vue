@@ -123,7 +123,7 @@
     </div>
 </template>
 <script>
-  import {productTypes} from "../../common/constants";
+  import {productTypes} from "~/common/constants";
 
   export default {
     data() {

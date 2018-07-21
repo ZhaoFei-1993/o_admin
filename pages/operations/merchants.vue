@@ -65,8 +65,8 @@
     </div>
 </template>
 <script>
-  import {roles, kycStatusTypes, userStatusTypes, merchantAuthStatusTypes} from "../../common/constants";
-  import {itemText, timeToLocale} from "../../common/utilities";
+  import {roles, kycStatusTypes, userStatusTypes, merchantAuthStatusTypes} from "~/common/constants";
+  import {itemText, timeToLocale} from "~/common/utilities";
 
   export default {
     layout: 'default',
@@ -99,7 +99,7 @@
         }, {
           prop: 'idcard_no',
           label: '证件号',
-          width: 80,
+          width: 120,
         }, {
           prop: 'mobile',
           label: '手机',
@@ -107,11 +107,11 @@
         }, {
           prop: 'email',
           label: '邮箱',
-          width: 200,
+          width: 120,
         }, {
           prop: 'wechat',
           label: '微信号',
-          width: 200,
+          width: 120,
         },],
       }
     },

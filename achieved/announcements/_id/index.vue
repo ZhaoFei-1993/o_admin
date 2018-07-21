@@ -19,7 +19,7 @@
 </template>
 <script>
   import AnnouncementEditor from "~/components/AnnouncementEditor";
-  import {pickProps} from "../../../common/utilities";
+  import {pickProps} from "~/common/utilities";
 
   export default {
     components: {
