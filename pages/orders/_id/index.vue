@@ -84,7 +84,7 @@
                             <el-row>
                                 <el-col :span="3">申诉状态</el-col>
                                 <el-col :span="9">
-                                    {{currentResource.id}}
+                                    {{appeal.status | itemText(appealStatusTypes)}}
                                 </el-col>
                                 <el-col :span="3">关联广告</el-col>
                                 <el-col :span="9">
@@ -107,7 +107,7 @@
     </div>
 </template>
 <script>
-  import {orderStatusTypes, paymentTypes} from "~/common/constants";
+  import {orderStatusTypes, paymentTypes, appealStatusTypes} from "~/common/constants";
 
   export default {
     components: {},
@@ -115,6 +115,7 @@
       return {
         id: this.$route.params.id,
         appeal: null,
+        appealStatusTypes,
       }
     },
     computed: {

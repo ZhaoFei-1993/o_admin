@@ -32,9 +32,9 @@ export const merchantStatusTypes = [{
 export const merchantAuthStatusTypes = [{
   value: 'no', text: '普通用户',
 }, {
-  value: 'processing', text: '商家认证中',
+  value: 'created', text: '商家认证中',
 }, {
-  value: 'passed', text: '认证商家',
+  value: 'pass', text: '认证商家',
 },];
 export const kycStatusTypes = [{
   value: 'no', text: '未实名',
@@ -107,3 +107,9 @@ export const counterpartyLimitTypes = [{
   text: '交易方必须完成过 1 次交易',
   value: 'one_deal',
 }]
+
+export const userRoles = [{
+  value: true, text: '认证商家',
+}, {
+  value: false, text: '普通用户',
+},]

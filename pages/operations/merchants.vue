@@ -35,6 +35,10 @@
                     min-width="180"
             >
                 <template slot-scope="scope">
+                    <router-link :to="'/users/'+scope.row.user_id"
+                                 append>
+                        <el-button>详情</el-button>
+                    </router-link>
                     <el-button type="success" @click="passAuth(scope.row)">通过</el-button>
                     <el-button type="danger" @click="failAuth(scope.row)">不通过</el-button>
                 </template>
@@ -53,7 +57,7 @@
                 title="认证不通过"
                 :visible.sync="authDialogVisible"
                 width="30%">
-            <p>拒绝用户 {{currentMerchant.name}} 的认证申请：</p>
+            <p>拒绝用户 {{currentMerchant.name}} 的商家认证申请：</p>
             <el-input :rows="4" type="textarea" placeholder="请填写认证不通过的原因(五个字符以上)" v-model="authComment"></el-input>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="authDialogVisible = false">取 消</el-button>
@@ -83,19 +87,23 @@
           link: '/users'
         }, {
           prop: 'create_time',
-          label: '注册时间',
+          label: '申请时间',
           width: 96,
           formatter: (row, column, cellValue) => {
             return timeToLocale(cellValue)
           },
           className: 'time',
-        }, {
+        },  {
           prop: 'kyc_name',
           label: '姓名',
           width: 80,
           formatter: (row, column, cellValue) => {
             return cellValue || '未实名'
           },
+        }, {
+          prop: 'id_type',
+          label: '证件类型',
+          width: 120,
         }, {
           prop: 'idcard_no',
           label: '证件号',
@@ -112,6 +120,14 @@
           prop: 'wechat',
           label: '微信号',
           width: 120,
+        },{
+          prop: 'auth_time',
+          label: '通过时间',
+          width: 96,
+          formatter: (row, column, cellValue) => {
+            return timeToLocale(cellValue)
+          },
+          className: 'time',
         },],
       }
     },

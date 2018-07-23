@@ -1,41 +1,33 @@
 <template>
-    <div class="main-content page-users">
-        <h1>用户管理</h1>
+    <div class="main-content">
+        <h1>广告管理</h1>
         <el-row>
             <el-col :md="4" :lg="2">
                 <p class="total-resource-num">共 {{totalNum}} 个</p>
             </el-col>
             <el-col :md="20" :lg="10">
-                <el-input placeholder="输入 用户名/用户ID/手机号/邮箱 查询" clearable v-model="resourceFilters.search"
-                          @clear="getFilteredResources">
-                    <el-button slot="append" icon="el-icon-search" @click="getFilteredResources"></el-button>
-                </el-input>
+                <el-row>
+                    <el-col :span="12">
+                        <el-input placeholder="请输入 用户名/广告ID" clearable v-model="resourceFilters.search"
+                                  @clear="getFilteredResources">
+                            <el-button slot="append" icon="el-icon-search" @click="getFilteredResources"></el-button>
+                        </el-input>
+                    </el-col>
+                </el-row>
+
             </el-col>
             <el-col :md="24" :lg="12">
                 <el-row type="flex" justify="end">
                     <el-col :md="8" :lg="6" class="resource-filter">
-                        <el-select v-model="resourceFilters.kyc_status"
+                        <el-select v-model="resourceFilters.coin_type"
                                    @change="getFilteredResources"
                                    clearable
-                                   placeholder="是否实名">
+                                   placeholder="币种">
                             <el-option
-                                    v-for="(status,index) in kycStatusTypes"
+                                    v-for="(coin,index) in coinTypes"
                                     :key="index"
-                                    :label="status.text"
-                                    :value="status.value">
-                            </el-option>
-                        </el-select>
-                    </el-col>
-                    <el-col :md="8" :lg="6" class="resource-filter">
-                        <el-select v-model="resourceFilters.is_merchant"
-                                   @change="getFilteredResources"
-                                   clearable
-                                   placeholder="用户角色">
-                            <el-option
-                                    v-for="(status,index) in userRoles"
-                                    :key="index"
-                                    :label="status.text"
-                                    :value="status.value">
+                                    :label="coin"
+                                    :value="coin">
                             </el-option>
                         </el-select>
                     </el-col>
@@ -43,12 +35,25 @@
                         <el-select v-model="resourceFilters.status"
                                    @change="getFilteredResources"
                                    clearable
-                                   placeholder="交易状态">
+                                   placeholder="状态">
                             <el-option
-                                    v-for="(status,index) in userStatusTypes"
+                                    v-for="(status,index) in itemStatusTypes"
                                     :key="index"
                                     :label="status.text"
                                     :value="status.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :md="8" :lg="6" class="resource-filter">
+                        <el-select v-model="resourceFilters.side"
+                                   @change="getFilteredResources"
+                                   clearable
+                                   placeholder="类型">
+                            <el-option
+                                    v-for="(side,index) in sides"
+                                    :key="index"
+                                    :label="side.text"
+                                    :value="side.value">
                             </el-option>
                         </el-select>
                     </el-col>
@@ -89,10 +94,10 @@
             <el-table-column
                     key="action"
                     label="操作"
-                    min-width="90"
+                    min-width="80"
             >
                 <template slot-scope="scope">
-                    <router-link :to="'/users/'+scope.row.id"
+                    <router-link :to="'/items/'+scope.row['id']"
                                  append>
                         <el-button type="primary" class="view-detail">查看详情</el-button>
                     </router-link>
@@ -110,77 +115,80 @@
     </div>
 </template>
 <script>
-  import {userRoles, kycStatusTypes, userStatusTypes, merchantAuthStatusTypes} from "~/common/constants";
-  import {timeToLocale} from "~/common/utilities";
+  import {sides, coinTypes, paymentTypes, itemStatusTypes} from "~/common/constants";
+  import {getItemStatusOfIndex, timeToLocale} from "~/common/utilities";
 
   export default {
     layout: 'default',
     data() {
       return {
-        userRoles,
-        userStatusTypes,
-        kycStatusTypes,
-        merchantAuthStatusTypes,
+        sides,
+        coinTypes,
+        paymentTypes,
+        itemStatusTypes,
         itemColumns: [{
-          prop: 'id',
-          label: 'ID',
-          width: 36,
-          link: '/users'
-        }, {
           prop: 'create_time',
-          label: '注册时间',
+          label: '创建时间',
           width: 96,
           formatter: (row, column, cellValue) => {
             return timeToLocale(cellValue)
           },
+          sortable: true,
           className: 'time',
         }, {
-          prop: 'name',
-          label: '昵称',
+          prop: 'user_id',
+          label: '商家',
           width: 80,
+          link: 'users',
         }, {
-          prop: 'kyc_name',
-          label: '姓名',
-          width: 80,
-          formatter: (row, column, cellValue) => {
-            return cellValue || '未实名'
-          },
-        }, {
-          prop: 'is_merchant',
-          label: '角色',
+          prop: 'side',
+          label: '方向',
           width: 72,
           formatter: (row, column, cellValue) => {
-            return this.itemText(cellValue, userRoles)
+            return this.itemText(cellValue, sides);
           },
         }, {
-          prop: 'mobile',
-          label: '手机',
-          width: 120,
+          prop: 'price',
+          label: '单价',
+          width: 90,
         }, {
-          prop: 'email',
-          label: '邮箱',
-          width: 200,
+          prop: 'coin_type',
+          label: '币种',
+          width: 90,
+        }, {
+          prop: 'remain_coin_amount',
+          label: '库存',
+          width: 90,
+        }, {
+          prop: 'inventory',
+          label: '库存',
+          width: 80,
         }, {
           prop: 'status',
-          label: '用户状态',
+          label: '状态',
+          width: 80,
           formatter: (row, column, cellValue) => {
-            return this.itemText(cellValue, userStatusTypes)
+            return this.itemText(cellValue, itemStatusTypes);
           },
-        },],
+        }],
       }
     },
     mounted() {
-      this.initResources('users');
+      this.initResources('items');
     },
-    methods: {}
+    methods: {
+    }
   }
 </script>
+<style lang="scss" scoped>
 
+</style>
 <style lang="scss">
-    .page-users {
-        .view-detail {
-            width: 80px;
-            padding: 12px;
-        }
+    td.time .cell {
+        word-break: normal;
+    }
+
+    tr.ready {
+        background-color: #D5FFF3;
     }
 </style>
