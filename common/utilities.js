@@ -31,11 +31,6 @@ export const timeToLocale = (timestamp, showOnlyDay) => {
   })
 };
 
-export const itemText=(value,options)=>{
-  const item = options.find(r => r.value === value)
-  return item ? (item.text) : '--'
-}
-
 export const timeToDateString = (time, withoutDay) => {
   return time.getFullYear() + '-' + (time.getMonth() + 1) + (withoutDay ? '' : ('-' + time.getDate()));
 };
@@ -276,3 +271,7 @@ export const exportCSVFile = (headers, items, fileTitle) => {
   }
 };
 
+export const findMatchedItems = (target, options) => {
+  if (!target || !options || !target.length || !options.length) return []
+  return options.filter(o => target.indexOf(o.value) >= 0)
+}

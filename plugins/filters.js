@@ -43,7 +43,10 @@ export const formatTime = (time, lang) => {
       return date.toString().replace(/GMT.*/, '')
   }
 }
-
+export const itemText=(value,options)=>{
+  const item = options.find(r => r.value === value)
+  return item ? (item.text) : '--'
+}
 /**
  * 根据输入的en/cn/hk名称的配置，和当前语言，输出对应的语言文本
  * @param location {Object} {cn_name: '', hk_name: '', en_name: '', name: ''}
@@ -79,6 +82,7 @@ export default ({
     methods: {
       formatMoney,
       formatDuration,
+      itemText,
       formatTime: (time) => {
         return formatTime(time, store.state.lang)
       },
@@ -112,7 +116,8 @@ export default ({
       formatTime: (time) => {
         return formatTime(time, store.state.lang)
       },
-      translateName: location => translateName(location, store.state.lang)
+      translateName: location => translateName(location, store.state.lang),
+      itemText,
     }
   })
 }

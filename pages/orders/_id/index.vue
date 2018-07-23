@@ -19,7 +19,7 @@
                     <el-row>
                         <el-col :span="3">订单状态</el-col>
                         <el-col :span="9">
-                            {{orderStatus}}
+                            {{currentResource.status | itemText(orderStatusType)}}
                         </el-col>
                         <el-col :span="3">下单时间</el-col>
                         <el-col :span="9">
@@ -108,7 +108,6 @@
 </template>
 <script>
   import {orderStatusTypes, paymentTypes} from "~/common/constants";
-  import {itemText} from "~/common/utilities";
 
   export default {
     components: {},
@@ -124,7 +123,7 @@
       },
       paymentMethod() {
         const pay = this.currentResource.pay_method
-        return pay ? `${itemText(pay.method, paymentTypes)} 账号：${pay.account_no} 账户名：${pay.account_name}` : '--'
+        return pay ? `${this.itemText(pay.method, paymentTypes)} 账号：${pay.account_no} 账户名：${pay.account_name}` : '--'
       }
     },
     mounted() {

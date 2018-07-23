@@ -111,7 +111,7 @@
 </template>
 <script>
   import {roles, kycStatusTypes, userStatusTypes, merchantAuthStatusTypes} from "~/common/constants";
-  import {itemText, timeToLocale} from "~/common/utilities";
+  import {timeToLocale} from "~/common/utilities";
 
   export default {
     layout: 'default',
@@ -158,13 +158,13 @@
           label: '商家认证',
           width: 72,
           formatter: (row, column, cellValue) => {
-            itemText(cellValue, merchantAuthStatusTypes)
+            return this.itemText(cellValue, merchantAuthStatusTypes)
           },
         }, {
           prop: 'status',
           label: '用户状态',
           formatter: (row, column, cellValue) => {
-            itemText(cellValue, userStatusTypes)
+            return this.itemText(cellValue, userStatusTypes)
           },
         },],
       }

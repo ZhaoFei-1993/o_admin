@@ -119,7 +119,7 @@
     </div>
 </template>
 <script>
-  import {itemText, timeToLocale} from "~/common/utilities";
+  import {timeToLocale} from "~/common/utilities";
   import {orderStatusTypes, appealStatusTypes, coinTypes} from "~/common/constants";
 
   export default {
@@ -159,13 +159,13 @@
           prop: 'status',
           label: '订单状态',
           formatter: (row, column, cellValue) => {
-            return itemText(cellValue, orderStatusTypes)
+            return this.itemText(cellValue, orderStatusTypes)
           },
         }, {
           prop: 'appeal_status',
           label: '申诉状态',
           formatter: (row, column, cellValue) => {
-            return itemText(cellValue, appealStatusTypes)
+            return this.itemText(cellValue, appealStatusTypes)
           },
         }, {
           prop: 'coin_type',

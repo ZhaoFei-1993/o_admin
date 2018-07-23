@@ -10,6 +10,20 @@ export const userStatusTypes = [{
 }, {
   value: 'forbidden', text: '限制交易',
 },];
+export const itemStatusTypes = [{
+  value: 'on', text: '上架',
+}, {
+  value: 'off', text: '下架',
+},
+  // {
+  //   value: 'deleted', text: '已删除',
+  // },
+];
+export const pricingTypes = [{
+  value: 'fixed', text: '固定',
+}, {
+  value: 'float', text: '浮动',
+},];
 export const merchantStatusTypes = [{
   value: 'normal', text: '正常',
 }, {
@@ -77,8 +91,19 @@ export const paymentTypes = [{
 }, {
   value: 'bankcard', text: '申诉处理中',
 },]
-export const sides =[{
-  value: 'buy', text: '买家',
+export const sides = [{
+  value: 'buy', text: '买入',
 }, {
-  value: 'sell', text: '卖家',
+  value: 'sell', text: '卖出',
 },]
+
+export const counterpartyLimitTypes = [{
+  text: '交易方必须通过手机验证',
+  value: 'bind_phone'
+}, {
+  text: '交易方必须通过实名验证',
+  value: 'kyc',
+}, {
+  text: '交易方必须完成过 1 次交易',
+  value: 'one_deal',
+}]

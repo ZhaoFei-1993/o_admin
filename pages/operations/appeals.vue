@@ -53,7 +53,7 @@
 </template>
 <script>
   import {appealStatusTypes, orderStatusTypes} from "~/common/constants";
-  import {itemText, timeToLocale} from "~/common/utilities";
+  import { timeToLocale} from "~/common/utilities";
 
   export default {
     layout: 'default',
@@ -69,7 +69,7 @@
           prop: 'status',
           label: '订单状态',
           formatter: (row, column, cellValue) => {
-            return itemText(cellValue, orderStatusTypes)
+            return this.itemText(cellValue, orderStatusTypes)
           },
         }, {
           prop: 'appeal_time',
@@ -84,7 +84,7 @@
           label: '申诉状态',
           width: 80,
           formatter: (row, column, cellValue) => {
-            return itemText(cellValue, appealStatusTypes)
+            return this.itemText(cellValue, appealStatusTypes)
           },
         }, {
           prop: 'idcard_no',
@@ -94,7 +94,7 @@
           prop: 'result',
           label: '申诉结果',
           formatter: (row, column, cellValue) => {
-            return itemText(cellValue, appealResultTypes)
+            return this.itemText(cellValue, appealResultTypes)
           },
         }, {
           prop: 'wechat',

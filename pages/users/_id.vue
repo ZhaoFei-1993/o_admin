@@ -10,7 +10,7 @@
                             <el-col :span="9">{{currentResource.id}}</el-col>
                             <el-col :span="3">账号状态</el-col>
                             <el-col :span="9" :class="currentResource.status">
-                                {{userStatus}}
+                                {{currentResource.status | itemText(userStatusTypes)}}
                                 <el-button v-if="currentResource.status==='normal'" type="danger" @click="forbidUser()">
                                     限制交易
                                 </el-button>
@@ -35,7 +35,7 @@
                         <el-row>
                             <el-col :span="3">实名状态</el-col>
                             <el-col :span="9">
-                                {{kycStatus}}
+                                {{currentResource.kyc_status |itemText(kycStatusTypes)}}
                             </el-col>
                             <el-col :span="3">真实姓名</el-col>
                             <el-col :span="9">{{currentResource.kyc_name || '未实名'}}</el-col>
@@ -94,7 +94,7 @@
                             </el-col>
                             <el-col :span="3">商家状态</el-col>
                             <el-col :span="9">
-                                {{merchantStatus}}
+                                {{merchant.status | itemText(merchantStatusTypes)}}
                                 <el-button v-if="merchant.status==='normal'" type="danger" @click="forbidMerchant()">
                                     限制发布广告
                                 </el-button>
@@ -106,7 +106,7 @@
                         <el-row>
                             <el-col :span="3">认证状态</el-col>
                             <el-col :span="9">
-                                {{merchantStatus}}
+                                {{merchant.auth_status | itemText(merchantAuthStatusTypes)}}
                             </el-col>
                             <el-col :span="3">认证时间</el-col>
                             <el-col :span="9">
@@ -142,7 +142,7 @@
                             </el-col>
                             <el-col :span="3">交易对手限制</el-col>
                             <el-col :span="9">
-                                {{counterparty_limit}}
+                                {{counterpartyLimit}}
                             </el-col>
                         </el-row>
                         <el-row>
@@ -218,11 +218,19 @@
 
 </template>
 <script>
-  import {userStatusTypes, roles, kycStatusTypes} from '~/common/constants'
+  import {
+    userStatusTypes, roles, kycStatusTypes, merchantAuthStatusTypes,
+    merchantStatusTypes, counterpartyLimitTypes
+  } from '~/common/constants'
+  import {findMatchedItems} from "~/common/utilities";
 
   export default {
     data() {
       return {
+        kycStatusTypes,
+        userStatusTypes,
+        merchantAuthStatusTypes,
+        merchantStatusTypes,
         id: this.$route.params.id,
         currentTab: this.$route.query.tab || 'basic',
         balance: [
@@ -266,20 +274,8 @@
       this.getMerchantSetting();
     },
     computed: {
-      userStatus() {
-        return itemText(this.currentResource.status, userStatusTypes)
-      },
-      kycStatus() {
-        return itemText(this.currentResource.kyc_status, kycStatusTypes)
-      },
-      merchantStatus() {
-        return itemText(this.merchant.status, merchantStatusTypes)
-      },
-      merchantAuthStatusTypes() {
-        return itemText(this.merchant.status, merchantAuthStatusTypes)
-      },
-      counterparty_limit() {
-        return '' + this.setting.counterparty_limit
+      counterpartyLimit() {
+        return findMatchedItems(this.setting.counterparty_limit, counterpartyLimitTypes).map(o => o.text).join(', ')
       },
       isSuperAdmin() {
         return Math.random() < 0.5
