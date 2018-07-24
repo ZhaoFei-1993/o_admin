@@ -3,7 +3,7 @@
         <h1>商家认证审核(仅显示认证中的商家）
             <router-link to="/users" class="fz-14">查看所有商家</router-link>
         </h1>
-        <el-row>
+        <el-row class="with-margin-top">
             <el-col :md="4" :lg="2">
                 <p class="total-resource-num">共 {{totalNum}} 个</p>
             </el-col>
@@ -13,12 +13,51 @@
                     <el-button slot="append" icon="el-icon-search" @click="getFilteredResources"></el-button>
                 </el-input>
             </el-col>
+            <el-col :md="24" :lg="10">
+                <el-row>
+                    <el-col :md="8" class="resource-filter">
+                        <el-select v-model="resourceFilters.auth_status"
+                                   @change="getFilteredResources"
+                                   clearable
+                                   placeholder="认证状态">
+                            <el-option
+                                    v-for="(status,index) in merchantAuthStatusTypes"
+                                    :key="index"
+                                    :label="status.text"
+                                    :value="status.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :md="16" class="resource-filter">
+                        <el-date-picker
+                                v-model="resourcesDateRange"
+                                type="daterange"
+                                :clearable="false"
+                                @change="getFilteredResources"
+                                start-placeholder="开始日期"
+                                end-placeholder="结束日期"
+                                :default-time="['00:00:00', '23:59:59']">
+                        </el-date-picker>
+                    </el-col>
+                </el-row>
+            </el-col>
         </el-row>
         <el-table
-                class="with-margin-top"
                 :data="resources"
                 @sort-change="sortChange"
                 style="width: 100%">
+            <el-table-column
+                    key="id"
+                    label="ID"
+                    min-width="60"
+            >
+                <template slot-scope="scope">
+                    <router-link :to="'/users/'+scope.row.user_id"
+                                 append>
+                        {{scope.row.user_id}}
+                    </router-link>
+                </template>
+            </el-table-column>
             <el-table-column :key="index"
                              v-for="(column, index) in itemColumns"
                              :prop="column.prop"
@@ -32,15 +71,28 @@
             <el-table-column
                     key="action"
                     label="操作"
-                    min-width="180"
+                    min-width="200"
             >
                 <template slot-scope="scope">
-                    <router-link :to="'/users/'+scope.row.user_id"
-                                 append>
-                        <el-button>详情</el-button>
-                    </router-link>
-                    <el-button type="success" @click="passAuth(scope.row)">通过</el-button>
-                    <el-button type="danger" @click="failAuth(scope.row)">不通过</el-button>
+                    <template v-if="scope.row.auth_status === 'created'">
+                        <el-button type="success" @click="passAuth(scope.row)">通过</el-button>
+                        <el-button type="danger" @click="failAuth(scope.row)">不通过</el-button>
+                    </template>
+                    <template v-if="scope.row.auth_status === 'pass'">
+                        <!--<el-button type="danger" @click="passAuth(scope.row)">取消认证</el-button>-->
+                        <router-link :to="'/users/'+scope.row.user_id"
+                                     append>
+                            <el-button>详情</el-button>
+                        </router-link>
+                    </template>
+                    <template v-if="scope.row.auth_status === 'no'">
+                        <!--<el-button type="success" @click="passAuth(scope.row)">通过</el-button>-->
+                        <router-link :to="'/users/'+scope.row.user_id"
+                                     append>
+                            <el-button>详情</el-button>
+                        </router-link>
+                    </template>
+
                 </template>
             </el-table-column>
         </el-table>
@@ -70,7 +122,7 @@
 </template>
 <script>
   import {roles, kycStatusTypes, userStatusTypes, merchantAuthStatusTypes} from "~/common/constants";
-  import {itemText, timeToLocale} from "~/common/utilities";
+  import {timeToLocale} from "~/common/utilities";
 
   export default {
     layout: 'default',
@@ -81,11 +133,6 @@
         authDialogVisible: false,
         merchantAuthStatusTypes,
         itemColumns: [{
-          prop: 'id',
-          label: 'ID',
-          width: 36,
-          link: '/users'
-        }, {
           prop: 'create_time',
           label: '申请时间',
           width: 96,
@@ -93,19 +140,23 @@
             return timeToLocale(cellValue)
           },
           className: 'time',
-        },  {
-          prop: 'kyc_name',
+        }, {
+          prop: 'first_name',
           label: '姓名',
           width: 80,
           formatter: (row, column, cellValue) => {
-            return cellValue || '未实名'
+            return row.last_name + ' ' + row.first_name
           },
         }, {
           prop: 'id_type',
           label: '证件类型',
+          width: 80,
+        }, {
+          prop: 'guaranty_amount',
+          label: 'CET保证金',
           width: 120,
         }, {
-          prop: 'idcard_no',
+          prop: 'id_number',
           label: '证件号',
           width: 120,
         }, {
@@ -120,14 +171,13 @@
           prop: 'wechat',
           label: '微信号',
           width: 120,
-        },{
-          prop: 'auth_time',
-          label: '通过时间',
+        }, {
+          prop: 'auth_status',
+          label: '认证状态',
           width: 96,
           formatter: (row, column, cellValue) => {
-            return timeToLocale(cellValue)
+            return this.itemText(cellValue, merchantAuthStatusTypes)
           },
-          className: 'time',
         },],
       }
     },
@@ -136,7 +186,10 @@
     },
     methods: {
       getMerchants() {
-        this.initResources('users');
+        this.initResources('users/merchant', () => {
+          // 扁平化方便表格展示
+          this.resources = this.resources.map(r => Object.assign({}, r, r.user, r.user_kyc))
+        });
       },
       passAuth(merchant) {
         this.currentMerchant = merchant;
@@ -151,9 +204,9 @@
         this.changeAuth(false, this.authComment);
       },
       changeAuth(isSuccess, comment) {
-        this.$axios.patch(`/merchant/${this.currentMerchant.id}/auth/`, {
-          auth_status: isSuccess ? 2 : 3,
-          reason: comment
+        this.$axios.patch(`/users/merchant/${this.currentMerchant.id}`, {
+          auth_status: isSuccess ? 'pass' : 'no',
+          remark: comment
         }).then(response => {
           this.$message({message: '商家认证结果已提交', type: 'success'})
           this.getMerchants();

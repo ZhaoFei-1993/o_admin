@@ -192,6 +192,7 @@ module.exports = {
   plugins: [
     // {src: "~/plugins/quill", ssr: false},
     "~/plugins/axios",
+    '~/plugins/polyfills',
     "~/plugins/echarts",
     "~/plugins/webp",
     "~/plugins/filters",

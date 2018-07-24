@@ -1,9 +1,6 @@
 import Vue from "vue"
-import {
-  mapState
-} from "vuex"
 import API from '../config/api';
-import {checkAuth, timeToDateString} from "../common/utilities";
+import {timeToDateString} from "../common/utilities";
 
 export default ({app, store, redirect}) => {
   if (Vue.$plugins_facility_installed) {
@@ -25,6 +22,7 @@ export default ({app, store, redirect}) => {
         statsFilters: {},
         statsData: [],
         statsName: '',
+        resourcesDateRange: null,
         statsRange: [],
         startMon: null,
         endMon: null,
@@ -35,21 +33,11 @@ export default ({app, store, redirect}) => {
         isAscending: false,
       }
     },
-    mounted() {
-      if (window.location.href.indexOf('/forbidden') >= 0) {
-        return;
+    computed: {
+      isSuperAdmin() {
+        return this.$store.getters.isSuperAdmin
       }
-      // TODO
-      // if (store.state.loggedIn) {
-      //   if (!store.state.authorized) {
-      //     redirect('/forbidden');
-      //   }
-      //   // loggedIn && authorized => do nothing
-      // } else if (!store.state.checkingAuth) {
-      //   checkAuth(app.$axios, store);
-      // }
     },
-    computed: {},
     methods: {
       scrollToElement: function (elementId) {
         let scrollY = 0;
@@ -64,6 +52,7 @@ export default ({app, store, redirect}) => {
         this.resources = [];
         this.resourceFilters = filters || {};
         this.totalNum = 0;
+        this.resourcesDateRange = null;
         this.resoucesLoadedCallback = loadedCallback;
         this.sortProp = null;
         this.isAscending = false;
@@ -79,7 +68,16 @@ export default ({app, store, redirect}) => {
       },
       getFilteredResources() {
         this.loadingResources = true;
-        this.$axios.get(API.searchResources(this.resourcesPath, this.resourceFilters, this.pageNum, this.sortProp, this.isAscending)).then(response => {
+        const range = this.resourcesDateRange && this.resourcesDateRange[0] ? {
+          start: this.resourcesDateRange[0].backendStamp(),
+          end: this.resourcesDateRange[1].backendStamp()
+        } : null
+        this.$axios.get(
+          API.searchResources(
+            this.resourcesPath, this.resourceFilters,
+            this.pageNum, this.sortProp, this.isAscending,
+            range)
+        ).then(response => {
           this.loadingResources = false;
           this.resources = response.data.data.data || response.data.data;
           this.totalNum = parseInt(response.data.data.total || response.data.total);

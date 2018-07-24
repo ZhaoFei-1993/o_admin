@@ -283,7 +283,7 @@
     },
     methods: {
       getMerchantInfo() {
-        this.axios.get(`/users/${this.id}/merchant`).then(response => {
+        this.axios.get(`/users/merchant/${this.id}`).then(response => {
           this.merchant = response.data.data;
         })
       },

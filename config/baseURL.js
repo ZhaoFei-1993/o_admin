@@ -1,28 +1,29 @@
-const devLogin = 'http://dev.coinex.com/account/signin/?next=' + encodeURIComponent('http://admin.otc-dev.coinex.com/');
+const devLogin = 'http://test2.coinex.com/account/signin/?next=' + encodeURIComponent('http://dev.admin.otc.coinex.com/');
+const preLogin = 'http://test2.coinex.com/account/signin/?next=' + encodeURIComponent('http://test.admin.otc.coinex.com/');
 const prodLogin = 'http://www.coinex.com/account/signin/?next=' + encodeURIComponent('http://admin.otc.coinex.com/');
 
 const domains = {
   development: {
-    serverHost: 'http://local-otc-admin.coinex.com',
-    clientHost: 'http://local-otc-admin.coinex.com',
-    loginURL: 'http://dev.coinex.com/account/signin/?next=' + encodeURIComponent('http://local-otc-admin.coinex.com/'),
-    apiPrefix: '/api/admin',
+    serverHost: 'http://dev.admin.otc.coinex.com',
+    clientHost: 'http://dev.admin.otc.coinex.com',
+    loginURL: devLogin,
+    apiPrefix: '/admin',
     webSocket: '',
     cdn: ''
   },
   production: {
     serverHost: 'http://admin.otc.coinex.com',
     clientHost: 'http://admin.otc.coinex.com',
-    apiPrefix: '/api/admin',
+    apiPrefix: '/admin',
     loginURL: prodLogin,
     webSocket: '',
     cdn: ''
   },
   pre: {
-    serverHost: 'http://admin.otc-dev.coinex.com',
-    clientHost: 'http://admin.otc-dev.coinex.com',
-    loginURL: devLogin,
-    apiPrefix: '/api/admin',
+    serverHost: 'http://test.admin.otc.coinex.com',
+    clientHost: 'http://test.admin.otc.coinex.com',
+    loginURL: preLogin,
+    apiPrefix: '/admin',
     webSocket: '',
     cdn: ''
   }

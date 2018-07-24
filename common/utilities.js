@@ -17,7 +17,9 @@ export const timeToLocale = (timestamp, showOnlyDay) => {
   if (!timestamp) {
     return "NA";
   }
-  if (timestamp.indexOf('Z') < 0 && timestamp.indexOf('+') < 0 && timestamp.indexOf('-') < 0) {
+  if (typeof timestamp === 'number') {
+    timestamp *= 1000
+  } else if (timestamp.length && timestamp.indexOf('Z') < 0 && timestamp.indexOf('+') < 0 && timestamp.indexOf('-') < 0) {
     timestamp += 'Z';
   }
   const time = new Date(timestamp)
