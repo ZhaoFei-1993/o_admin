@@ -13,7 +13,6 @@ const priceSymbolMap = {
 
 const noop = () => ''
 
-export const formatMoney = ([priceType, price]) => accounting.formatMoney(price, priceSymbolMap[priceType], decimalLength(price))
 export const formatDuration = (durationNum, format, $t = noop) => {
   if (!durationNum) {
     return '--'
@@ -28,9 +27,9 @@ export const formatDuration = (durationNum, format, $t = noop) => {
   return (day ? (day + $t(`global.misc.天`)) : '') + (hour ? (hour + $t(`global.misc.小时`)) : '') + (durationNum < 86400 && minute ? (minute + $t(`global.misc.分钟`)) : '') + (durationNum < 3600 && second ? (second + $t(`global.misc.秒`)) : '')
 }
 export const formatTime = (time, lang) => {
-  // TODO 更应该考虑locale还是lang？
+  // 后端返回的是秒
   if (!time) return ''
-  const date = new Date(time)
+  const date = new Date(time * 1000)
   if (!lang || !lang.lang) {
     return date.toLocaleString()
   }
@@ -43,7 +42,7 @@ export const formatTime = (time, lang) => {
       return date.toString().replace(/GMT.*/, '')
   }
 }
-export const itemText=(value,options)=>{
+export const itemText = (value, options) => {
   const item = options.find(r => r.value === value)
   return item ? (item.text) : '--'
 }
@@ -80,7 +79,6 @@ export default ({
   Vue.$plugins_filter_installed = true
   Vue.mixin({
     methods: {
-      formatMoney,
       formatDuration,
       itemText,
       formatTime: (time) => {
@@ -93,13 +91,6 @@ export default ({
       }
     },
     filters: {
-      /**
-       * 格式化金钱，带符号，逗号分隔，有几位小数保留几位小数
-       * @param priceType
-       * @param price
-       * @return {*}
-       */
-      formatMoney: formatMoney,
 
       /**
        * 根据传入的price和coin类型，输出对应的汇率文本。

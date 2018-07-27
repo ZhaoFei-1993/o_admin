@@ -52,7 +52,7 @@
         if (window.location.href.indexOf('/forbidden') >= 0) {
           return;
         }
-        // this.$store.dispatch('user/fetchUserAccount')
+        this.$store.dispatch('user/fetchUserAccount')
       }
     },
     mounted() {

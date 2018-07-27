@@ -11,10 +11,11 @@
                             <el-col :span="3">账号状态</el-col>
                             <el-col :span="9" :class="currentResource.status">
                                 {{currentResource.status | itemText(userStatusTypes)}}
-                                <el-button v-if="currentResource.status==='normal'" type="danger" @click="forbidUser()">
+                                <el-button v-if="currentResource.status==='normal'" type="danger" @click="forbidUser()"
+                                           class="float-right">
                                     限制交易
                                 </el-button>
-                                <el-button v-else type="danger" @click="allowUser()">
+                                <el-button v-else type="danger" @click="allowUser()" class="float-right">
                                     取消限制
                                 </el-button>
                             </el-col>
@@ -27,7 +28,8 @@
                                 <el-tag v-if="currentResource.role==='merchant'" type="success">认证商家</el-tag>
                                 <div v-else>
                                     <el-tag type="info">普通用户</el-tag>
-                                    <el-button type="danger" v-if="isSuperAdmin" @click="markAsMerchant">设为认证商家（管理员特权）
+                                    <el-button type="danger" v-if="isSuperAdmin" @click="markAsMerchant"
+                                               class="float-right">设为认证商家
                                     </el-button>
                                 </div>
                             </el-col>
@@ -35,10 +37,10 @@
                         <el-row>
                             <el-col :span="3">实名状态</el-col>
                             <el-col :span="9">
-                                {{currentResource.kyc_status |itemText(kycStatusTypes)}}
+                                {{currentResource.kyc?'已认证':'未实名'}}
                             </el-col>
                             <el-col :span="3">真实姓名</el-col>
-                            <el-col :span="9">{{currentResource.kyc_name || '未实名'}}</el-col>
+                            <el-col :span="9">{{kycName}}</el-col>
                         </el-row>
                         <el-row>
                             <el-col :span="3">手机</el-col>
@@ -69,17 +71,15 @@
                                     prop="coin_type"
                                     label="币种">
                             </el-table-column>
-                            <el-table-column
-                                    prop="available"
-                                    label="可用余额">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="frozen"
-                                    label="冻结余额">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="total"
-                                    label="总余额">
+                            <el-table-column :key="index"
+                                             v-for="(column, index) in balanceColumns"
+                                             :prop="column.prop"
+                                             :label="column.label"
+                                             :formatter="column.formatter"
+                                             :sortable="column.sortable"
+                                             :class-name="column.className"
+                                             :sort-method="column.sortMethod"
+                                             :min-width="column.width">
                             </el-table-column>
                         </el-table>
                     </div>
@@ -122,6 +122,10 @@
                             <el-col :span="9">{{merchant.wechat}}</el-col>
                         </el-row>
 
+                    </div>
+                    <div class="info-block" v-else>
+                        <div class="info-header">商家详情</div>
+                        该用户尚未提交商家认证申请
                     </div>
                     <div class="info-block" v-if="setting">
                         <div class="info-header">交易设置</div>
@@ -233,63 +237,72 @@
         merchantStatusTypes,
         id: this.$route.params.id,
         currentTab: this.$route.query.tab || 'basic',
-        balance: [
-          {
-            "coin_type": "BTC",             // 币种
-            "available": "100.00000000",    // 可用余额
-            "frozen": "20.00000000",        // 冻结中余额
-            "total": "80.00000000"          // 总余额
-          },
-          {
-            "coin_type": "BCH",             // 币种
-            "available": "100.00000000",    // 可用余额
-            "frozen": "20.00000000",        // 冻结中余额
-            "total": "80.00000000"          // 总余额
-          },
-          {
-            "coin_type": "ETH",             // 币种
-            "available": "100.00000000",    // 可用余额
-            "frozen": "20.00000000",        // 冻结中余额
-            "total": "80.00000000"          // 总余额
-          },
-          {
-            "coin_type": "USDT",             // 币种
-            "available": "100.00000000",    // 可用余额
-            "frozen": "20.00000000",        // 冻结中余额
-            "total": "80.00000000"          // 总余额
-          },
-        ],
-        merchant: {},
-        setting: {},
+        balance: [],
+        merchant: null,
+        setting: null,
         paymentMethods: [],
         forbidUserRemark: null,
         forbidUserDialogVisible: false,
         forbidMerchantRemark: null,
         forbidMerchantDialogVisible: false,
+        balanceColumns: [{
+          prop: 'available',
+          label: '可用余额',
+          formatter: (row, col, value) => {
+            value.formatMoney()
+            return value
+          }
+        }, {
+          prop: 'frozen',
+          label: '冻结余额',
+          formatter: (row, col, value) => {
+            value.formatMoney()
+            return value
+          }
+        }, {
+          prop: 'total',
+          label: '总额',
+          formatter: (row, col, value) => {
+            value.formatMoney()
+            return value
+          }
+        },]
       }
     },
     mounted() {
-      this.initCurrentResource('users', this.id);
+      this.initCurrentResource('users', this.id, () => {
+        this.currentResource = Object.assign({}, this.currentResource, this.currentResource.user_kyc)
+      });
       this.getMerchantInfo();
+      this.getOTCBalance();
       this.getMerchantSetting();
     },
     computed: {
       counterpartyLimit() {
         return findMatchedItems(this.setting.counterparty_limit, counterpartyLimitTypes).map(o => o.text).join(', ')
       },
-      isSuperAdmin() {
-        return Math.random() < 0.5
-      },
+      kycName() {
+        return this.currentResource.kyc ? (this.currentResource.last_name + '' + this.currentResource.first_name) : '--'
+      }
     },
     methods: {
       getMerchantInfo() {
-        this.axios.get(`/users/merchant/${this.id}`).then(response => {
+        this.$axios.get(`/users/merchant/${this.id}`).then(response => {
           this.merchant = response.data.data;
+        }).catch(err => {
+          if (err.code === 605) {
+            this.merchant = null
+          }
         })
       },
       getMerchantSetting() {
-        this.axios.get(`/users/${this.id}/setting`).then(response => {
+        this.$axios.get(`/users/${this.id}/settings`).then(response => {
           this.setting = response.data.data;
+        })
+      },
+      getOTCBalance() {
+        this.$axios.get(`/users/${this.id}/balance/otc`).then(response => {
+          this.balance = response.data.data;
         })
       },
       allowUser() {

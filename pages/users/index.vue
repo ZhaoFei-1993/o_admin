@@ -156,6 +156,9 @@
           prop: 'mobile',
           label: '手机',
           width: 120,
+          formatter: (row, column, cellValue) => {
+            return cellValue || '--'
+          },
         }, {
           prop: 'email',
           label: '邮箱',

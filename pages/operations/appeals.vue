@@ -19,8 +19,24 @@
                 :data="resources"
                 @sort-change="sortChange"
                 style="width: 100%">
+            <el-table-column v-for="(column, index) in itemColumns"
+                             v-if="column.link && !column.hidden"
+                             :key="index"
+                             :prop="column.prop"
+                             :label="column.label"
+                             :formatter="column.formatter"
+                             :class-name="column.className"
+                             :sortable="column.sortable"
+                             :sort-method="column.sortMethod"
+                             :min-width="column.width">
+                <template slot-scope="scope">
+                    <router-link :to="column.link+'/'+(column.text?scope.row[column.prop]['id']:scope.row['id'])">
+                        {{column.text?scope.row[column.prop][column.text]:scope.row[column.prop]}}
+                    </router-link>
+                </template>
+            </el-table-column>
             <el-table-column :key="index"
-                             v-for="(column, index) in itemColumns"
+                             v-else
                              :prop="column.prop"
                              :label="column.label"
                              :formatter="column.formatter"
@@ -52,24 +68,26 @@
     </div>
 </template>
 <script>
-  import {appealStatusTypes, orderStatusTypes} from "~/common/constants";
-  import { timeToLocale} from "~/common/utilities";
+  import {appealStatusTypes, appealResultTypes, orderStatusTypes} from "~/common/constants";
+  import {timeToLocale} from "~/common/utilities";
 
   export default {
     layout: 'default',
     data() {
       return {
         appealStatusTypes,
+        appealResultTypes,
         orderStatusTypes,
         itemColumns: [{
-          prop: 'id',
+          prop: 'order',
           label: '订单ID',
-          width: 36,
+          link: '/orders',
+          text: 'id',
         }, {
-          prop: 'status',
+          prop: 'order',
           label: '订单状态',
-          formatter: (row, column, cellValue) => {
-            return this.itemText(cellValue, orderStatusTypes)
+          formatter: (row, column, value) => {
+            return this.itemText(value.status, orderStatusTypes)
           },
         }, {
           prop: 'appeal_time',
@@ -80,15 +98,23 @@
           },
           className: 'time',
         }, {
-          prop: 'appeal_status',
+          prop: 'status',
           label: '申诉状态',
-          width: 80,
           formatter: (row, column, cellValue) => {
             return this.itemText(cellValue, appealStatusTypes)
           },
         }, {
-          prop: 'idcard_no',
+          prop: 'user',
           label: '申诉发起方',
+          text: 'name',
+          link: '/users'
+        }, {
+          prop: 'title',
+          label: '申诉原因',
+          width: 120,
+        }, {
+          prop: 'detail',
+          label: '申诉详情',
           width: 120,
         }, {
           prop: 'result',
@@ -96,10 +122,6 @@
           formatter: (row, column, cellValue) => {
             return this.itemText(cellValue, appealResultTypes)
           },
-        }, {
-          prop: 'wechat',
-          label: '微信号',
-          width: 120,
         },],
       }
     },
@@ -108,7 +130,7 @@
     },
     methods: {
       getAppeals() {
-        this.initResources('orders');
+        this.initResources('orders/appeal');
       },
     }
   }

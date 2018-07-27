@@ -59,7 +59,7 @@ export const appealStatusTypes = [{
 }, {
   value: 'created', text: '申诉等待中',
 }, {
-  value: 'success', text: '申诉处理中',
+  value: 'processing', text: '申诉处理中',
 }, {
   value: 'cancel', text: '已取消申诉',
 }, {
@@ -89,7 +89,7 @@ export const paymentTypes = [{
 }, {
   value: 'wechat', text: '微信支付',
 }, {
-  value: 'bankcard', text: '申诉处理中',
+  value: 'bankcard', text: '银行卡',
 },]
 export const sides = [{
   value: 'buy', text: '买入',

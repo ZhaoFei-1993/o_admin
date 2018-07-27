@@ -6,15 +6,10 @@
                 <p class="total-resource-num">共 {{totalNum}} 个</p>
             </el-col>
             <el-col :md="20" :lg="10">
-                <el-row>
-                    <el-col :span="12">
-                        <el-input placeholder="请输入 用户名/广告ID" clearable v-model="resourceFilters.search"
-                                  @clear="getFilteredResources">
-                            <el-button slot="append" icon="el-icon-search" @click="getFilteredResources"></el-button>
-                        </el-input>
-                    </el-col>
-                </el-row>
-
+                <el-input placeholder="请输入 用户名/广告ID" clearable v-model="resourceFilters.search"
+                          @clear="getFilteredResources">
+                    <el-button slot="append" icon="el-icon-search" @click="getFilteredResources"></el-button>
+                </el-input>
             </el-col>
             <el-col :md="24" :lg="12">
                 <el-row type="flex" justify="end">
@@ -129,17 +124,15 @@
         itemColumns: [{
           prop: 'create_time',
           label: '创建时间',
-          width: 96,
           formatter: (row, column, cellValue) => {
             return timeToLocale(cellValue)
           },
-          sortable: true,
-          className: 'time',
         }, {
-          prop: 'user_id',
+          prop: 'user',
           label: '商家',
           width: 80,
-          link: 'users',
+          text: 'name',
+          link: '/users',
         }, {
           prop: 'side',
           label: '方向',
@@ -160,24 +153,26 @@
           label: '库存',
           width: 90,
         }, {
-          prop: 'inventory',
-          label: '库存',
-          width: 80,
-        }, {
           prop: 'status',
           label: '状态',
           width: 80,
           formatter: (row, column, cellValue) => {
             return this.itemText(cellValue, itemStatusTypes);
           },
-        }],
+        }, {
+          prop: 'on_time',
+          label: '上架时间',
+          width: 96,
+          formatter: (row, column, cellValue) => {
+            return timeToLocale(cellValue)
+          },
+        },],
       }
     },
     mounted() {
       this.initResources('items');
     },
-    methods: {
-    }
+    methods: {}
   }
 </script>
 <style lang="scss" scoped>

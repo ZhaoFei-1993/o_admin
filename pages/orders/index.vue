@@ -15,10 +15,10 @@
                 <el-row type="display-flex" justify="start" align="center">
                     <el-col :md="2"><span class="total-resource-num">筛选</span></el-col>
                     <el-date-picker
-                            v-model="statsRange"
+                            v-model="resourcesDateRange"
                             type="daterange"
                             :clearable="false"
-                            @change="getFilteredStats"
+                            @change="getFilteredResources"
                             start-placeholder="开始日期"
                             end-placeholder="结束日期"
                             :default-time="['00:00:00', '23:59:59']">
@@ -30,18 +30,6 @@
                                placeholder="订单状态">
                         <el-option
                                 v-for="(status,index) in orderStatusTypes"
-                                :key="index"
-                                :label="status.text"
-                                :value="status.value">
-                        </el-option>
-                    </el-select>
-
-                    <el-select v-model="resourceFilters.appeal_status"
-                               @change="getFilteredResources"
-                               clearable
-                               placeholder="申诉状态">
-                        <el-option
-                                v-for="(status,index) in appealStatusTypes"
                                 :key="index"
                                 :label="status.text"
                                 :value="status.value">
@@ -129,7 +117,7 @@
         orderStatusTypes,
         appealStatusTypes,
         coinTypes,
-        columns: [ {
+        columns: [{
           prop: 'id',
           label: '订单编号',
           width: 50,
@@ -141,8 +129,6 @@
           formatter: (row, column, cellValue) => {
             return timeToLocale(cellValue)
           },
-          sortable: true,
-          className: 'time',
         }, {
           prop: 'buy_user',
           label: '买方',
@@ -162,14 +148,14 @@
             return this.itemText(cellValue, orderStatusTypes)
           },
         }, {
-          prop: 'appeal_status',
-          label: '申诉状态',
-          formatter: (row, column, cellValue) => {
-            return this.itemText(cellValue, appealStatusTypes)
-          },
-        }, {
           prop: 'coin_type',
           label: '币种',
+        }, {
+          prop: 'coin_amount',
+          label: '数量',
+        }, {
+          prop: 'price',
+          label: '价格',
         }]
       }
     },
@@ -177,8 +163,13 @@
       this.initResources('orders', () => {
         if (this.resources && this.resources.length > 0) {
           this.resources.forEach(order => {
-            order.sell_user = {}
-            order.buy_user = {}
+            if (order.merchant_side === 'sell') {
+              order.sell_user = order.merchant
+              order.buy_user = order.user
+            } else {
+              order.sell_user = order.user
+              order.buy_user = order.merchant
+            }
           });
         }
       });

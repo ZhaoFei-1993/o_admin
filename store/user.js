@@ -12,7 +12,7 @@ export const getters = {
 }
 export const actions = {
   fetchUserAccount({commit}) {
-    this.app.$axios.get('/user/account').then(response => {
+    this.app.$axios.get('/users/account').then(response => {
       commit('SET_ACCOUNT', response.data.data)
     })
   },

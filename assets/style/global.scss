@@ -82,6 +82,14 @@ main.el-main {
   margin-left: 1.5rem;
 }
 
+.with-padding-left {
+  padding-left: 8px;
+}
+
+.with-padding-right {
+  padding-right: 8px;
+}
+
 .el-pagination {
   text-align: center;
 }
@@ -161,7 +169,6 @@ main.el-main {
   }
 }
 
-
 .el-button.is-disabled {
   color: #eee !important;
   background-color: #fff !important;
@@ -185,7 +192,6 @@ button:focus {
   }
 
   .el-row {
-    border-bottom: 1px solid #eeeeee;
     padding: 0.5rem;
     &:nth-of-type(even) {
       background-color: #f5f5f5;
@@ -204,10 +210,14 @@ button:focus {
 
 }
 
-.fz-14{
+.fz-14 {
   font-size: 14px;
 }
 
-.fz-18{
+.fz-18 {
   font-size: 18px;
+}
+
+.float-right {
+  float: right !important;
 }

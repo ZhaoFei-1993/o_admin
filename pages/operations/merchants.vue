@@ -1,7 +1,7 @@
 <template>
     <div class="main-content page-merchants">
-        <h1>商家认证审核(仅显示认证中的商家）
-            <router-link to="/users" class="fz-14">查看所有商家</router-link>
+        <h1>商家认证审核(仅显示提交认证的商家）
+            <router-link to="/users" class="fz-14">查看所有用户</router-link>
         </h1>
         <el-row class="with-margin-top">
             <el-col :md="4" :lg="2">
@@ -32,7 +32,7 @@
                         <el-date-picker
                                 v-model="resourcesDateRange"
                                 type="daterange"
-                                :clearable="false"
+                                :clearable="true"
                                 @change="getFilteredResources"
                                 start-placeholder="开始日期"
                                 end-placeholder="结束日期"

@@ -20,6 +20,7 @@
     "bootstrap-vue": "2.0.0-rc.6",
     "cookie-parser": "^1.4.3",
     "cross-env": "^3.2.4",
+    "decimal.js": "^10.0.1",
     "element-ui": "2.3.8",
     "js-cookie": "^2.2.0",
     "koa": "2.3.0",
