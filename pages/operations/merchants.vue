@@ -204,10 +204,11 @@
         this.changeAuth(false, this.authComment);
       },
       changeAuth(isSuccess, comment) {
-        this.$axios.patch(`/users/merchant/${this.currentMerchant.id}`, {
+        this.$axios.post(`/users/merchant/${this.currentMerchant.id}`, {
           auth_status: isSuccess ? 'pass' : 'no',
           remark: comment
         }).then(response => {
+          this.authDialogVisible = false;
           this.$message({message: '商家认证结果已提交', type: 'success'})
           this.getMerchants();
         })

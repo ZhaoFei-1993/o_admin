@@ -113,3 +113,12 @@ export const userRoles = [{
 }, {
   value: false, text: '普通用户',
 },]
+export const balanceHistoryTypes = [{
+  value: 'buy_order', text: '购买',
+}, {
+  value: 'sell_order', text: '出售',
+}, {
+  value: 'transfer_in', text: '转入',
+}, {
+  value: 'transfer_out', text: '转出',
+}]

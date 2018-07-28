@@ -25,7 +25,8 @@
                         <el-col :span="9">
                             {{currentResource.update_time | formatTime}}
                         </el-col>
-                    </el-row><el-row>
+                    </el-row>
+                    <el-row>
                         <el-col :span="3">广告ID</el-col>
                         <el-col :span="9">
                             {{currentResource.id}}
@@ -147,7 +148,11 @@
     },
     methods: {
       initData() {
-        this.initCurrentResource('items', this.id,);
+        this.initCurrentResource('items', this.id, response => {
+          if (!response.data) {
+            this.$message('获取广告信息失败，请联系开发人员')
+          }
+        });
       },
     }
   }

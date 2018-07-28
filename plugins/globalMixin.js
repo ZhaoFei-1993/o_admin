@@ -82,12 +82,14 @@ export default ({app, store, redirect}) => {
           this.resources = response.data.data.data || response.data.data;
           this.totalNum = parseInt(response.data.data.total || response.data.total);
           if (this.resoucesLoadedCallback && this.resoucesLoadedCallback instanceof Function) {
-            this.resoucesLoadedCallback();
+            this.resoucesLoadedCallback(response);
           }
         }).catch(e => {
           this.loadingResources = false;
           this.totalNum = 0;
-          console.log(e);
+          if (this.resoucesLoadedCallback && this.resoucesLoadedCallback instanceof Function) {
+            this.resoucesLoadedCallback(e);
+          }
         })
       },
       initStats(statsName, loadedCallback) {
@@ -115,11 +117,13 @@ export default ({app, store, redirect}) => {
             new Date(a.target_time) - new Date(b.target_time)
           );
           if (this.statsLoadedCallback && this.statsLoadedCallback instanceof Function) {
-            this.statsLoadedCallback();
+            this.statsLoadedCallback(response);
           }
         }).catch(e => {
           this.loadingStats = false;
-          console.log(e);
+          if (this.statsLoadedCallback && this.statsLoadedCallback instanceof Function) {
+            this.statsLoadedCallback(e);
+          }
         })
       },
       getSingleResource() {
@@ -128,11 +132,13 @@ export default ({app, store, redirect}) => {
           this.loadingSingleResource = false;
           this.currentResource = response.data.data;
           if (this.singleResLoadedCallback && this.singleResLoadedCallback instanceof Function) {
-            this.singleResLoadedCallback();
+            this.singleResLoadedCallback(response);
           }
         }).catch(e => {
           this.loadingSingleResource = false;
-          console.log(e);
+          if (this.singleResLoadedCallback && this.singleResLoadedCallback instanceof Function) {
+            this.singleResLoadedCallback(e);
+          }
         })
       },
       changePage() {

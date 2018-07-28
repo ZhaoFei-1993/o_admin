@@ -67,12 +67,24 @@
                         <div class="info-header">资产信息</div>
                         <el-table
                                 :data="balance">
-                            <el-table-column
-                                    prop="coin_type"
-                                    label="币种">
-                            </el-table-column>
                             <el-table-column :key="index"
                                              v-for="(column, index) in balanceColumns"
+                                             :prop="column.prop"
+                                             :label="column.label"
+                                             :formatter="column.formatter"
+                                             :sortable="column.sortable"
+                                             :class-name="column.className"
+                                             :sort-method="column.sortMethod"
+                                             :min-width="column.width">
+                            </el-table-column>
+                        </el-table>
+                    </div>
+                    <div class="info-block" v-if="balanceHistory">
+                        <div class="info-header">资产流水</div>
+                        <el-table
+                                :data="balanceHistory">
+                            <el-table-column :key="index"
+                                             v-for="(column, index) in balanceHistoryColumns"
                                              :prop="column.prop"
                                              :label="column.label"
                                              :formatter="column.formatter"
@@ -224,9 +236,11 @@
 <script>
   import {
     userStatusTypes, roles, kycStatusTypes, merchantAuthStatusTypes,
-    merchantStatusTypes, counterpartyLimitTypes
+    merchantStatusTypes, counterpartyLimitTypes,
+    balanceHistoryTypes,
   } from '~/common/constants'
   import {findMatchedItems} from "~/common/utilities";
+  import {timeToLocale} from "../../common/utilities";
 
   export default {
     data() {
@@ -235,9 +249,11 @@
         userStatusTypes,
         merchantAuthStatusTypes,
         merchantStatusTypes,
+        balanceHistoryTypes,
         id: this.$route.params.id,
         currentTab: this.$route.query.tab || 'basic',
         balance: [],
+        balanceHistory: [],
         merchant: null,
         setting: null,
         paymentMethods: [],
@@ -246,6 +262,9 @@
         forbidMerchantRemark: null,
         forbidMerchantDialogVisible: false,
         balanceColumns: [{
+          prop: 'coin_type',
+          label: '币种',
+        }, {
           prop: 'available',
           label: '可用余额',
           formatter: (row, col, value) => {
@@ -266,7 +285,29 @@
             value.formatMoney()
             return value
           }
-        },]
+        },],
+        balanceHistoryColumns: [{
+          prop: 'coin_type',
+          label: '币种',
+        }, {
+          prop: 'create_time',
+          label: '时间',
+          formatter: (row, column, cellValue) => {
+            return timeToLocale(cellValue)
+          },
+        }, {
+          prop: 'business_type',
+          label: '流水类型',
+          formatter: (row, col, value) => {
+            return this.itemText(value, balanceHistoryTypes)
+          }
+        }, {
+          prop: 'amount',
+          label: '金额数量',
+          formatter: (row, col, value) => {
+            return value
+          }
+        },],
       }
     },
     mounted() {
@@ -275,7 +316,9 @@
       });
       this.getMerchantInfo();
       this.getOTCBalance();
+      this.getBalanceHistory();
       this.getMerchantSetting();
+      this.getPaymentMethods();
     },
     computed: {
       counterpartyLimit() {
@@ -305,6 +348,17 @@
           this.balance = response.data.data;
         })
       },
+      getBalanceHistory() {
+        // TODO 翻页
+        this.$axios.get(`/users/${this.id}/balance/history`).then(response => {
+          this.balanceHistory = response.data.data.data;
+        })
+      },
+      getPaymentMethods() {
+        this.$axios.get(`/users/${this.id}/payment/method`).then(response => {
+          this.paymentMethods = response.data.data;
+        })
+      },
       allowUser() {
         this.toggleUserStatus(true, '')
       },
@@ -320,6 +374,7 @@
           status: isAllow ? 'normal' : 'forbidden',
           remark
         }).then(response => {
+          this.forbidUserDialogVisible = false;
           this.$message({message: '用户交易权限已修改', type: 'success'});
           this.initCurrentResource('users', this.id);
         })
@@ -339,6 +394,7 @@
           status: isAllow ? 'normal' : 'forbidden',
           remark
         }).then(response => {
+          this.forbidMerchantDialogVisible = false;
           this.$message({message: '商家发布广告权限已修改', type: 'success'});
           this.getMerchantInfo();
         })
