@@ -36,7 +36,7 @@
 
   export default {
     computed: {
-      ...mapState(['user'])
+      ...mapState(['user', 'chat'])
     },
     methods: {
       toggleSidenav() {
@@ -52,7 +52,12 @@
         if (window.location.href.indexOf('/forbidden') >= 0) {
           return;
         }
-        this.$store.dispatch('user/fetchUserAccount')
+        this.$store.dispatch('user/fetchUserAccount').then(_ => {
+          if (this.user.account && !this.chat.imClient) {
+            const clientId = `${this.user.account.id}`
+            this.$store.dispatch('chat/newChatClient', clientId)
+          }
+        })
       }
     },
     mounted() {

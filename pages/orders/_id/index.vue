@@ -126,7 +126,17 @@
                     </el-card>
                 </el-col>
                 <el-col :span="12" class="with-padding-left">
-                    <el-card>IM</el-card>
+                    <el-card v-if="appeals && appeals.length">
+                        <div class="chat-actions">
+                            <el-button type="success" @click="joinChat">加入聊天</el-button>
+                            <el-button type="warning" @click="exitChat">退出聊天</el-button>
+                        </div>
+                        <Chat :client="chat.imClient" :conversation-id="convId"
+                              :client-id="`${user.account.id}`"></Chat>
+                    </el-card>
+                    <el-card v-else>
+                        未发起申诉，无法查看聊天内容
+                    </el-card>
                 </el-col>
             </el-row>
         </template>
@@ -136,10 +146,16 @@
     </div>
 </template>
 <script>
+  import {
+    mapState
+  } from "vuex";
   import {orderStatusTypes, paymentTypes, appealStatusTypes, appealResultTypes} from "~/common/constants";
+  import Chat from '~/components/chat'
 
   export default {
-    components: {},
+    components: {
+      Chat,
+    },
     data() {
       return {
         id: this.$route.params.id,
@@ -148,9 +164,11 @@
         appealStatusTypes,
         appealResultTypes,
         orderStatusTypes,
+        convId: '',
       }
     },
     computed: {
+      ...mapState(['user', 'chat']),
       paymentMethod() {
         const pay = this.currentResource.payment_method
         return pay ? `${this.itemText(pay.method, paymentTypes)} 账号：${pay.account_no} 账户名：${pay.account_name}` : '--'
@@ -163,6 +181,7 @@
       initData() {
         this.initCurrentResource('orders', this.id, () => {
           const order = this.currentResource;
+          this.convId = order.conversation_id // 聊天对话id
           if (order.merchant_side === 'sell') {
             order.sell_user = order.merchant
             order.buy_user = order.user
@@ -172,13 +191,25 @@
           }
         });
         this.$axios.get(`orders/${this.id}/appeal`).then(response => {
-          this.appeals = [response.data.data] // 暂时后端只支持一个appeal
-          this.activeAppeals = this.appeals[0].id
+          if (response.data.data) {
+            this.appeals = [response.data.data] // 暂时后端只支持一个appeal
+            this.activeAppeals = this.appeals[0].id
+          }
         })
       },
       appealSide(appeal) {
         return appeal.user_id === this.currentResource.sell_user.id ? `卖家:${this.currentResource.sell_user.name}` : `买家:${this.currentResource.buy_user.name}`
       },
+      joinChat() {
+        this.$axios.post(`orders/${this.id}/conversation`).then(response => {
+          this.$message('成功加入聊天')
+        })
+      },
+      exitChat() {
+        this.$axios.delete(`orders/${this.id}/conversation`).then(response => {
+          this.$message('已经退出聊天')
+        })
+      }
     }
   }
 </script>

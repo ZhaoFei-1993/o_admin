@@ -12,12 +12,12 @@ export const getters = {
 }
 export const actions = {
   fetchUserAccount({commit}) {
-    this.app.$axios.get('/users/account').then(response => {
+    return this.app.$axios.get('/users/account').then(response => {
       commit('SET_ACCOUNT', response.data.data)
     })
   },
   signOut({commit}) {
-    this.$axios.post('/sign/out').then(response => {
+    return this.$axios.post('/sign/out').then(response => {
       commit('SET_ACCOUNT', null)
       this.$router.push('/forbidden');
     });
