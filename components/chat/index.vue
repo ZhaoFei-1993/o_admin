@@ -98,7 +98,8 @@
         memberInfoMap: {}, // 保存聊天者信息：头像色号，用户名
         originalTitle: '', // 保存旧页面title
         unreadMessagesCount: 0, // 未读消息数
-        eventMap: {},
+        clientEventMap: {}, // 客户端级别事件
+        convEventMap: {}, // 对话级别事件
       }
     },
     directives: {
@@ -149,13 +150,19 @@
     },
     beforeDestroy() {
       if (this.client) {
-        Object.keys(this.eventMap).forEach(evtType => {
+        Object.keys(this.clientEventMap).forEach(evtType => {
           this.client.off(evtType)
         })
       }
-      this.conversation = null
-      this.messageIterator = null
+      if (this.conversation) {
+        Object.keys(this.convEventMap).forEach(evtType => {
+          this.conversation.off(evtType)
+        })
+        this.conversation = null
+        this.messageIterator = null
+      }
       window.document.removeEventListener('visibilitychange', this.handleVisibilityChange)
+      window.document.title = this.originalTitle // 还原title
     },
     mounted() {
       this.init()
@@ -174,21 +181,7 @@
             this.conversation = conversation
             this.unreadMessagesCount = this.conversation.unreadMessagesCount
             this.members = this.conversation.members
-            // 有用户被添加至某个对话
-            conversation.on(Event.MEMBERS_JOINED, payload => {
-              const { invitedBy, members } = payload
-              if (invitedBy === 'REST_API') return // 系统邀请信息不展示
-              if (members && members.length === 1 && members[0] === invitedBy) return // 只有一个人参与的邀请信息不展示
-              this.pushSystemMessage(`${invitedBy} 邀请 ${members.join('、')} 加入对话`)
-            })
-            // 有成员被从某个对话中移除
-            conversation.on(Event.MEMBERS_LEFT, payload => {
-              this.pushSystemMessage(`${payload.kickedBy} 将 ${payload.members.join('、')} 移出对话`)
-            })
-            // 当前用户被从某个对话中移除
-            conversation.on(Event.KICKED, payload => {
-              this.pushSystemMessage(`${payload.kickedBy} 将你移出对话`)
-            })
+            this.bindConversationEvent() // 绑定对话级别事件
             this.messageIterator = conversation.createMessagesIterator({
               limit: this.limit,
             })
@@ -287,20 +280,15 @@
           if (res.value) {
             this.msgLog = this.memberInfoMapper(res.value).concat(this.msgLog)
             this.pushSystemMessage('现在可以开始聊天')
-            // 滚动到底部
-            this.scrollToBottom()
-            // 对话标记为已读
-            this.conversation.read()
-            this.bindEvent() // 需要初始化聊天记录后才能绑定事件，否则会出现重复消息问题
+            this.scrollToBottom() // 滚动到底部
+            this.conversation.read() // 对话标记为已读
+            this.bindClientEvent() // 需要初始化聊天记录后才能绑定事件，否则会出现重复消息问题
           }
         })
       },
-      bindEvent() {
+      bindClientEvent() {
         const self = this
-        this.eventMap = {
-          [Event.MESSAGE]: (message) => {
-            self.messageHandler(message)
-          },
+        this.clientEventMap = {
           [Event.UNREAD_MESSAGES_COUNT_UPDATE]: (conversations) => {
             const conv = conversations.find(item => {
               return item.id === self.conversationId
@@ -331,10 +319,34 @@
             $toast.show('重连失败，请刷新页面重试')
           },
         }
-        Object.keys(this.eventMap).forEach(evtType => {
-          this.client.on(evtType, this.eventMap[evtType])
+        Object.keys(this.clientEventMap).forEach(evtType => {
+          this.client.on(evtType, this.clientEventMap[evtType])
         })
         window.document.addEventListener('visibilitychange', this.handleVisibilityChange)
+      },
+      bindConversationEvent() {
+        const self = this
+        this.convEventMap = {
+          [Event.MESSAGE]: (message) => {
+            self.messageHandler(message)
+          },
+          [Event.MEMBERS_JOINED]: (payload) => { // 有用户被添加至某个对话
+            const { invitedBy, members } = payload
+            if (invitedBy === 'REST_API') return // 系统邀请信息不展示
+            if (members && members.length === 1 && members[0] === invitedBy) return // 只有一个人参与的邀请信息不展示
+            self.pushSystemMessage(`${invitedBy} 邀请 ${members.join('、')} 加入对话`)
+          },
+          [Event.MEMBERS_LEFT]: (payload) => { // 有成员被从某个对话中移除
+            self.pushSystemMessage(`${payload.kickedBy} 将 ${payload.members.join('、')} 移出对话`)
+          },
+          [Event.KICKED]: (payload) => { // 当前用户被从某个对话中移除
+            if (invitedBy === 'REST_API') return // 系统邀请信息不展示
+            self.pushSystemMessage(`${payload.kickedBy} 将你移出对话`)
+          },
+        }
+        Object.keys(this.convEventMap).forEach(evtType => {
+          this.conversation.on(evtType, this.convEventMap[evtType])
+        })
       },
       loadMore() {
         if (!this.loading && this.messageIterator && !this.loadAll) {
@@ -512,7 +524,7 @@
             margin-top: 7px;
             float: left;
             max-width: 250px;
-            padding: 15px;
+            padding: 15px 15px 15px 20px;
             border-radius: 4px;
             word-wrap: break-word;
             background-color: #f9f9f9;
@@ -550,9 +562,8 @@
             position: relative;
             margin-top: 7px;
             float: right;
-            padding-right: 10px;
             max-width: 250px;
-            padding: 15px;
+            padding: 15px 20px 15px 15px;
             border-radius: 4px;
             word-wrap: break-word;
             background-color: #f9f9f9;

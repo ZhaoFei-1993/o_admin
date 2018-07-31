@@ -79,46 +79,41 @@
             <el-row class="with-margin-top">
                 <el-col :span="12" class="with-padding-righti">
                     <el-card>
-                        <div class="info-block" v-if="currentResource && appeals&&appeals.length">
+                        <div class="info-block" v-if="currentResource && appeal">
                             <div class="info-header">申诉信息</div>
                             <div class="appeal-info-container">
-                                <el-collapse v-model="activeAppeals">
-                                    <el-collapse-item v-for="appeal of appeals"
-                                                      :title="appeal.status| itemText(appealStatusTypes)"
-                                                      :name="appeal.id" :key="appeal.id"
-                                                      :class="[appeal.status,'appeal-header']">
-                                        <el-row>
-                                            <el-col :span="3">申诉状态</el-col>
-                                            <el-col :span="9">
-                                                {{appeal.status | itemText(appealStatusTypes)}}
-                                            </el-col>
-                                            <el-col :span="3">申诉时间</el-col>
-                                            <el-col :span="9">
-                                                {{appeal.create_time | formatTime}}
-                                            </el-col>
-                                        </el-row>
-                                        <el-row>
-                                            <el-col :span="3">申诉原因</el-col>
-                                            <el-col :span="9">
-                                                {{appeal.title}}
-                                            </el-col>
-                                            <el-col :span="3">申诉详情</el-col>
-                                            <el-col :span="9">
-                                                <span>{{appeal.detail}}</span>
-                                            </el-col>
-                                        </el-row>
-                                        <el-row>
-                                            <el-col :span="3">申诉方</el-col>
-                                            <el-col :span="9">
-                                                {{appealSide(appeal)}}
-                                            </el-col>
-                                            <el-col :span="3">申诉结果</el-col>
-                                            <el-col :span="9">
-                                                <span>{{appeal.result | itemText(appealResultTypes)}}</span>
-                                            </el-col>
-                                        </el-row>
-                                    </el-collapse-item>
-                                </el-collapse>
+
+                                <el-row>
+                                    <el-col :span="3">申诉状态</el-col>
+                                    <el-col :span="9" :class="[appeal.status,'appeal-status']">
+                                        {{appeal.status | itemText(appealStatusTypes)}}
+                                    </el-col>
+                                    <el-col :span="3">申诉时间</el-col>
+                                    <el-col :span="9">
+                                        {{appeal.create_time | formatTime}}
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="3">申诉原因</el-col>
+                                    <el-col :span="9">
+                                        {{appeal.title}}
+                                    </el-col>
+                                    <el-col :span="3">申诉详情</el-col>
+                                    <el-col :span="9">
+                                        <span>{{appeal.detail}}</span>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="3">申诉方</el-col>
+                                    <el-col :span="9">
+                                        {{appealSide(appeal)}}
+                                    </el-col>
+                                    <el-col :span="3">申诉结果</el-col>
+                                    <el-col :span="9">
+                                        <span>{{appeal.result | itemText(appealResultTypes)}}</span>
+                                    </el-col>
+                                </el-row>
+
                             </div>
 
                         </div>
@@ -126,10 +121,21 @@
                     </el-card>
                 </el-col>
                 <el-col :span="12" class="with-padding-left">
-                    <el-card v-if="appeals && appeals.length">
+                    <el-card v-if="appeal">
                         <div class="chat-actions">
-                            <el-button type="success" @click="joinChat">加入聊天</el-button>
-                            <el-button type="warning" @click="exitChat">退出聊天</el-button>
+                            <el-button type="success" v-if="appeal.status==='created'" @click="processAppeal">
+                                处理申诉
+                            </el-button>
+                            <el-button type="warning" v-if="appeal.status==='processing'" @click="suspendAppeal">
+                                挂起申诉
+                            </el-button>
+                            <el-button type="danger" v-if="appeal.status==='processing'"
+                                       @click="showAppealDialog">
+                                处理完成
+                            </el-button>
+                            <el-button type="warning" v-if="appeal.status==='pending'" @click="resumeAppeal">
+                                恢复处理
+                            </el-button>
                         </div>
                         <Chat :client="chat.imClient" :conversation-id="convId"
                               :client-id="`${user.account.id}`"></Chat>
@@ -139,17 +145,57 @@
                     </el-card>
                 </el-col>
             </el-row>
+            <el-dialog
+                    title="处理申诉结果"
+                    id="appeal-dialog"
+                    :visible.sync="appealDialogVisible"
+                    width="30%">
+                <div class="title">申诉结果</div>
+                <el-select v-model="appealResultIndex" placeholder="请选择申诉结果">
+                    <el-option
+                            v-for="(item,index) in appealResultTypes"
+                            :key="item.value"
+                            :label="item.text"
+                            :value="index">
+                    </el-option>
+                </el-select>
+                <div class="title">订单处理结果</div>
+                <div class="order-result" v-if="currentResource.status==='success'">
+                    {{orderResultTypes[0].text}}
+                </div>
+                <div class="order-result" v-else>
+                    {{orderResultTypes[appealResultIndex].text}}
+                </div>
+
+                <div class="title">申诉处理备注</div>
+                <el-input :rows="4" type="textarea" placeholder="请填写申诉审核判定依据，方便追溯"
+                          v-model="appealRemark"></el-input>
+
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="appealDialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="closeAppeal"
+                               :disabled="!canCloseAppeal">确 定
+                    </el-button>
+                </div>
+            </el-dialog>
         </template>
         <template v-else>
             <h4>加载中</h4>
         </template>
+
     </div>
 </template>
 <script>
   import {
     mapState
   } from "vuex";
-  import {orderStatusTypes, paymentTypes, appealStatusTypes, appealResultTypes} from "~/common/constants";
+  import {
+    orderStatusTypes,
+    paymentTypes,
+    appealStatusTypes,
+    appealResultTypes,
+    orderResultTypes
+  } from "~/common/constants";
   import Chat from '~/components/chat'
 
   export default {
@@ -159,11 +205,15 @@
     data() {
       return {
         id: this.$route.params.id,
-        appeals: null,
-        activeAppeals: null,
+        appeal: null,
         appealStatusTypes,
         appealResultTypes,
         orderStatusTypes,
+        orderResultTypes,
+        appealResultIndex: null,
+        appealRemark: null,
+        orderResult: null,
+        appealDialogVisible: false,
         convId: '',
       }
     },
@@ -172,6 +222,9 @@
       paymentMethod() {
         const pay = this.currentResource.payment_method
         return pay ? `${this.itemText(pay.method, paymentTypes)} 账号：${pay.account_no} 账户名：${pay.account_name}` : '--'
+      },
+      canCloseAppeal() {
+        return this.appealResultIndex >= 0 && this.orderResult && this.appealRemark && this.appealRemark.length >= 5
       }
     },
     mounted() {
@@ -192,22 +245,55 @@
         });
         this.$axios.get(`orders/${this.id}/appeal`).then(response => {
           if (response.data.data) {
-            this.appeals = [response.data.data] // 暂时后端只支持一个appeal
-            this.activeAppeals = this.appeals[0].id
+
+            this.appeal = response.data.data
           }
         })
       },
       appealSide(appeal) {
         return appeal.user_id === this.currentResource.sell_user.id ? `卖家:${this.currentResource.sell_user.name}` : `买家:${this.currentResource.buy_user.name}`
       },
+      processAppeal() {
+        this.patchAppeal({"operation_type": "process",})
+        this.joinChat()
+      },
+      suspendAppeal() {
+        this.patchAppeal({"operation_type": "suspend",})
+        this.exitChat()
+      },
+      resumeAppeal() {
+        this.patchAppeal({"operation_type": "resume",})
+        this.joinChat()
+      },
+      showAppealDialog() {
+        if (this.currentResource.status === 'success') {
+          this.orderResult = this.orderResultTypes[0].value
+        }
+        this.appealDialogVisible = true
+      },
+      closeAppeal() {
+        this.appealDialogVisible = false;
+        this.patchAppeal({
+          operation_type: "close",
+          appeal_result: this.appealResultTypes[this.appealResultIndex].value,
+          order_result: this.orderResult,
+          remark: this.appealRemark
+        })
+        this.exitChat()
+      },
       joinChat() {
         this.$axios.post(`orders/${this.id}/conversation`).then(response => {
-          this.$message('成功加入聊天')
+          this.$message('成功加入聊天', 'success')
         })
       },
       exitChat() {
         this.$axios.delete(`orders/${this.id}/conversation`).then(response => {
           this.$message('已经退出聊天')
+        })
+      },
+      patchAppeal(payload) {
+        this.$axios.patch(`/orders/${this.id}/appeal`, payload).then(response => {
+          this.appeal = response.data.data
         })
       }
     }
@@ -215,18 +301,25 @@
 </script>
 <style lang="scss">
     .page-order-detail {
-        .appeal-header {
+        .appeal-status {
             &.created {
-                .el-collapse-item__header {
-                    color: white;
-                    background-color: #e35555;
-                }
+
+                color: #e35555;
+
             }
             &.processing {
-                .el-collapse-item__header {
-                    color: white;
-                    background-color: #52cbca;
-                }
+                color: #52cbca;
+
+            }
+        }
+        #appeal-dialog {
+            .el-select {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            .title {
+                margin-top: 1rem;
+                font-weight: bold;
             }
         }
     }

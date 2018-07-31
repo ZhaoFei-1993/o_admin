@@ -4,8 +4,7 @@ import AV from 'leancloud-storage'
 
 const APP_ID = 'OibOYNHFsWoqChdhAlebT7rS-gzGzoHsz'
 const APP_KEY = 'IEIfsx2I6LkRajvtP2jcoCIW'
-
-export const state =()=>({
+export const state = () => ({
   imClient: null, // leancloud实时通讯实例
 })
 
@@ -29,10 +28,12 @@ export const actions = {
       return realtime.createIMClient(clientId, {
         signatureFactory() {
           return self.app.$axios.get('/system/leancloud/sign', {
-            sign_type: 'signin',
+            params: {
+              sign_type: 'signin',
+            }
           }).then(res => {
-            if (res.code === 0) {
-              return res.data
+            if (res.data.code === 0) {
+              return res.data.data
             }
           })
         },

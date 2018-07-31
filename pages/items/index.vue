@@ -122,11 +122,8 @@
         paymentTypes,
         itemStatusTypes,
         itemColumns: [{
-          prop: 'create_time',
-          label: '创建时间',
-          formatter: (row, column, cellValue) => {
-            return timeToLocale(cellValue)
-          },
+          prop: 'id',
+          label: 'ID',
         }, {
           prop: 'user',
           label: '商家',

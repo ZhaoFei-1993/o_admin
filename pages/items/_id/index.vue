@@ -89,7 +89,7 @@
                         </el-col>
                     </el-row>
                     <el-row>
-                        <el-col :span="3">可返还的冻结币量</el-col>
+                        <el-col :span="3">冻结币量</el-col>
                         <el-col :span="9">
                             {{currentResource.freeze_coin_amount}}
                         </el-col>

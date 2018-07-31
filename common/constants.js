@@ -61,6 +61,8 @@ export const appealStatusTypes = [{
 }, {
   value: 'processing', text: '申诉处理中',
 }, {
+  value: 'pending', text: '申诉挂起中',
+}, {
   value: 'cancel', text: '已取消申诉',
 }, {
   value: 'completed', text: '已申诉解决',
@@ -75,11 +77,11 @@ export const appealResultTypes = [{
 }];
 
 export const orderResultTypes = [{
-  value: 'none', text: '无',
+  value: 'none', text: '协调双方自行解决',
 }, {
-  value: 'cancel_order', text: '订单取消',
+  value: 'receipt_order', text: '将币划给买方',
 }, {
-  value: 'receipt_order', text: '订单成交',
+  value: 'cancel_order', text: '将冻结的币释放给卖家',
 }];
 
 export const coinTypes = ['BTC', 'BCH', 'ETH', 'USDT'];

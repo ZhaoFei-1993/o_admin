@@ -51,7 +51,7 @@
                     min-width="90"
             >
                 <template slot-scope="scope">
-                    <router-link :to="`/orders/${scope.row.id}`">
+                    <router-link :to="`/orders/${scope.row.order.id}`">
                         <el-button type="success">查看详情</el-button>
                     </router-link>
                 </template>
@@ -90,7 +90,7 @@
             return this.itemText(value.status, orderStatusTypes)
           },
         }, {
-          prop: 'appeal_time',
+          prop: 'create_time',
           label: '申诉时间',
           width: 96,
           formatter: (row, column, cellValue) => {
