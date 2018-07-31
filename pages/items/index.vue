@@ -6,7 +6,7 @@
                 <p class="total-resource-num">共 {{totalNum}} 个</p>
             </el-col>
             <el-col :md="20" :lg="10">
-                <el-input placeholder="请输入 用户名/广告ID" clearable v-model="resourceFilters.search"
+                <el-input placeholder="请输入 用户名/用户ID/手机号" clearable v-model="resourceFilters.user_search"
                           @clear="getFilteredResources">
                     <el-button slot="append" icon="el-icon-search" @click="getFilteredResources"></el-button>
                 </el-input>
@@ -92,8 +92,7 @@
                     min-width="80"
             >
                 <template slot-scope="scope">
-                    <router-link :to="'/items/'+scope.row['id']"
-                                 append>
+                    <router-link :to="'/items/'+scope.row['id']">
                         <el-button type="primary" class="view-detail">查看详情</el-button>
                     </router-link>
                 </template>
@@ -167,7 +166,9 @@
       }
     },
     mounted() {
-      this.initResources('items');
+      this.initResources('items',null,{
+        user_search: this.$route.query.user_search
+      });
     },
     methods: {}
   }

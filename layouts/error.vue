@@ -1,29 +1,21 @@
 <template>
     <div id="app">
-        <el-container>
-            <el-aside :width="sidenavOpened?'200px':'60px'">
-                <Sidenav :sidenavOpened="sidenavOpened"></Sidenav>
-            </el-aside>
-            <el-container>
-                <el-header>
-                    <Header :sidenavOpened="sidenavOpened" v-on:toggleSidenav="toggleSidenav"></Header>
-                </el-header>
-                <el-main>
-                    <div class="page-error">
-                        <div class="content">
-                            <template v-if="error.statusCode === 404">
-                                <img class="img-404" src="~assets/img/svg/error/404.svg" alt="">
-                                <p class="msg">Whoops…Page Not Found !!!</p>
-                            </template>
-                            <template v-if="error.statusCode === 500">
-                                <img class="img-500" src="~assets/img/svg/error/500.svg" alt="">
-                                <p class="msg">Whoops…Page Error !!!</p>
-                            </template>
-                        </div>
-                    </div>
-                </el-main>
-            </el-container>
-        </el-container>
+
+        <el-main>
+            <div class="page-error">
+                <div class="content">
+                    <template v-if="error.statusCode === 404">
+                        <img class="img-404" src="~assets/img/svg/error/404.svg" alt="">
+                        <p class="msg">Whoops…Page Not Found !!!</p>
+                    </template>
+                    <template v-if="error.statusCode === 500">
+                        <img class="img-500" src="~assets/img/svg/error/500.svg" alt="">
+                        <p class="msg">Whoops…Page Error !!!</p>
+                    </template>
+                </div>
+            </div>
+        </el-main>
+
     </div>
 </template>
 

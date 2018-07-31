@@ -8,7 +8,7 @@
                 <p class="total-resource-num">共 {{totalNum}} 个</p>
             </el-col>
             <el-col :md="20" :lg="10">
-                <el-input placeholder="输入 用户名/用户ID/手机号/邮箱 查询" clearable v-model="resourceFilters.search"
+                <el-input placeholder="输入 用户名/用户ID/手机号 查询" clearable v-model="resourceFilters.user_search"
                           @clear="getFilteredResources">
                     <el-button slot="append" icon="el-icon-search" @click="getFilteredResources"></el-button>
                 </el-input>
@@ -52,8 +52,7 @@
                     min-width="60"
             >
                 <template slot-scope="scope">
-                    <router-link :to="'/users/'+scope.row.user_id"
-                                 append>
+                    <router-link :to="'/users/'+scope.row.user_id">
                         {{scope.row.user_id}}
                     </router-link>
                 </template>
@@ -80,15 +79,13 @@
                     </template>
                     <template v-if="scope.row.auth_status === 'pass'">
                         <!--<el-button type="danger" @click="passAuth(scope.row)">取消认证</el-button>-->
-                        <router-link :to="'/users/'+scope.row.user_id"
-                                     append>
+                        <router-link :to="'/users/'+scope.row.user_id">
                             <el-button>详情</el-button>
                         </router-link>
                     </template>
                     <template v-if="scope.row.auth_status === 'no'">
                         <!--<el-button type="success" @click="passAuth(scope.row)">通过</el-button>-->
-                        <router-link :to="'/users/'+scope.row.user_id"
-                                     append>
+                        <router-link :to="'/users/'+scope.row.user_id">
                             <el-button>详情</el-button>
                         </router-link>
                     </template>
@@ -189,6 +186,8 @@
         this.initResources('users/merchant', () => {
           // 扁平化方便表格展示
           this.resources = this.resources.map(r => Object.assign({}, r, r.user, r.user_kyc))
+        }, {
+          user_search: this.$route.query.user_search
         });
       },
       passAuth(merchant) {

@@ -1,6 +1,18 @@
 <template>
     <div class="main-content page-user-detail">
         <template v-if="currentResource">
+            <div class="shortcuts">
+                快捷查看该用户的：
+                <router-link :to="'/items?user_search='+currentResource.id">
+                    <el-button type="primary" class="view-detail">广告</el-button>
+                </router-link>
+                <router-link :to="'/orders?user_search='+currentResource.id">
+                    <el-button type="primary" class="view-detail">订单</el-button>
+                </router-link>
+                <router-link :to="'/operations/appeals?user_search='+currentResource.id">
+                    <el-button type="primary" class="view-detail">申诉</el-button>
+                </router-link>
+            </div>
             <el-tabs type="border-card" v-model="currentTab">
                 <el-tab-pane label="基本信息" name="basic">
                     <div class="info-block">
@@ -415,6 +427,13 @@
     @import "~assets/style/global.scss";
 
     .page-user-detail {
+        .shortcuts {
+            margin-bottom: 10px;
+            .el-button {
+                width: 160px;
+                margin-right: 10px;
+            }
+        }
         .el-tabs__item {
             font-size: 20px;
             font-weight: bold;

@@ -5,8 +5,14 @@
             <el-col :md="2">
                 <p class="total-resource-num">共 {{totalNum}} 个</p>
             </el-col>
-            <el-col :md="22" :lg="12">
-                <el-input placeholder="输入 用户名/订单号 查询" clearable v-model="resourceFilters.search"
+            <el-col :md="11">
+                <el-input placeholder="输入 用户名/用户id/手机号 查询" clearable v-model="resourceFilters.user_search"
+                          @clear="getFilteredResources">
+                    <el-button slot="append" icon="el-icon-search" @click="getFilteredResources"></el-button>
+                </el-input>
+            </el-col>
+            <el-col :md="11">
+                <el-input placeholder="输入 订单id 查询" clearable v-model="resourceFilters.order_id"
                           @clear="getFilteredResources">
                     <el-button slot="append" icon="el-icon-search" @click="getFilteredResources"></el-button>
                 </el-input>
@@ -89,8 +95,7 @@
                     min-width="80"
             >
                 <template slot-scope="scope">
-                    <router-link :to="'/orders/'+scope.row['id']"
-                                 append>
+                    <router-link :to="'/orders/'+scope.row['id']">
                         <el-button type="primary" class="view-detail">查看详情</el-button>
                     </router-link>
                 </template>
@@ -172,6 +177,8 @@
             }
           });
         }
+      }, {
+        user_search: this.$route.query.user_search
       });
     },
     methods: {}

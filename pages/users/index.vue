@@ -6,7 +6,7 @@
                 <p class="total-resource-num">共 {{totalNum}} 个</p>
             </el-col>
             <el-col :md="20" :lg="10">
-                <el-input placeholder="输入 用户名/用户ID/手机号/邮箱 查询" clearable v-model="resourceFilters.search"
+                <el-input placeholder="输入 用户名/用户ID/手机号 查询" clearable v-model="resourceFilters.user_search"
                           @clear="getFilteredResources">
                     <el-button slot="append" icon="el-icon-search" @click="getFilteredResources"></el-button>
                 </el-input>
@@ -173,7 +173,9 @@
       }
     },
     mounted() {
-      this.initResources('users');
+      this.initResources('users', null, {
+        user_search: this.$route.query.user_search
+      });
     },
     methods: {}
   }
