@@ -212,7 +212,6 @@
         orderResultTypes,
         appealResultIndex: 0,
         appealRemark: null,
-        orderResult: null,
         appealDialogVisible: false,
         convId: '',
       }
@@ -224,7 +223,7 @@
         return pay ? `${this.itemText(pay.method, paymentTypes)} 账号：${pay.account_no} 账户名：${pay.account_name}` : '--'
       },
       canCloseAppeal() {
-        return this.appealResultIndex >= 0 && this.orderResult && this.appealRemark && this.appealRemark.length >= 5
+        return this.appealResultIndex >= 0 && this.appealRemark && this.appealRemark.length >= 5
       }
     },
     mounted() {
@@ -266,17 +265,18 @@
         this.joinChat()
       },
       showAppealDialog() {
-        if (this.currentResource.status === 'success') {
-          this.orderResult = this.orderResultTypes[0].value
-        }
         this.appealDialogVisible = true
       },
       closeAppeal() {
         this.appealDialogVisible = false;
+        let orderResult = this.orderResultTypes[this.appealResultIndex].value
+        if (this.currentResource.status === 'success') {
+          orderResult = this.orderResultTypes[0].value
+        }
         this.patchAppeal({
           operation_type: "close",
           appeal_result: this.appealResultTypes[this.appealResultIndex].value,
-          order_result: this.orderResult,
+          order_result: orderResult,
           remark: this.appealRemark
         })
         this.exitChat()
