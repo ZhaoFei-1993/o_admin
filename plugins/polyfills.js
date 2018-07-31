@@ -140,7 +140,6 @@ Number.prototype.formatMoney = String.prototype.formatMoney = function (c = 0, c
     prefix = n[0];
     n = n.substring(1);
   }
-  console.log(n)
   let rounded = `${n}`.round(c);
   rounded = rounded.scientificToDecimal();
   let postfix = "";

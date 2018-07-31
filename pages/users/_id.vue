@@ -23,11 +23,11 @@
                             <el-col :span="3">账号状态</el-col>
                             <el-col :span="9" :class="currentResource.status">
                                 {{currentResource.status | itemText(userStatusTypes)}}
-                                <el-button v-if="currentResource.status==='normal'" type="danger" @click="forbidUser()"
+                                <el-button v-if="currentResource.status==='normal'" type="danger" @click="toggleUserStatus(false)"
                                            class="float-right">
                                     限制交易
                                 </el-button>
-                                <el-button v-else type="danger" @click="allowUser()" class="float-right">
+                                <el-button v-else type="danger" @click="toggleUserStatus(true)" class="float-right">
                                     取消限制
                                 </el-button>
                             </el-col>
@@ -119,10 +119,10 @@
                             <el-col :span="3">商家状态</el-col>
                             <el-col :span="9">
                                 {{merchant.status | itemText(merchantStatusTypes)}}
-                                <el-button v-if="merchant.status==='normal'" type="danger" @click="forbidMerchant()">
+                                <el-button v-if="merchant.status==='normal'" type="danger" @click="toggleMerchantStatus(false)">
                                     限制发布广告
                                 </el-button>
-                                <el-button v-else type="danger" @click="allowMerchant()">
+                                <el-button v-else type="danger" @click="toggleMerchantStatus(false)">
                                     取消限制
                                 </el-button>
                             </el-col>
@@ -382,7 +382,7 @@
         this.toggleUserStatus(false, this.forbidUserRemark);
       },
       toggleUserStatus(isAllow, remark) {
-        this.$axios.patch('/user/status/' + this.currentResource.id, {
+        this.$axios.patch('/users/' + this.currentResource.id, {
           status: isAllow ? 'normal' : 'forbidden',
           remark
         }).then(response => {
@@ -402,7 +402,7 @@
         this.toggleMerchantStatus(false, this.forbidMerchantRemark);
       },
       toggleMerchantStatus(isAllow, remark) {
-        this.$axios.patch('/user/merchant_status/' + this.currentResource.id, {
+        this.$axios.patch('/users/merchant/' + this.currentResource.id, {
           status: isAllow ? 'normal' : 'forbidden',
           remark
         }).then(response => {
