@@ -210,7 +210,7 @@
         appealResultTypes,
         orderStatusTypes,
         orderResultTypes,
-        appealResultIndex: null,
+        appealResultIndex: 0,
         appealRemark: null,
         orderResult: null,
         appealDialogVisible: false,
