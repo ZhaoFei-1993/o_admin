@@ -6,7 +6,7 @@
                 <p class="total-resource-num">共 {{totalNum}} 个</p>
             </el-col>
             <el-col :md="11">
-                <el-input placeholder="输入 用户名/用户id/手机号 查询" clearable v-model="resourceFilters.user_search"
+                <el-input placeholder="输入 用户id 查询" clearable v-model="resourceFilters.user_id"
                           @clear="getFilteredResources">
                     <el-button slot="append" icon="el-icon-search" @click="getFilteredResources"></el-button>
                 </el-input>
@@ -178,7 +178,7 @@
           });
         }
       }, {
-        user_search: this.$route.query.user_search
+        user_id: this.$route.query.user_id
       });
     },
     methods: {}

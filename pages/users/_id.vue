@@ -6,7 +6,7 @@
                 <router-link :to="'/items?user_search='+currentResource.id">
                     <el-button type="primary" class="view-detail">广告</el-button>
                 </router-link>
-                <router-link :to="'/orders?user_search='+currentResource.id">
+                <router-link :to="'/orders?user_id='+currentResource.id">
                     <el-button type="primary" class="view-detail">订单</el-button>
                 </router-link>
                 <router-link :to="'/operations/appeals?user_search='+currentResource.id">
