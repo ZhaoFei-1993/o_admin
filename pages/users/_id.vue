@@ -23,8 +23,9 @@
                             <el-col :span="3">账号状态</el-col>
                             <el-col :span="9" :class="currentResource.status">
                                 {{currentResource.status | itemText(userStatusTypes)}}
-                                <el-button v-if="currentResource.status==='normal'" type="danger" @click="toggleUserStatus(false)"
-                                           class="float-right">
+                                <el-button v-if="currentResource.status==='normal'" type="danger"
+                                           @click="toggleUserStatus(false)"
+                                >
                                     限制交易
                                 </el-button>
                                 <el-button v-else type="danger" @click="toggleUserStatus(true)" class="float-right">
@@ -119,10 +120,11 @@
                             <el-col :span="3">商家状态</el-col>
                             <el-col :span="9">
                                 {{merchant.status | itemText(merchantStatusTypes)}}
-                                <el-button v-if="merchant.status==='normal'" type="danger" @click="toggleMerchantStatus(false)">
+                                <el-button v-if="merchant.status==='normal'" type="danger"
+                                           @click="toggleMerchantStatus(false)">
                                     限制发布广告
                                 </el-button>
-                                <el-button v-else type="danger" @click="toggleMerchantStatus(false)">
+                                <el-button v-else type="danger" @click="toggleMerchantStatus(true)">
                                     取消限制
                                 </el-button>
                             </el-col>
@@ -178,6 +180,9 @@
                             <el-col :span="21">{{setting.auto_reply_content}}</el-col>
                         </el-row>
                     </div>
+
+                </el-tab-pane>
+                <el-tab-pane label="交易信息" name="transaction">
                     <div class="info-block" v-if="paymentMethods">
                         <div class="info-header">支付方式</div>
                         <el-table
@@ -196,11 +201,11 @@
                             </el-table-column>
                             <el-table-column
                                     prop="qr_code_image"
-                                    label="二维码">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="detail"
-                                    label="收款详情">
+                                    label="二维码"
+                                    :width="200">
+                                <template slot-scope="scope">
+                                    <img v-if="scope.row.qr_code_image" :src="scope.row.qr_code_image" class="qrcode-image"/>
+                                </template>
                             </el-table-column>
                             <el-table-column
                                     prop="status"
@@ -437,6 +442,10 @@
         .el-tabs__item {
             font-size: 20px;
             font-weight: bold;
+        }
+        .qrcode-image{
+            max-width: 200px;
+            max-height: 200px;
         }
 
     }
