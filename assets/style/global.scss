@@ -200,8 +200,12 @@ button:focus {
       &:nth-of-type(odd) {
         font-weight: bold;
       }
-      height: 40px;
-      line-height: 40px;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      word-wrap: break-word;
+      white-space: normal;
+      word-break: break-all;
     }
     .el-button {
       margin: 0 0.5rem;

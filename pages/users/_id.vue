@@ -49,7 +49,7 @@
                         <el-row>
                             <el-col :span="3">实名状态</el-col>
                             <el-col :span="9">
-                                {{currentResource.kyc?'已认证':'未实名'}}
+                                {{currentResource.user_kyc?'已认证':'未实名'}}
                             </el-col>
                             <el-col :span="3">真实姓名</el-col>
                             <el-col :span="9">{{kycName}}</el-col>
@@ -337,7 +337,7 @@
         return findMatchedItems(this.setting.counterparty_limit, counterpartyLimitTypes).map(o => o.text).join(', ')
       },
       kycName() {
-        return this.currentResource.kyc ? (this.currentResource.last_name + '' + this.currentResource.first_name) : '--'
+        return this.currentResource.user_kyc ? (this.currentResource.user_kyc.last_name + '' + this.currentResource.user_kyc.first_name) : '--'
       }
     },
     methods: {

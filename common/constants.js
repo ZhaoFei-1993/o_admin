@@ -55,8 +55,6 @@ export const orderStatusTypes = [{
   value: 'closed', text: '已关闭',
 }];
 export const appealStatusTypes = [{
-  value: '', text: '未申诉',
-}, {
   value: 'created', text: '申诉等待中',
 }, {
   value: 'processing', text: '申诉处理中',

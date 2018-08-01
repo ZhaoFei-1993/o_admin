@@ -4,14 +4,33 @@
             <router-link to="/orders" class="fz-14">查看所有订单</router-link>
         </h1>
         <el-row>
-            <el-col :md="4" :lg="2">
+            <el-col :md="3">
                 <p class="total-resource-num">共 {{totalNum}} 个</p>
             </el-col>
-            <el-col :md="20" :lg="10">
-                <el-input placeholder="输入 订单号/用户名 查询" clearable v-model="resourceFilters.search"
+            <el-col :md="7">
+                <el-input placeholder="输入 订单ID 查询" clearable v-model="resourceFilters.order_id"
                           @clear="getFilteredResources">
                     <el-button slot="append" icon="el-icon-search" @click="getFilteredResources"></el-button>
                 </el-input>
+            </el-col>
+            <el-col :md="7">
+                <el-input placeholder="输入 用户ID/手机号 查询" clearable v-model="resourceFilters.user_search"
+                          @clear="getFilteredResources">
+                    <el-button slot="append" icon="el-icon-search" @click="getFilteredResources"></el-button>
+                </el-input>
+            </el-col>
+            <el-col :md="7" class="resource-filter">
+                <el-select v-model="resourceFilters.appeal_status"
+                           @change="getFilteredResources"
+                           clearable
+                           placeholder="申诉状态">
+                    <el-option
+                            v-for="(status,index) in appealStatusTypes"
+                            :key="index"
+                            :label="status.text"
+                            :value="status.value">
+                    </el-option>
+                </el-select>
             </el-col>
         </el-row>
         <el-table
@@ -116,6 +135,9 @@
           prop: 'detail',
           label: '申诉详情',
           width: 120,
+          formatter: (row, column, cellValue) => {
+            return cellValue && cellValue.length > 50 ? `${cellValue.slice(0, 50)}...` : cellValue
+          },
         }, {
           prop: 'result',
           label: '申诉结果',

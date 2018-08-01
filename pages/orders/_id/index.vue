@@ -82,11 +82,21 @@
                         <div class="info-block" v-if="currentResource && appeal">
                             <div class="info-header">申诉信息</div>
                             <div class="appeal-info-container">
-
                                 <el-row>
                                     <el-col :span="3">申诉状态</el-col>
                                     <el-col :span="9" :class="[appeal.status,'appeal-status']">
                                         {{appeal.status | itemText(appealStatusTypes)}}
+                                    </el-col>
+                                    <el-col :span="3">申诉结果</el-col>
+                                    <el-col :span="9">
+                                        <span>{{appeal.result | itemText(appealResultTypes)}}</span>
+                                    </el-col>
+                                </el-row>
+
+                                <el-row>
+                                    <el-col :span="3">申诉方</el-col>
+                                    <el-col :span="9">
+                                        {{appealSide(appeal)}}
                                     </el-col>
                                     <el-col :span="3">申诉时间</el-col>
                                     <el-col :span="9">
@@ -98,22 +108,13 @@
                                     <el-col :span="9">
                                         {{appeal.title}}
                                     </el-col>
+                                </el-row>
+                                <el-row>
                                     <el-col :span="3">申诉详情</el-col>
-                                    <el-col :span="9">
+                                    <el-col :span="21">
                                         <span>{{appeal.detail}}</span>
                                     </el-col>
                                 </el-row>
-                                <el-row>
-                                    <el-col :span="3">申诉方</el-col>
-                                    <el-col :span="9">
-                                        {{appealSide(appeal)}}
-                                    </el-col>
-                                    <el-col :span="3">申诉结果</el-col>
-                                    <el-col :span="9">
-                                        <span>{{appeal.result | itemText(appealResultTypes)}}</span>
-                                    </el-col>
-                                </el-row>
-
                             </div>
 
                         </div>
@@ -219,7 +220,7 @@
     computed: {
       ...mapState(['user', 'chat']),
       paymentMethod() {
-        const pay = this.currentResource.payment_method
+        const pay = this.currentResource.payment_methods[0]
         return pay ? `${this.itemText(pay.method, paymentTypes)} 账号：${pay.account_no} 账户名：${pay.account_name}` : '--'
       },
       canCloseAppeal() {
@@ -250,7 +251,7 @@
         })
       },
       appealSide(appeal) {
-        return appeal.user_id === this.currentResource.sell_user.id ? `卖家:${this.currentResource.sell_user.name}` : `买家:${this.currentResource.buy_user.name}`
+        return appeal.user_id === this.currentResource.sell_user.id ? `${this.currentResource.sell_user.name}` : `${this.currentResource.buy_user.name}`
       },
       processAppeal() {
         this.patchAppeal({"operation_type": "process",})
