@@ -108,6 +108,11 @@
                                     <el-col :span="9">
                                         {{appeal.title}}
                                     </el-col>
+                                    <el-col v-if="appeal.staff_id" :span="3">处理人员</el-col>
+                                    <el-col v-if="appeal.staff_id" :span="9">
+                                        <router-link :to="`/users/${appeal.staff_id}`">{{appeal.staff_id}}
+                                        </router-link>
+                                    </el-col>
                                 </el-row>
                                 <el-row>
                                     <el-col :span="3">申诉详情</el-col>
@@ -127,19 +132,31 @@
                             <el-button type="success" v-if="appeal.status==='created'" @click="processAppeal">
                                 处理申诉
                             </el-button>
-                            <el-button type="warning" v-if="appeal.status==='processing'" @click="suspendAppeal">
-                                挂起申诉
-                            </el-button>
-                            <el-button type="danger" v-if="appeal.status==='processing'"
-                                       @click="showAppealDialog">
-                                处理完成
-                            </el-button>
+                            <template v-if="appeal.status==='processing'">
+                                <el-button type="success" v-if="!joinedChat && !appeal.staff_id" @click="joinChat">
+                                    加入聊天
+                                </el-button>
+                                <el-button type="success" v-if="joinedChat" @click="exitChat">
+                                    退出聊天
+                                </el-button>
+                                <el-button type="warning" @click="suspendAppeal">
+                                    挂起申诉
+                                </el-button>
+                                <el-button type="danger"
+                                           @click="showAppealDialog">
+                                    处理完成
+                                </el-button>
+                            </template>
+
                             <el-button type="warning" v-if="appeal.status==='pending'" @click="resumeAppeal">
                                 恢复处理
                             </el-button>
                         </div>
-                        <Chat :client="chat.imClient" :conversation-id="convId"
+                        <Chat v-if="joinedChat" :client="chat.imClient" :conversation-id="convId"
                               :client-id="`${user.account.id}`"></Chat>
+                        <div v-else>
+                            未加入聊天
+                        </div>
                     </el-card>
                     <el-card v-else>
                         未发起申诉，无法查看聊天内容
@@ -215,6 +232,7 @@
         appealRemark: null,
         appealDialogVisible: false,
         convId: '',
+        joinedChat: false,
       }
     },
     computed: {
@@ -245,8 +263,10 @@
         });
         this.$axios.get(`orders/${this.id}/appeal`).then(response => {
           if (response.data.data) {
-
             this.appeal = response.data.data
+            if (this.appeal.staff_id === this.user.account.id) {
+              this.joinedChat = true
+            }
           }
         })
       },
@@ -255,21 +275,19 @@
       },
       processAppeal() {
         this.patchAppeal({"operation_type": "process",})
-        this.joinChat()
       },
       suspendAppeal() {
         this.patchAppeal({"operation_type": "suspend",})
-        this.exitChat()
       },
       resumeAppeal() {
         this.patchAppeal({"operation_type": "resume",})
-        this.joinChat()
       },
       showAppealDialog() {
         this.appealDialogVisible = true
       },
       closeAppeal() {
         this.appealDialogVisible = false;
+        this.joinedChat = false
         let orderResult = this.orderResultTypes[this.appealResultIndex].value
         if (this.currentResource.status === 'success') {
           orderResult = this.orderResultTypes[0].value
@@ -280,16 +298,22 @@
           order_result: orderResult,
           remark: this.appealRemark
         })
-        this.exitChat()
       },
       joinChat() {
         this.$axios.post(`orders/${this.id}/conversation`).then(response => {
+          this.joinedChat = true
           this.$message('成功加入聊天', 'success')
         })
       },
       exitChat() {
         this.$axios.delete(`orders/${this.id}/conversation`).then(response => {
-          this.$message('已经退出聊天')
+          console.log(response)
+          if (response.data.data && !response.data.data.staff_id) {
+            this.joinedChat = false
+            this.$message('已经退出聊天')
+          } else {
+            this.$message('退出聊天出错，请刷新页面重试或联系开发人员', 'error')
+          }
         })
       },
       patchAppeal(payload) {
