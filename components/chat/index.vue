@@ -16,7 +16,7 @@
               <div class="msg-text">
                 <span v-if="item.content._lctype === TextMessage.TYPE">{{ item.content._lctext }}</span>
                 <img v-else-if="item.content._lctype === ImageMessage.TYPE" @click="onClickImage(item.content._lcfile.url)" style="width: 100%" :src="item.content._lcfile.url">
-                <span v-else-if="item.content._lctype === SystemMessage.TYPE">【订单消息】{{ item.content._lctext }}</span>
+                <span v-else-if="item.content._lctype === SystemMessage.TYPE">【自动回复】{{ item.content._lctext }}</span>
                 <span v-else>[不支持当前消息类型]</span>
               </div>
             </div>
@@ -40,7 +40,7 @@
               <div class="msg-text">
                 <span v-if="item.content._lctype === TextMessage.TYPE">{{ item.content._lctext }}</span>
                 <img v-else-if="item.content._lctype === ImageMessage.TYPE" @click="onClickImage(item.content._lcfile.url)" style="width: 100%" :src="item.content._lcfile.url">
-                <span v-else-if="item.content._lctype === SystemMessage.TYPE">【订单消息】{{ item.content._lctext }}</span>
+                <span v-else-if="item.content._lctype === SystemMessage.TYPE">【自动回复】{{ item.content._lctext }}</span>
                 <span v-else>[不支持当前消息类型]</span>
               </div>
             </div>
@@ -70,7 +70,7 @@
   import infiniteScroll from './infinite-scroll-directive.js'
   import $toast from './toast.js'
 
-  const SystemMessage = { // 自定义消息类型：自动回复订单消息
+  const SystemMessage = { // 自定义消息类型：自动回复
     TYPE: -101,
   }
 
@@ -100,6 +100,7 @@
         unreadMessagesCount: 0, // 未读消息数
         clientEventMap: {}, // 客户端级别事件
         convEventMap: {}, // 对话级别事件
+        restartCount: 0, // 初始化遇到错误尝试重新初始化次数
       }
     },
     directives: {
@@ -178,14 +179,32 @@
         client
           .getConversation(conversationId)
           .then(conversation => {
-            this.conversation = conversation
-            this.unreadMessagesCount = this.conversation.unreadMessagesCount
-            this.members = this.conversation.members
-            this.bindConversationEvent() // 绑定对话级别事件
-            this.messageIterator = conversation.createMessagesIterator({
-              limit: this.limit,
-            })
-            this.initMsgLog() // 初始化聊天记录
+            if (conversation) {
+              this.conversation = conversation
+              this.unreadMessagesCount = this.conversation.unreadMessagesCount
+              this.members = this.conversation.members
+              this.bindConversationEvent() // 绑定对话级别事件
+              this.messageIterator = conversation.createMessagesIterator({
+                limit: this.limit,
+              })
+              setTimeout(() => { // 加延时防止重复获取聊天记录
+                this.initMsgLog() // 初始化聊天记录
+              }, 200)
+              this.restartCount = 1000
+            } else {
+              return Promise.reject(new Error(`getConversation error, conversation=${conversation}`))
+            }
+          })
+          .catch(err => {
+            const maxRestartCount = 3 // 最多重新初始化次数
+            this.restartCount += 1
+            console.error(this.restartCount, err)
+            if (this.restartCount < maxRestartCount) {
+              const tid = setTimeout(() => {
+                clearTimeout(tid)
+                this.init()
+              }, 1000)
+            }
           })
       },
       handleVisibilityChange() { // 监听页面隐藏事件，取消未读
@@ -340,7 +359,7 @@
             self.pushSystemMessage(`${payload.kickedBy} 将 ${payload.members.join('、')} 移出对话`)
           },
           [Event.KICKED]: (payload) => { // 当前用户被从某个对话中移除
-            if (invitedBy === 'REST_API') return // 系统邀请信息不展示
+            if (payload.kickedBy === 'REST_API') return // 系统邀请信息不展示
             self.pushSystemMessage(`${payload.kickedBy} 将你移出对话`)
           },
         }
@@ -382,8 +401,11 @@
                 _lctype: message.type,
               },
             })
-            this.message = ''
-          }).catch(console.error.bind(console))
+          }).catch(err => {
+            console.error(err)
+            $toast.show(`发送失败: ${err}`, 1500)
+          })
+          this.message = ''
         }
       },
       scrollToBottom() {
@@ -393,7 +415,7 @@
             target.scrollTop = target.scrollHeight
           }
           clearTimeout(tid)
-        }, 200)
+        }, 150)
       },
     },
     filters: {
