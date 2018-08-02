@@ -1,9 +1,13 @@
 import {Realtime} from 'leancloud-realtime'
 import AV from 'leancloud-storage'
 
-
-const APP_ID = 'OibOYNHFsWoqChdhAlebT7rS-gzGzoHsz'
-const APP_KEY = 'IEIfsx2I6LkRajvtP2jcoCIW'
+const MODE = process.env.MODE || 'production'
+let APP_ID = 'OibOYNHFsWoqChdhAlebT7rS-gzGzoHsz'
+let APP_KEY = 'IEIfsx2I6LkRajvtP2jcoCIW'
+if (MODE === 'production') {
+  APP_ID = 'yeIzHy3DnjcFwsBXWg61onrU-gzGzoHsz'
+  APP_KEY = '3ncyYb7rdSog1Yyvj0UVwydU'
+}
 export const state = () => ({
   imClient: null, // leancloud实时通讯实例
 })
