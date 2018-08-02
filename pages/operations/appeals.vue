@@ -148,12 +148,12 @@
       }
     },
     mounted() {
-      this.getAppeals();
+      // TODO 清空search的时候去掉query
+      this.initResources('orders/appeal', null, {
+        user_search: this.$route.query.user_search
+      });
     },
     methods: {
-      getAppeals() {
-        this.initResources('orders/appeal');
-      },
     }
   }
 </script>

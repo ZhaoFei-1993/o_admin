@@ -56,6 +56,14 @@
                             <el-col :span="9">{{kycName}}</el-col>
                         </el-row>
                         <el-row>
+                            <el-col :span="3">证件类型</el-col>
+                            <el-col :span="9">
+                                {{kycLicense}}
+                            </el-col>
+                            <el-col :span="3">证件号</el-col>
+                            <el-col :span="9">{{kycNumber}}</el-col>
+                        </el-row>
+                        <el-row>
                             <el-col :span="3">手机</el-col>
                             <el-col :span="9">
                                 {{currentResource.mobile}}
@@ -107,6 +115,15 @@
                                              :min-width="column.width">
                             </el-table-column>
                         </el-table>
+                        <el-pagination
+                                class="with-margin-top"
+                                background
+                                v-if="historyTotalNum>0"
+                                layout="prev, pager, next"
+                                @current-change="getBalanceHistory"
+                                :current-page.sync="historyPageNum"
+                                :total="historyTotalNum">
+                        </el-pagination>
                     </div>
                 </el-tab-pane>
                 <el-tab-pane label="商家信息" name="merchant">
@@ -154,7 +171,7 @@
                         该用户尚未提交商家认证申请
                     </div>
                     <div class="info-block" v-if="setting">
-                        <div class="info-header">交易设置</div>
+                        <div class="info-header">广告设置</div>
                         <el-row>
                             <el-col :span="3">最小交易额</el-col>
                             <el-col :span="9">
@@ -259,6 +276,7 @@
     userStatusTypes, roles, kycStatusTypes, merchantAuthStatusTypes,
     merchantStatusTypes, counterpartyLimitTypes,
     balanceHistoryTypes, paymentTypes,
+    licenseTypes,
   } from '~/common/constants'
   import {findMatchedItems} from "~/common/utilities";
   import {timeToLocale} from "../../common/utilities";
@@ -272,6 +290,7 @@
         merchantAuthStatusTypes,
         merchantStatusTypes,
         balanceHistoryTypes,
+        licenseTypes,
         id: this.$route.params.id,
         currentTab: this.$route.query.tab || 'basic',
         balance: [],
@@ -283,6 +302,8 @@
         forbidUserDialogVisible: false,
         forbidMerchantRemark: null,
         forbidMerchantDialogVisible: false,
+        historyTotalNum:0,
+        historyPageNum:1,
         balanceColumns: [{
           prop: 'coin_type',
           label: '币种',
@@ -348,6 +369,12 @@
       },
       kycName() {
         return this.currentResource.user_kyc ? (this.currentResource.user_kyc.last_name + '' + this.currentResource.user_kyc.first_name) : '--'
+      },
+      kycLicense() {
+        return this.currentResource.user_kyc ? this.itemText(this.currentResource.user_kyc.id_type,this.licenseTypes) : '--'
+      },
+      kycNumber() {
+        return this.currentResource.user_kyc ? (this.currentResource.user_kyc.id_number) : '--'
       }
     },
     methods: {
@@ -372,7 +399,8 @@
       },
       getBalanceHistory() {
         // TODO 翻页
-        this.$axios.get(`/users/${this.id}/balance/history`).then(response => {
+        this.$axios.get(`/users/${this.id}/balance/history?page=${this.historyPageNum}&limit=10`).then(response => {
+          this.historyTotalNum = parseInt(response.data.data.total || response.data.total);
           this.balanceHistory = response.data.data.data;
         })
       },
@@ -429,7 +457,7 @@
         }).then(() => {
           // TODO
         });
-      }
+      },
     }
   }
 </script>

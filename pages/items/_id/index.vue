@@ -1,10 +1,22 @@
 <template>
     <div class="main-content page-order-detail">
-        <h1>广告详情 --- {{currentResourceId}}</h1>
         <template v-if="currentResource">
             <el-card class="order-info">
                 <div class="info-block">
                     <div class="info-header">广告信息</div>
+                    <el-row>
+                        <el-col :span="3">广告ID</el-col>
+                        <el-col :span="9">
+                            {{currentResource.id}}
+                            <router-link :to="`/orders?item_id=${currentResource.id}`">
+                                <el-button type="success">关联订单</el-button>
+                            </router-link>
+                        </el-col>
+                        <el-col :span="3">版本号</el-col>
+                        <el-col :span="9">
+                            {{currentResource.version}}
+                        </el-col>
+                    </el-row>
                     <el-row>
                         <el-col :span="3">状态</el-col>
                         <el-col :span="9">
@@ -26,16 +38,7 @@
                             {{currentResource.update_time | formatTime}}
                         </el-col>
                     </el-row>
-                    <el-row>
-                        <el-col :span="3">广告ID</el-col>
-                        <el-col :span="9">
-                            {{currentResource.id}}
-                        </el-col>
-                        <el-col :span="3">版本号</el-col>
-                        <el-col :span="9">
-                            {{currentResource.version}}
-                        </el-col>
-                    </el-row>
+
                     <el-row>
                         <el-col :span="3">发布商家</el-col>
                         <el-col :span="9">

@@ -118,7 +118,7 @@
     </div>
 </template>
 <script>
-  import {roles, kycStatusTypes, userStatusTypes, merchantAuthStatusTypes} from "~/common/constants";
+  import {roles, kycStatusTypes,licenseTypes, userStatusTypes, merchantAuthStatusTypes} from "~/common/constants";
   import {timeToLocale} from "~/common/utilities";
 
   export default {
@@ -129,6 +129,7 @@
         authComment: null,
         authDialogVisible: false,
         merchantAuthStatusTypes,
+        licenseTypes,
         itemColumns: [{
           prop: 'create_time',
           label: '申请时间',
@@ -138,8 +139,15 @@
           },
           className: 'time',
         }, {
+          prop: 'user',
+          label: '用户名',
+          width: 80,
+          formatter: (row, column, cellValue) => {
+            return row.user.name
+          },
+        },{
           prop: 'first_name',
-          label: '姓名',
+          label: '实名',
           width: 80,
           formatter: (row, column, cellValue) => {
             return row.last_name + ' ' + row.first_name
@@ -148,6 +156,9 @@
           prop: 'id_type',
           label: '证件类型',
           width: 80,
+          formatter: (row, column, cellValue) => {
+            return this.itemText(cellValue, licenseTypes)
+          },
         }, {
           prop: 'guaranty_amount',
           label: 'CET保证金',

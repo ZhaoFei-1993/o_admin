@@ -122,3 +122,10 @@ export const balanceHistoryTypes = [{
 }, {
   value: 'transfer_out', text: '转出',
 }]
+export const licenseTypes = [{
+  value: 'id_card', text: '身份证',
+}, {
+  value: 'passport', text: '护照',
+}, {
+  value: 'driving_license', text: '驾驶证',
+}]

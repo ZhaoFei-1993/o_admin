@@ -14,19 +14,6 @@
             <el-col :md="24" :lg="12">
                 <el-row type="flex" justify="end">
                     <el-col :md="8" :lg="6" class="resource-filter">
-                        <el-select v-model="resourceFilters.kyc_status"
-                                   @change="getFilteredResources"
-                                   clearable
-                                   placeholder="是否实名">
-                            <el-option
-                                    v-for="(status,index) in kycStatusTypes"
-                                    :key="index"
-                                    :label="status.text"
-                                    :value="status.value">
-                            </el-option>
-                        </el-select>
-                    </el-col>
-                    <el-col :md="8" :lg="6" class="resource-filter">
                         <el-select v-model="resourceFilters.is_merchant"
                                    @change="getFilteredResources"
                                    clearable

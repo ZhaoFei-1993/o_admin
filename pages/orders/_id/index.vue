@@ -23,6 +23,7 @@
                         <el-col :span="3">下单时间</el-col>
                         <el-col :span="9">
                             {{currentResource.create_time | formatTime}}
+                            <span v-if="payRemainTime" class="count-down">剩余支付时间{{`${Math.floor(this.payRemainTime / 60)}分${this.payRemainTime % 60}秒`}}</span>
                         </el-col>
                     </el-row>
                     <el-row>
@@ -216,6 +217,7 @@
   } from "~/common/constants";
   import Chat from '~/components/chat'
 
+  const ORDER_PAY_TIME = 15 // 15分钟（未换算）
   export default {
     components: {
       Chat,
@@ -230,6 +232,9 @@
         orderResultTypes,
         appealResultIndex: 0,
         appealRemark: null,
+        payRemainTime: 0,
+        orderExpireTime: 0,
+        secondCountdown: null,
         appealDialogVisible: false,
         convId: '',
         joinedChat: false,
@@ -248,6 +253,9 @@
     mounted() {
       this.initData();
     },
+    beforeDestroy() {
+      this.stopCountDown()
+    },
     methods: {
       initData() {
         this.initCurrentResource('orders', this.id, () => {
@@ -259,6 +267,11 @@
           } else {
             order.sell_user = order.user
             order.buy_user = order.merchant
+          }
+          if (order.status === 'created') {
+            this.orderExpireTime = (order.place_time + ORDER_PAY_TIME * 60) * 1000
+            this.payRemainTime = Math.floor((this.orderExpireTime - Date.now()) / 1000)
+            this.startCountDown()
           }
         });
         this.$axios.get(`orders/${this.id}/appeal`).then(response => {
@@ -320,12 +333,28 @@
         this.$axios.patch(`/orders/${this.id}/appeal`, payload).then(response => {
           this.appeal = response.data.data
         })
-      }
+      },
+      startCountDown() {
+        this.secondCountdown = setInterval(() => {
+          if (this.payRemainTime > 0) {
+            this.payRemainTime = Math.floor((this.orderExpireTime - Date.now()) / 1000)
+          } else {
+            this.stopCountDown()
+          }
+        }, 1000)
+      },
+      stopCountDown() {
+        if (!this.secondCountdown) return
+        clearInterval(this.secondCountdown)
+      },
     }
   }
 </script>
 <style lang="scss">
     .page-order-detail {
+        .count-down {
+            color: #e35555;
+        }
         .appeal-status {
             &.created {
 

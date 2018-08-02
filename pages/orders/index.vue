@@ -5,14 +5,20 @@
             <el-col :md="2">
                 <p class="total-resource-num">共 {{totalNum}} 个</p>
             </el-col>
-            <el-col :md="11">
+            <el-col :md="7">
                 <el-input placeholder="输入 用户id 查询" clearable v-model="resourceFilters.user_id"
                           @clear="getFilteredResources">
                     <el-button slot="append" icon="el-icon-search" @click="getFilteredResources"></el-button>
                 </el-input>
             </el-col>
-            <el-col :md="11">
+            <el-col :md="7">
                 <el-input placeholder="输入 订单id 查询" clearable v-model="resourceFilters.order_id"
+                          @clear="getFilteredResources">
+                    <el-button slot="append" icon="el-icon-search" @click="getFilteredResources"></el-button>
+                </el-input>
+            </el-col>
+            <el-col :md="7">
+                <el-input placeholder="输入 广告id 查询" clearable v-model="resourceFilters.item_id"
                           @clear="getFilteredResources">
                     <el-button slot="append" icon="el-icon-search" @click="getFilteredResources"></el-button>
                 </el-input>
@@ -50,7 +56,7 @@
                                 v-for="(coin,index) in coinTypes"
                                 :key="index"
                                 :label="coin"
-                                :value="index">
+                                :value="coin">
                         </el-option>
                     </el-select>
 
@@ -178,7 +184,8 @@
           });
         }
       }, {
-        user_id: this.$route.query.user_id
+        user_id: this.$route.query.user_id,
+        item_id: this.$route.query.item_id,
       });
     },
     methods: {}
