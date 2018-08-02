@@ -231,6 +231,9 @@
                             <el-table-column
                                     prop="status"
                                     label="状态">
+                                <template slot-scope="scope">
+                                    {{scope.row.status | itemText(paymentStatusTypes)}}
+                                </template>
                             </el-table-column>
                         </el-table>
                     </div>
@@ -276,7 +279,7 @@
     userStatusTypes, roles, kycStatusTypes, merchantAuthStatusTypes,
     merchantStatusTypes, counterpartyLimitTypes,
     balanceHistoryTypes, paymentTypes,
-    licenseTypes,
+    licenseTypes, paymentStatusTypes,
   } from '~/common/constants'
   import {findMatchedItems} from "~/common/utilities";
   import {timeToLocale} from "../../common/utilities";
@@ -291,6 +294,7 @@
         merchantStatusTypes,
         balanceHistoryTypes,
         licenseTypes,
+        paymentStatusTypes,
         id: this.$route.params.id,
         currentTab: this.$route.query.tab || 'basic',
         balance: [],
@@ -302,8 +306,8 @@
         forbidUserDialogVisible: false,
         forbidMerchantRemark: null,
         forbidMerchantDialogVisible: false,
-        historyTotalNum:0,
-        historyPageNum:1,
+        historyTotalNum: 0,
+        historyPageNum: 1,
         balanceColumns: [{
           prop: 'coin_type',
           label: '币种',
@@ -371,7 +375,7 @@
         return this.currentResource.user_kyc ? (this.currentResource.user_kyc.last_name + '' + this.currentResource.user_kyc.first_name) : '--'
       },
       kycLicense() {
-        return this.currentResource.user_kyc ? this.itemText(this.currentResource.user_kyc.id_type,this.licenseTypes) : '--'
+        return this.currentResource.user_kyc ? this.itemText(this.currentResource.user_kyc.id_type, this.licenseTypes) : '--'
       },
       kycNumber() {
         return this.currentResource.user_kyc ? (this.currentResource.user_kyc.id_number) : '--'

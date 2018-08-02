@@ -1,6 +1,6 @@
-const devLogin = 'http://test2.coinex.com/account/signin/?next=' + encodeURIComponent('http://dev.admin.otc.coinex.com/');
-const preLogin = 'http://test2.coinex.com/account/signin/?next=' + encodeURIComponent('http://test.admin.otc.coinex.com/');
-const prodLogin = 'http://www.coinex.com/account/signin/?next=' + encodeURIComponent('http://admin.otc.coinex.com/');
+const devLogin = 'http://test2.coinex.com/account/signin/?redirect=' + encodeURIComponent('http://dev.admin.otc.coinex.com/');
+const preLogin = 'http://test2.coinex.com/account/signin/?redirect=' + encodeURIComponent('http://test.admin.otc.coinex.com/');
+const prodLogin = 'http://www.coinex.com/account/signin/?redirect=' + encodeURIComponent('http://admin.otc.coinex.com/');
 
 const domains = {
   development: {

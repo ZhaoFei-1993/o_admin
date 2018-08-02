@@ -129,3 +129,8 @@ export const licenseTypes = [{
 }, {
   value: 'driving_license', text: '驾驶证',
 }]
+export const paymentStatusTypes = [{
+  value: 'on', text: '开启',
+}, {
+  value: 'off', text: '关闭',
+}]
