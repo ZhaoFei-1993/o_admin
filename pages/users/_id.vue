@@ -190,6 +190,9 @@
                             <el-table-column
                                     prop="method"
                                     label="收款方式">
+                                <template slot-scope="scope">
+                                    {{ scope.row.method | itemText(paymentTypes)}}
+                                </template>
                             </el-table-column>
                             <el-table-column
                                     prop="account_name"
@@ -204,7 +207,8 @@
                                     label="二维码"
                                     :width="200">
                                 <template slot-scope="scope">
-                                    <img v-if="scope.row.qr_code_image" :src="scope.row.qr_code_image" class="qrcode-image"/>
+                                    <img v-if="scope.row.qr_code_image" :src="scope.row.qr_code_image"
+                                         class="qrcode-image"/>
                                 </template>
                             </el-table-column>
                             <el-table-column
@@ -254,7 +258,7 @@
   import {
     userStatusTypes, roles, kycStatusTypes, merchantAuthStatusTypes,
     merchantStatusTypes, counterpartyLimitTypes,
-    balanceHistoryTypes,
+    balanceHistoryTypes, paymentTypes,
   } from '~/common/constants'
   import {findMatchedItems} from "~/common/utilities";
   import {timeToLocale} from "../../common/utilities";
@@ -264,6 +268,7 @@
       return {
         kycStatusTypes,
         userStatusTypes,
+        paymentTypes,
         merchantAuthStatusTypes,
         merchantStatusTypes,
         balanceHistoryTypes,
@@ -443,7 +448,7 @@
             font-size: 20px;
             font-weight: bold;
         }
-        .qrcode-image{
+        .qrcode-image {
             max-width: 200px;
             max-height: 200px;
         }
