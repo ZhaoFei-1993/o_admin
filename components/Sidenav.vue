@@ -10,7 +10,7 @@
                 :collapse="!sidenavOpened">
             <el-menu-item index="/">
                 <i class="iconfont icon-dashboard"></i>
-                <span>状态监控</span>
+                <span slot="title">状态监控</span>
             </el-menu-item>
             <el-submenu hidden index="/statistics">
                 <template slot="title">
@@ -40,14 +40,20 @@
                 <el-menu-item index="/sellers/authentication">卖家审核</el-menu-item>
             </el-submenu>
             <!--<el-submenu index="/operations">-->
-                <!--<template slot="title">-->
-                    <!--<i class="iconfont icon-fileprotect"></i>-->
-                    <!--<span>运营中心</span>-->
-                <!--</template>-->
-                <!---->
+            <!--<template slot="title">-->
+            <!--<i class="iconfont icon-fileprotect"></i>-->
+            <!--<span>运营中心</span>-->
+            <!--</template>-->
+            <!---->
             <!--</el-submenu>-->
-            <el-menu-item index="/operations/merchants"><i class="iconfont icon-audit"></i>商家审核</el-menu-item>
-            <el-menu-item index="/operations/appeals"><i class="iconfont icon-customerservice"></i>申诉管理</el-menu-item>
+            <el-menu-item index="/operations/merchants">
+                <i class="iconfont icon-audit"></i>
+                <span slot="title">商家审核</span>
+            </el-menu-item>
+            <el-menu-item index="/operations/appeals">
+                <i class="iconfont icon-customerservice"></i>
+                <span slot="title">申诉管理</span>
+            </el-menu-item>
             <el-menu-item index="/items">
                 <i class="iconfont icon-barcode"></i>
                 <span slot="title">广告管理</span>

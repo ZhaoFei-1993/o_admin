@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <el-container>
-            <el-aside :width="sidenavOpened?'200px':'60px'">
+            <el-aside :width="sidenavOpened?'160px':'52px'">
                 <Sidenav :sidenavOpened="sidenavOpened"></Sidenav>
             </el-aside>
             <el-container>
