@@ -1,6 +1,6 @@
 const devLogin = 'http://test2.coinex.com/account/signin/?redirect=' + encodeURIComponent('http://dev.admin.otc.coinex.com/');
 const preLogin = 'http://test2.coinex.com/account/signin/?redirect=' + encodeURIComponent('http://test.admin.otc.coinex.com/');
-const prodLogin = 'http://www.coinex.com/account/signin/?redirect=' + encodeURIComponent('http://admin.otc.coinex.com/');
+const prodLogin = 'http://www.coinex.com/account/signin/?redirect=' + encodeURIComponent('http://admin_otc.coinex.com/');
 
 const domains = {
   development: {
@@ -12,8 +12,8 @@ const domains = {
     cdn: ''
   },
   production: {
-    serverHost: 'http://admin.otc.coinex.com',
-    clientHost: 'http://admin.otc.coinex.com',
+    serverHost: 'https://admin_otc.coinex.com',
+    clientHost: 'https://admin_otc.coinex.com',
     apiPrefix: '/admin',
     loginURL: prodLogin,
     webSocket: '',
