@@ -76,6 +76,7 @@
         justify-content: space-between;
         background-color: white;
         box-shadow: 0 2px 4px 0 rgba(94, 94, 94, 0.15);
+
         .left-side {
             display: flex;
             align-items: center;
