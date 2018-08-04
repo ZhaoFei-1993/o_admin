@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_ENV=development MODE=development DEBUG=nuxt:* node server/index.js",
+    "build": "npm run build-online",
     "build-online": "cross-env NODE_ENV=production MODE=production nuxt build --config-file config/nuxt.prd.js",
     "build-pre": "cross-env NODE_ENV=production MODE=pre nuxt build --config-file config/nuxt.pre.js",
     "deploy-online": "git pull && npm i && npm run build-online && pm2 startOrRestart ecosystem.json --update-env --env production",
