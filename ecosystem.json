@@ -1,7 +1,7 @@
 {
   "apps": [
     {
-      "name": "mall_admin",
+      "name": "otc_admin",
       "script": "server/index.js",
       "instances": 1,
       "exec_MODE": "cluster",
@@ -10,8 +10,8 @@
         "logs",
         ".nuxt"
       ],
-      "error_file": "logs/mall_admin.stderr.log",
-      "out_file": "logs/mall_admin.stdout.log",
+      "error_file": "logs/otc_admin.stderr.log",
+      "out_file": "logs/otc_admin.stdout.log",
       "env_development": {
         "NODE_ENV": "development",
         "MODE": "development"
