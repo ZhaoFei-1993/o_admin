@@ -32,7 +32,7 @@
     "leancloud-realtime": "4.2.0",
     "leancloud-realtime-plugin-typed-messages": "3.0.1",
     "leancloud-storage": "3.9.0",
-    "log4js": "1.1.1",
+    "log4js": "2.10.0",
     "numeral": "2.0.6",
     "nuxt": "1.4.0",
     "qr.js": "0.0.0",

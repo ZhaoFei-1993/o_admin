@@ -4,6 +4,7 @@
       "name": "otc_admin",
       "script": "server/index.js",
       "instances": 1,
+      "instance_var": "OTC_ADMIN",
       "exec_MODE": "cluster",
       "watch": false,
       "ignore_watch": [

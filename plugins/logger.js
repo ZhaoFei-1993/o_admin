@@ -74,7 +74,7 @@ if (isDev) {
   }
 }
 
-if (+process.env.OTC === 0) { // 只发送一个实例的log
+if (+process.env.OTC_ADMIN === 0) { // 只发送一个实例的log
   logConfig.appenders = {
     ...logConfig.appenders,
     errorEmailSender: {
