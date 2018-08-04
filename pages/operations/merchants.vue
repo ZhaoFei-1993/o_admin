@@ -154,20 +154,19 @@
           },
         }, {
           prop: 'id_type',
-          label: '证件类型',
-          width: 80,
+          label: '证件',
+          width: 120,
           formatter: (row, column, cellValue) => {
-            return this.itemText(cellValue, licenseTypes)
+            return this.itemText(cellValue, licenseTypes) + ': ' + row.id_number
           },
         }, {
           prop: 'guaranty_amount',
           label: 'CET保证金',
-          width: 120,
-        }, {
-          prop: 'id_number',
-          label: '证件号',
-          width: 120,
-        }, {
+          width: 80,
+          formatter:(row, column, cellValue) => {
+            return parseInt(cellValue)
+          },
+        },{
           prop: 'mobile',
           label: '手机',
           width: 120,

@@ -14,10 +14,9 @@ export const itemStatusTypes = [{
   value: 'on', text: '上架',
 }, {
   value: 'off', text: '下架',
+}, {
+  value: 'deleted', text: '已删除',
 },
-  // {
-  //   value: 'deleted', text: '已删除',
-  // },
 ];
 export const pricingTypes = [{
   value: 'fixed', text: '固定',
