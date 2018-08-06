@@ -35,7 +35,12 @@
                         </el-row>
                         <el-row>
                             <el-col :span="3">昵称</el-col>
-                            <el-col :span="9">{{currentResource.name}}</el-col>
+                            <el-col :span="9">
+                                <span>{{currentResource.name}}</span>
+                                <el-button type="danger" @click="changeName"
+                                           class="float-right">修改昵称
+                                </el-button>
+                            </el-col>
                             <el-col :span="3">角色</el-col>
                             <el-col :span="9">
                                 <el-tag v-if="currentResource.role==='merchant'" type="success">认证商家</el-tag>
@@ -267,6 +272,20 @@
                     </el-button>
                 </div>
             </el-dialog>
+            <el-dialog
+                    title="修改用户昵称"
+                    :visible.sync="changeNameDialogVisible"
+                    width="30%">
+                <p>修改用户'{{currentResource.name}}'的昵称</p>
+                <el-input placeholder="请填2-15个字符的昵称"
+                          v-model="newName"></el-input>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="changeNameDialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="confirmChangeName"
+                               :disabled="newName.length<2||newName.length>15">确 定
+                    </el-button>
+                </div>
+            </el-dialog>
 
         </template>
         <div v-else>加载中</div>
@@ -308,6 +327,8 @@
         forbidMerchantDialogVisible: false,
         historyTotalNum: 0,
         historyPageNum: 1,
+        changeNameDialogVisible:false,
+        newName:'',
         balanceColumns: [{
           prop: 'coin_type',
           label: '币种',
@@ -462,6 +483,21 @@
           // TODO
         });
       },
+      changeName(){
+        this.newName=this.currentResource.name;
+        this.changeNameDialogVisible= true;
+      },
+      confirmChangeName(){
+        this.$axios.put('/users/'+this.currentResource.id,{
+          name: this.newName
+        }).then(response=>{
+          this.currentResource.name = this.newName;
+          this.changeNameDialogVisible = false;
+        }).catch(err=>{
+          this.$message('修改失败，请联系开发人员','error');
+          this.changeNameDialogVisible = false;
+        })
+      }
     }
   }
 </script>
