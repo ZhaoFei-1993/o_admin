@@ -166,7 +166,11 @@
       }
     },
     mounted() {
-      this.initResources('items',null,{
+      this.initResources('items', () => {
+        if (this.resources && this.resources.length === 1) {
+          this.$router.push(`/items/${this.resources[0].id}`)
+        }
+      }, {
         user_search: this.$route.query.user_search
       });
     },

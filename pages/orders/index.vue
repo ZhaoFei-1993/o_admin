@@ -173,6 +173,9 @@
     mounted() {
       this.initResources('orders', () => {
         if (this.resources && this.resources.length > 0) {
+          if (this.resources.length === 1) {
+            return this.$router.push(`/orders/${this.resources[0].id}`)
+          }
           this.resources.forEach(order => {
             if (order.merchant_side === 'sell') {
               order.sell_user = order.merchant

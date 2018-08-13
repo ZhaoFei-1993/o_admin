@@ -160,7 +160,11 @@
       }
     },
     mounted() {
-      this.initResources('users', null, {
+      this.initResources('users', () => {
+        if (this.resources && this.resources.length === 1) {
+          this.$router.push(`/users/${this.resources[0].id}`)
+        }
+      }, {
         user_search: this.$route.query.user_search
       });
     },
