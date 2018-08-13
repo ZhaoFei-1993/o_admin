@@ -1,7 +1,23 @@
 const log4js = require('log4js')
+const layouts = require('log4js/lib/layouts')
 
 const isDev = process.env.MODE !== 'production'
 const globalLevel = isDev ? 'TRACE' : 'INFO'
+
+log4js.addLayout('filter', function (config) {
+  // 去掉请求头里面的敏感用户信息
+  return function (logEvent, timezoneOffset) {
+    if (logEvent && logEvent.data && logEvent.data.length) {
+      logEvent.data.forEach(err => {
+        if (err.config && err.config.headers) {
+          err.config.headers.Authorization = 'hidden by log4js'
+          err.config.headers.cookie = 'hidden by log4js'
+        }
+      })
+    }
+    return layouts.basicLayout(logEvent, timezoneOffset)
+  }
+})
 
 const smtpAppender = {
   type: '@log4js-node/smtp',
@@ -30,7 +46,7 @@ const smtpAppender = {
 
 const logConfig = {
   pm2: true,
-  pm2InstanceVar: 'OTC',
+  pm2InstanceVar: 'OTC_ADMIN',
   appenders: {
     commonFile: {
       type: 'file', // 文件日志，默认保留5个备份
@@ -42,6 +58,7 @@ const logConfig = {
       level: 'INFO',
       maxLevel: 'WARN',
       appender: 'commonFile',
+      layout: {type: 'filter'},
     },
     errorFile: {
       type: 'file',
@@ -51,9 +68,11 @@ const logConfig = {
       type: 'logLevelFilter',
       level: 'ERROR',
       appender: 'errorFile',
+      layout: {type: 'filter'},
     },
     debug: {
       type: 'console',
+      layout: {type: 'filter'},
     },
   },
   categories: {
@@ -74,7 +93,7 @@ if (isDev) {
   }
 }
 
-if (+process.env.OTC_ADMIN === 0) { // 只发送一个实例的log
+if (+process.env.OTC_ADMIN === 0 && !isDev) { // 只发送一个实例的log
   logConfig.appenders = {
     ...logConfig.appenders,
     errorEmailSender: {
