@@ -133,3 +133,4 @@ export const paymentStatusTypes = [{
 }, {
   value: 'off', text: '关闭',
 }]
+export const COLORS = ['#b2d9fd', '#fae7a3', '#ceeaaf', '#ffddd3', '#d4bfe8', '#b1ebde', '#ffd5bb', '#a9b2e0', '#e0a9cf', '#e0d0a9'] // 头像基础色号

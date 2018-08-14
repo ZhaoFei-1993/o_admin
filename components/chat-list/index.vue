@@ -47,6 +47,7 @@
   import { mapState } from 'vuex'
   import UserAvatar from '~/components/chat/avatar'
   import preventParentScroll from 'vue-prevent-parent-scroll'
+  import {COLORS} from '~/common/constants'
 
   export default {
     data() {
@@ -69,7 +70,7 @@
       UserAvatar,
     },
     computed: {
-      ...mapState(['chat', 'user', 'constant']),
+      ...mapState(['chat', 'user']),
       hasUnreadMessage() {  // 列表是否有未读消息
         return this.convList.some(conv => {
           return conv._unreadMessageCount > 0
@@ -153,7 +154,7 @@
                 const { _attributes: { attr: { username } } } = conv
                 if (member !== myClientId && username && username[member]) {
                   if (!otherMembers.length) {
-                    defaultColor = this.constant.COLORS[member % 10]
+                    defaultColor = COLORS[member % 10]
                   }
                   otherMembers.push(username[member])
                 }

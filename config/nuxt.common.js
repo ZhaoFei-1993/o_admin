@@ -40,10 +40,6 @@ module.exports = {
       rel: 'icon',
       type: 'image/x-icon',
       href: '/favicon.ico'
-    }, {
-      rel: 'stylesheet',
-      type: 'text/css',
-      href: '//at.alicdn.com/t/font_702301_2w5dkkdoc19bpgb9.css'
     }]
   },
   render: {

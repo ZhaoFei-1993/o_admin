@@ -38,6 +38,9 @@
     computed: {
       ...mapState(['user', 'chat'])
     },
+    head: {
+      link: [{rel: 'stylesheet', href: '//at.alicdn.com/t/font_702301_jaydxd42e09.css'}]
+    },
     methods: {
       toggleSidenav() {
         this.$emit('toggleSidenav')

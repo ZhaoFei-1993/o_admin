@@ -10,6 +10,9 @@
                 </el-header>
                 <el-main>
                     <nuxt/>
+                    <div id="chat-list-container">
+                        <ChatList></ChatList>
+                    </div>
                 </el-main>
             </el-container>
         </el-container>
@@ -19,11 +22,13 @@
 <script>
   import Sidenav from '~/components/Sidenav.vue';
   import Header from '~/components/Header.vue';
+  import ChatList from '~/components/chat-list'
 
   export default {
     components: {
       Sidenav,
       Header,
+      ChatList,
     },
     data() {
       return {
@@ -37,8 +42,19 @@
     }
   }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
     #app {
         height: 100%;
+        #chat-list-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            i.iconfont {
+                margin-right: 0;
+            }
+            .chat-list > ul {
+                padding: 0;
+            }
+        }
     }
 </style>
