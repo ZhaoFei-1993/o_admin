@@ -80,7 +80,7 @@ export default ({app, store, redirect}) => {
         ).then(response => {
           this.loadingResources = false;
           this.resources = response.data.data.data || response.data.data;
-          this.totalNum = parseInt(response.data.data.total || response.data.total);
+          this.totalNum = parseInt(response.data.data.total || response.data.total) || 0;
           if (this.resoucesLoadedCallback && this.resoucesLoadedCallback instanceof Function) {
             this.resoucesLoadedCallback(response);
           }

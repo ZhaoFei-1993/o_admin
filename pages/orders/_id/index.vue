@@ -93,15 +93,14 @@
                                         <span>{{appeal.result | itemText(appealResultTypes)}}</span>
                                     </el-col>
                                 </el-row>
-
                                 <el-row>
-                                    <el-col :span="3">申诉方</el-col>
+                                    <el-col :span="3">申诉人</el-col>
                                     <el-col :span="9">
                                         {{appealSide(appeal)}}
                                     </el-col>
-                                    <el-col :span="3">申诉时间</el-col>
+                                    <el-col :span="3">申诉方</el-col>
                                     <el-col :span="9">
-                                        {{appeal.create_time | formatTime}}
+                                        {{isSellerAppeal?'卖方':'买方'}}
                                     </el-col>
                                 </el-row>
                                 <el-row>
@@ -109,20 +108,34 @@
                                     <el-col :span="9">
                                         {{appeal.title}}
                                     </el-col>
-                                    <el-col v-if="appeal.staff_id" :span="3">处理人员</el-col>
-                                    <el-col v-if="appeal.staff_id" :span="9">
-                                        <router-link :to="`/users/${appeal.staff_id}`">{{appeal.staff_id}}
-                                        </router-link>
+                                    <el-col :span="3">申诉时间</el-col>
+                                    <el-col :span="9">
+                                        {{appeal.create_time | formatTime}}
                                     </el-col>
                                 </el-row>
                                 <el-row>
                                     <el-col :span="3">申诉详情</el-col>
-                                    <el-col :span="21">
+                                    <el-col :span="9">
                                         <span>{{appeal.detail}}</span>
+                                    </el-col>
+                                    <el-col :span="3">处理备注</el-col>
+                                    <el-col :span="9">
+                                        <span>{{appeal.remark}}</span>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col v-if="appeal.staff_id||appeal.operator" :span="3">处理人员</el-col>
+                                    <el-col v-if="appeal.staff_id||appeal.operator" :span="9">
+                                        <router-link :to="`/users/${appeal.staff_id||appeal.operator.id}`">
+                                            {{appeal.staff_id||appeal.operator.name}}
+                                        </router-link>
+                                    </el-col>
+                                    <el-col v-if="appeal.staff_id||appeal.operator" :span="3">处理时间</el-col>
+                                    <el-col v-if="appeal.staff_id||appeal.operator" :span="9">
+                                        {{appeal.update_time | formatTime}}
                                     </el-col>
                                 </el-row>
                             </div>
-
                         </div>
                         <div v-else>暂无申诉信息</div>
                     </el-card>
@@ -283,8 +296,11 @@
           }
         })
       },
+      isSellerAppeal(appeal) {
+        return appeal.user_id === this.currentResource.sell_user.id
+      },
       appealSide(appeal) {
-        return appeal.user_id === this.currentResource.sell_user.id ? `${this.currentResource.sell_user.name}` : `${this.currentResource.buy_user.name}`
+        return this.isSellerAppeal ? `${this.currentResource.sell_user.name}` : `${this.currentResource.buy_user.name}`
       },
       processAppeal() {
         this.patchAppeal({"operation_type": "process",})

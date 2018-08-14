@@ -12,7 +12,7 @@
                 </el-input>
             </el-col>
             <el-col :md="7">
-                <el-input placeholder="输入 订单id 查询" clearable v-model="resourceFilters.order_id"
+                <el-input placeholder="输入 订单id 查询" clearable v-model="resourceFilters.id"
                           @clear="getFilteredResources">
                     <el-button slot="append" icon="el-icon-search" @click="getFilteredResources"></el-button>
                 </el-input>
@@ -29,7 +29,7 @@
                     <el-date-picker
                             v-model="resourcesDateRange"
                             type="daterange"
-                            :clearable="false"
+                            :clearable="true"
                             @change="getFilteredResources"
                             start-placeholder="开始日期"
                             end-placeholder="结束日期"

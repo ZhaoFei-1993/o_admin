@@ -164,11 +164,20 @@
       }
       window.document.removeEventListener('visibilitychange', this.handleVisibilityChange)
       window.document.title = this.originalTitle // 还原title
+      this.$nuxt.$off('IM.Event.UNREAD_MESSAGES_COUNT_UPDATE')
     },
     mounted() {
       this.init()
       $toast.init(this.$refs.chatWrapper) // 初始化toast
       this.originalTitle = window.document.title
+      this.$nuxt.$on('IM.Event.UNREAD_MESSAGES_COUNT_UPDATE', conversations => {
+        const conv = conversations.find(item => {
+          return item.id === this.conversationId
+        })
+        if (conv) {
+          this.unreadMessagesCount = conv.unreadMessagesCount
+        }
+      })
     },
     methods: {
       init() { // 全部功能初始化
@@ -280,11 +289,12 @@
       memberInfoMapper(arr) { // 遍历每一个消息，对用户头像进行映射，以防部分已退出用户没有头像
         const { conversation } = this
         if (conversation) {
+          const { _attributes: { attr: { username } } } = conversation
           arr.forEach(item => {
             if (!this.memberInfoMap[item.from]) {
               this.memberInfoMap[item.from] = {
                 color: this.colors[++this.colorIndex],
-                name: conversation._attributes.attr[item.from] || '',
+                name: !!username && !!username[item.from] ? username[item.from] : '',
               }
             }
           })
@@ -309,14 +319,6 @@
       bindClientEvent() {
         const self = this
         this.clientEventMap = {
-          [Event.UNREAD_MESSAGES_COUNT_UPDATE]: (conversations) => {
-            const conv = conversations.find(item => {
-              return item.id === self.conversationId
-            })
-            if (conv) {
-              self.unreadMessagesCount = conv.unreadMessagesCount
-            }
-          },
           [Event.DISCONNECT]: () => {
             $toast.show('连接已断开')
           },
