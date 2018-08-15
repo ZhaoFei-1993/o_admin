@@ -48,7 +48,6 @@ module.exports = {
 
   router: {
     base: '/',
-    middleware: ["webp"],
   },
 
   /*
@@ -158,21 +157,6 @@ module.exports = {
             }
           }]
         })
-        /**
-         * 生成webp文件
-         */
-        config.module.rules.push({
-          test: /\.(png|jpe?g)$/,
-          loader: "viawebp-loader",
-          enforce: "post",
-          options: {
-            expose: "default", //webp、all、default
-            name: "img/[name].[hash:7].[ext]",
-            webp: {
-              quality: 75
-            }
-          }
-        });
       }
     }
   },
@@ -190,7 +174,6 @@ module.exports = {
     "~/plugins/axios",
     '~/plugins/polyfills',
     "~/plugins/echarts",
-    "~/plugins/webp",
     "~/plugins/filters",
     "~/plugins/globalMixin",
     "~/plugins/element-ui",

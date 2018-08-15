@@ -71,7 +71,6 @@ export const translateName = (location, lang) => {
 export default ({
   app,
   store,
-  isClient
 }) => {
   if (Vue.$plugins_filter_installed) {
     return

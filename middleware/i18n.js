@@ -8,7 +8,6 @@ export default async function ({
   req,
   replace,
   hotReload,
-  isClient
 }) {
   if (hotReload) {
     return

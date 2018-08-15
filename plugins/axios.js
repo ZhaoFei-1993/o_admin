@@ -2,9 +2,9 @@ import {loginURL} from "../common/constants";
 import Vue from 'vue';
 import cookies from "./cookies";
 
-export default function ({app, $axios, store, redirect, isClient, req}) {
+export default function ({app, $axios, store, redirect, req}) {
   let cookieString = '';
-  if (isClient) {
+  if (process.client) {
     cookieString = document.cookie
   } else {
     cookieString = req.headers.cookie

@@ -23,38 +23,6 @@ if (process.env.MODE === 'development') {
 const host = process.env.HOST || '127.0.0.1'
 const port = process.env.PORT || 5008
 
-if (process.env.MODE === 'development') { //本地开发
-  const jsonServer = require('json-server'); // 基于express的
-  const cookieParser = require('cookie-parser');
-  const db = require('./mock/db');
-  const middleware = require('./mock/middleware');
-  const server = jsonServer.create();
-  const router = jsonServer.router(db());
-  const defaultMiddlewares = jsonServer.defaults();
-  server.use(jsonServer.rewriter({
-    '/api/admin/*': '/$1',
-  }));
-  server.use(cookieParser());
-  server.use((req, res, next) => {
-    return middleware(req, res, next);
-  });
-  router.render = (req, res) => {
-    const length = res.locals.data.length
-    // 转换成后端使用的数据结构
-    res.jsonp({
-      data: length ? {data: res.locals.data, total: res.locals.data.length} : res.locals.data,
-      code: 0,
-      message: 'ok',
-    })
-  }
-  server.use(defaultMiddlewares);
-  server.use(router);
-
-  server.listen(4008, () => {
-    console.log('JSON Server is running on localhost:4008')
-  });
-}
-
 // Init Nuxt.js
 const nuxt = new Nuxt(config)
 
@@ -64,13 +32,6 @@ if (process.env.NODE_ENV !== 'production') {
   builder.build().catch(e => {
     console.error(e) // eslint-disable-line no-console
     process.exit(1)
-  })
-
-  app.use(async function (ctx, next) {
-    const start = new Date()
-    await next()
-    const ms = new Date() - start
-    console.info(`koa:render ${ctx.method} ${ctx.url} - ${ms}ms`)
   })
 }
 

@@ -5,9 +5,8 @@ import {getFormattedLang} from "../common/utilities";
 export default ({
   app,
   store,
-  isClient
 }) => {
-  if (isClient) {
+  if (process.client) {
     const search = window.location.search || ''
     const matches = search.replace('?', '').split('&')
     for (let i = 0; i < matches.length; i++) {
