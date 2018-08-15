@@ -58,7 +58,7 @@ export default ({app, store, redirect}) => {
         this.isAscending = false;
         this.getFilteredResources();
       },
-      initCurrentResource(resourcesPath, id, loadedCallback) {
+      initSingleResource(resourcesPath, id, loadedCallback) {
         this.resourcesPath = resourcesPath;
         this.currentResourceId = id;
         this.currentResource = null;

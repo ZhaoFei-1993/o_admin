@@ -379,7 +379,7 @@
       }
     },
     mounted() {
-      this.initCurrentResource('users', this.id, () => {
+      this.initSingleResource('users', this.id, () => {
         this.currentResource = Object.assign({}, this.currentResource, this.currentResource.user_kyc)
       });
       this.getMerchantInfo();
@@ -451,7 +451,7 @@
         }).then(response => {
           this.forbidUserDialogVisible = false;
           this.$message({message: '用户交易权限已修改', type: 'success'});
-          this.initCurrentResource('users', this.id);
+          this.initSingleResource('users', this.id);
         })
       },
       allowMerchant() {

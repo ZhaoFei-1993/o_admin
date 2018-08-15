@@ -54,7 +54,7 @@ const cookies = {
   parse(str, options) {
     var pairSplitRegExp = /; */;
     if (typeof str !== "string") {
-      throw new TypeError("argument str must be a string");
+      return {};
     }
 
     var obj = {}

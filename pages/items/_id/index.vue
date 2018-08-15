@@ -151,7 +151,7 @@
     },
     methods: {
       initData() {
-        this.initCurrentResource('items', this.id, response => {
+        this.initSingleResource('items', this.id, response => {
           if (!response.data) {
             this.$message('获取广告信息失败，请联系开发人员')
           }

@@ -1,10 +1,9 @@
 <template>
     <div class="header">
         <div class="left-side">
-            <i v-if="!iframeMode"
-               :class="[sidenavOpened?'icon-left-circle-o':'icon-right-circle-o','toggle','iconfont']"
+            <i :class="[sidenavOpened?'icon-left-circle-o':'icon-right-circle-o','toggle','iconfont']"
                @click="toggleSidenav"></i>
-            <router-link to="/"><img class="logo" src="~assets/img/logo/hd_logo.png"/></router-link>
+            <router-link to="/"><img style="height: 36px;" src="~assets/img/logo/hd_logo.png"/></router-link>
         </div>
         <!--<div hidden class="center-nav">-->
         <!--<el-menu :router="true" class="el-menu-demo" mode="horizontal">-->
@@ -13,7 +12,7 @@
         <!--<el-menu-item index="/coinex">交易所</el-menu-item>-->
         <!--</el-menu>-->
         <!--</div>-->
-        <div class="right-side" v-if="!iframeMode">
+        <div class="right-side">
             <template v-if="user.account">
                 <el-tag type="danger" v-if="isSuperAdmin">超级管理员</el-tag>
                 <el-tag type="warning" v-else>管理员</el-tag>
@@ -81,6 +80,8 @@
         box-shadow: 0 2px 4px 0 rgba(94, 94, 94, 0.15);
 
         .left-side {
+            width: 182px;
+            height: 54px;
             display: flex;
             align-items: center;
             i.toggle {
@@ -92,9 +93,6 @@
                 &:hover {
                     color: #ddd;
                 }
-            }
-            .logo {
-                height: 36px;
             }
         }
 

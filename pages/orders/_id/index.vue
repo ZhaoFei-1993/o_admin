@@ -271,7 +271,7 @@
     },
     methods: {
       initData() {
-        this.initCurrentResource('orders', this.id, () => {
+        this.initSingleResource('orders', this.id, () => {
           const order = this.currentResource;
           this.convId = order.conversation_id // 聊天对话id
           if (order.merchant_side === 'sell') {
