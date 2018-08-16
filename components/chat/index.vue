@@ -371,19 +371,10 @@
             self.messageHandler(message)
           },
           [Event.MEMBERS_JOINED]: (payload) => { // 有用户被添加至某个对话
-            const { invitedBy, members } = payload
-            if (invitedBy === 'REST_API') return // 系统邀请信息不展示
-            if (members && members.length === 1 && members[0] === invitedBy) return // 只有一个人参与的邀请信息不展示
-            self.pushSystemMessage(`${invitedBy} 邀请 ${members.join('、')} 加入对话`)
+            self.pushSystemMessage(`${payload.invitedBy === 'REST_API' ? '客服' : payload.invitedBy}已加入对话`)
           },
           [Event.MEMBERS_LEFT]: (payload) => { // 有成员被从某个对话中移除
-            const memberList = payload.members.map(member => {
-              if (this.memberInfoMap[member]) {
-                return this.memberInfoMap[member].name
-              }
-              return member
-            })
-            self.pushSystemMessage(`${payload.kickedBy === 'REST_API' ? '客服' : payload.kickedBy} 将 ${memberList.join('、')} 移出对话`)
+            self.pushSystemMessage(`${payload.kickedBy === 'REST_API' ? '客服' : payload.kickedBy}已退出对话`)
           },
           [Event.KICKED]: (payload) => { // 当前用户被从某个对话中移除
             if (payload.kickedBy === 'REST_API') return // 系统邀请信息不展示
