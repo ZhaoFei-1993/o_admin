@@ -21,7 +21,10 @@
               </div>
               <div class="detail-wrapper detail-col2">
                 <span class="detail-content detail-text" v-if="item.lastMessage">
-                  <template v-if="[messageType.text, messageType.auto].indexOf(item.lastMessage.content._lctype) > -1">
+                  <template v-if="item.lastMessage.content._lctype === messageType.order">
+                    {{ item.lastMessage.from === `${user.account.id}` ? orderMessages[item.lastMessage.content._lctext].me : orderMessages[item.lastMessage.content._lctext].other }}
+                  </template>
+                  <template v-else-if="[messageType.text, messageType.auto].indexOf(item.lastMessage.content._lctype) > -1">
                     {{ item.lastMessage.content._lctext }}
                   </template>
                   <template v-else-if="item.lastMessage.content._lctype === messageType.image">
@@ -42,21 +45,18 @@
 </template>
 
 <script>
-  import { Event, TextMessage } from 'leancloud-realtime'
-  import { ImageMessage } from 'leancloud-realtime-plugin-typed-messages'
+  import { Event } from 'leancloud-realtime'
   import { mapState } from 'vuex'
   import UserAvatar from '~/components/chat/avatar'
   import preventParentScroll from 'vue-prevent-parent-scroll'
-  import {COLORS} from '~/common/constants'
+  import { COLORS, MESSAGE_TYPE, ORDER_MESSAGES } from '~/components/chat/constant.js'
 
   export default {
     data() {
       return {
-        messageType: {
-          image: ImageMessage.TYPE,
-          text: TextMessage.TYPE,
-          auto: -101, // 自动回复
-        },
+        orderMessages: ORDER_MESSAGES,
+        messageType: MESSAGE_TYPE,
+        colors: COLORS,
         showList: false,
         convList: [], // 对话列表
         maxLimit: 20, // 对话列表条数
@@ -91,9 +91,17 @@
       if (this.chat.imClient) {
         this.init() // 从不同layout跳转过来时候需要初始化一次
       }
+      this.$nuxt.$on('IM.Event.SINGLE_MESSAGE_UPDATE', () => {  // 手动强制更新聊天列表
+        this.fetchMessageList({
+          success: (convList) => {
+            this.convList = convList
+          },
+        })
+      })
     },
     beforeDestroy() {
       this.unbindClientEvent()
+      this.$nuxt.$off('IM.Event.SINGLE_MESSAGE_UPDATE')
     },
     methods: {
       init() {
@@ -154,7 +162,7 @@
                 const { _attributes: { attr: { username } } } = conv
                 if (member !== myClientId && username && username[member]) {
                   if (!otherMembers.length) {
-                    defaultColor = COLORS[member % 10]
+                    defaultColor = this.colors[member % 10]
                   }
                   otherMembers.push(username[member])
                 }

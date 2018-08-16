@@ -15,7 +15,6 @@ export default function ({app, $axios, store, redirect, req}) {
   $axios.onResponse(response => {
     const data = response.data;
     const $message = Vue.prototype.$message || console.log;
-    console.log('response', response);
     if (data && data.code === 401) {
       $message({message: '请登录之后再尝试', type: 'warning', duration: 8000});
       return window.location.href = loginURL;

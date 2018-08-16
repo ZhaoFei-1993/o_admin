@@ -46,6 +46,7 @@
     #app {
         height: 100%;
         #chat-list-container {
+            z-index: 1;
             position: fixed;
             bottom: 20px;
             right: 20px;

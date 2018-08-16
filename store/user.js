@@ -8,7 +8,7 @@ export const mutations = {
   },
 };
 export const getters = {
-  isSuperAdmin: state => state.account.role === 'super_admin'
+  isSuperAdmin: state => state.account && state.account.role === 'super_admin'
 }
 export const actions = {
   fetchUserAccount({commit}) {

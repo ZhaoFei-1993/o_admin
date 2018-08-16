@@ -141,39 +141,42 @@
                     </el-card>
                 </el-col>
                 <el-col :span="12" class="with-padding-left">
-                    <el-card v-if="appeal">
-                        <div class="chat-actions">
-                            <el-button type="success" v-if="appeal.status==='created'" @click="processAppeal">
-                                处理申诉
-                            </el-button>
-                            <template v-if="appeal.status==='processing'">
-                                <el-button type="success" v-if="!joinedChat && !appeal.staff_id" @click="joinChat">
-                                    加入聊天
-                                </el-button>
-                                <el-button type="success" v-if="joinedChat" @click="exitChat">
-                                    退出聊天
-                                </el-button>
-                                <el-button type="warning" @click="suspendAppeal">
-                                    挂起申诉
-                                </el-button>
-                                <el-button type="danger"
-                                           @click="showAppealDialog">
-                                    处理完成
-                                </el-button>
-                            </template>
+                    <el-card>
+                      <div class="appeal-wrapper">
+                        <div v-if="appeal">
+                          <div class="chat-actions">
+                              <el-button type="success" v-if="appeal.status==='created'" @click="processAppeal">
+                                  处理申诉
+                              </el-button>
+                              <template v-if="appeal.status==='processing'">
+                                  <el-button type="success" v-if="!joinedChat && !appeal.staff_id" @click="joinChat">
+                                      加入聊天
+                                  </el-button>
+                                  <el-button type="success" v-if="joinedChat" @click="exitChat">
+                                      退出聊天
+                                  </el-button>
+                                  <el-button type="warning" @click="suspendAppeal">
+                                      挂起申诉
+                                  </el-button>
+                                  <el-button type="danger"
+                                             @click="showAppealDialog">
+                                      处理完成
+                                  </el-button>
+                              </template>
 
-                            <el-button type="warning" v-if="appeal.status==='pending'" @click="resumeAppeal">
-                                恢复处理
-                            </el-button>
+                              <el-button type="warning" v-if="appeal.status==='pending'" @click="resumeAppeal">
+                                  恢复处理
+                              </el-button>
+                          </div>
+                          <Chat v-if="joinedChat" :client="chat.imClient" :conversation-id="convId"
+                                :client-id="`${user.account.id}`" style="margin: 10px 0 0 0;border: solid 1px #ddd;"></Chat>
+                          <div v-else>
+                              未加入聊天
+                          </div>
                         </div>
-                        <Chat v-if="joinedChat" :client="chat.imClient" :conversation-id="convId"
-                              :client-id="`${user.account.id}`"></Chat>
-                        <div v-else>
-                            未加入聊天
-                        </div>
-                    </el-card>
-                    <el-card v-else>
-                        未发起申诉，无法查看聊天内容
+                        <div v-else>未发起申诉，无法查看聊天内容</div>
+                        <History :order="currentResource" :id="id" style="margin-left: 10px;"></History>
+                      </div>
                     </el-card>
                 </el-col>
             </el-row>
@@ -228,12 +231,14 @@
     appealResultTypes,
     orderResultTypes
   } from "~/common/constants";
-  import Chat from '~/components/chat'
+  import Chat from '~/components/chat';
+  import History from './history';
 
   const ORDER_PAY_TIME = 15 // 15分钟（未换算）
   export default {
     components: {
       Chat,
+      History,
     },
     data() {
       return {
@@ -381,6 +386,10 @@
                 color: #52cbca;
 
             }
+        }
+        .appeal-wrapper {
+            display: flex;
+            justify-content: flex-start;
         }
         #appeal-dialog {
             .el-select {

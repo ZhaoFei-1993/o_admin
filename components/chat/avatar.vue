@@ -19,6 +19,18 @@
       border-radius: 100%;
       background-color: #52cbca;
     }
+    .dot {
+      position: absolute;
+      height: 8px;
+      width: 8px;
+      right: 8px;
+      top: 8px;
+      border-radius: 50%;
+      transform: translate3d(100%, -50%, 0);
+      background-color: #e35555;
+      border: solid 2px #fff;
+      display: inline-block;
+    }
   }
 </style>
 
@@ -26,6 +38,7 @@
   <div class="user-avatar" :style="{width: `${size}px`, height: `${size}px`, backgroundColor: bgc, fontSize: `${size * 0.5}px`}">
     {{username[0]}}
     <span v-if="online" class="user-online"></span>
+    <sup class="dot" v-if="dot" :style="dotStyle"></sup>
   </div>
 </template>
 
@@ -59,6 +72,14 @@ export default {
       type: String
     },
     index: Number,
+    dot: {
+      type: Boolean,
+      default: false,
+    },
+    dotStyle: {
+      type: String,
+      default: '',
+    },
   }
 }
 </script>
