@@ -7,7 +7,17 @@
         </div>
         <template v-if="item.content._lctype === messageType.order">
           <div class="order-text">
-            {{ item.from === clientId ? orderMessages[item.content._lctext].me : orderMessages[item.content._lctext].other }}
+            <template v-if="eachUserId">
+              <template v-if="['appeal_create', 'appeal_cancel'].indexOf(item.content._lctext) > -1">
+                {{ orderMessages[item.content._lctext].customer[item.from === eachUserId.buyer ? 'byBuyer' : 'bySeller'] }}
+              </template>
+              <template v-else>
+                {{ orderMessages[item.content._lctext].customer }}
+              </template>
+            </template>
+            <template v-else>
+              {{ item.from === clientId ? orderMessages[item.content._lctext].me : orderMessages[item.content._lctext].other }}
+            </template>
           </div>
         </template>
         <template v-else>
@@ -119,6 +129,11 @@
       clientId: {
         required: true,
         type: String,
+      },
+      eachUserId: { // 买、卖和客服三方用户id，只有在admin端使用才需要传入
+        required: false,
+        type: Object,
+        default: null,
       },
       width: {
         type: Number,

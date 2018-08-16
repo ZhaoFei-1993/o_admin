@@ -123,16 +123,17 @@
               let text = msg._lctext;
               side = isBuyer ? '买家' : side;
               side = isSeller ? '卖家' : side;
-              if (msg._lctype === this.messageType.order) {
-                text = this.orderMessages[msg._lctext].me;
-              }
+
               return {
                 ...item,
                 data: msg,
                 _text: text,
                 _side: side,
               };
-            }).reverse().concat(this.chatLogs);
+            })
+            .filter(item => item.data._lctype !== this.messageType.order)  // 过滤掉订单系统消息
+            .reverse()
+            .concat(this.chatLogs);
             if (!isLoadMore) {
               this.scrollToBottom();
             } else {

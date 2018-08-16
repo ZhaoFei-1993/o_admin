@@ -169,6 +169,7 @@
                               </el-button>
                           </div>
                           <Chat v-if="joinedChat" :client="chat.imClient" :conversation-id="convId"
+                                :each-user-id="{ customer: `${user.account.id}`, buyer: `${currentResource.buy_user.id}`, seller: `${currentResource.sell_user.id}` }"
                                 :client-id="`${user.account.id}`" style="margin: 10px 0 0 0;border: solid 1px #ddd;"></Chat>
                           <div v-else>
                               未加入聊天
@@ -266,7 +267,7 @@
       },
       canCloseAppeal() {
         return this.appealResultIndex >= 0 && this.appealRemark && this.appealRemark.length >= 5
-      }
+      },
     },
     mounted() {
       this.initData();
