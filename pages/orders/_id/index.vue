@@ -44,7 +44,7 @@
                         <el-col :span="9">
                             {{currentResource.pay_time | formatTime}}
                         </el-col>
-                        <el-col :span="3">卖家确认收款时间</el-col>
+                        <el-col :span="3">{{lastUpdateLabel}}</el-col>
                         <el-col :span="9">
                             {{currentResource.complete_time | formatTime}}
                         </el-col>
@@ -267,6 +267,23 @@
       },
       canCloseAppeal() {
         return this.appealResultIndex >= 0 && this.appealRemark && this.appealRemark.length >= 5
+      },
+      lastUpdateLabel() {
+        let label;
+        switch (this.currentResource.status) {
+          case 'cancel':
+            label = '取消时间';
+            break;
+          case 'closed':
+            label = '关闭时间';
+            break;
+          case 'success':
+            label = '卖家收款时间';
+            break;
+          default:
+            label = '更新时间';
+        }
+        return label;
       },
     },
     mounted() {
