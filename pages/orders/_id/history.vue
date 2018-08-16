@@ -6,7 +6,7 @@
     placement="right"
     width="400"
     trigger="click">
-    <div ref="chatLogBox" style="height: 400px;width: 100%;overflow-y: auto;overflow-x: hidden;padding: 0;" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="0" infinite-scroll-reverse infinite-scroll-immediate-check="false">
+    <div ref="chatLogBox" class="chat-log-box" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="0" infinite-scroll-reverse infinite-scroll-immediate-check="false">
       <div v-for="item in chatLogs">
         <span>{{ item.timestamp | formatDate }}</span>
         <el-tag type="success" size="mini" v-if="item._side === '买家'">{{ item._side }}</el-tag>
@@ -152,3 +152,13 @@
     },
   }
 </script>
+
+<style lang="scss" scoped>
+  .chat-log-box {
+    height: 390px;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0;
+  }
+</style>
