@@ -20,7 +20,7 @@
           trigger="hover"
           content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
           <img :src="item.data._lcfile.url" style="width: 100%;">
-          <span slot="reference">【图片消息】</span>
+          <span slot="reference">【查看图片】</span>
         </el-popover>
         <span v-else>{{ item._text }}</span>
       </div>
