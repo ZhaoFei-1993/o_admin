@@ -16,7 +16,12 @@
               </template>
             </template>
             <template v-else>
-              {{ item.from === clientId ? orderMessages[item.content._lctext].me : orderMessages[item.content._lctext].other }}
+              <template v-if="item.content._lctext === 'order_create'">
+                {{ isBuySide ? orderMessages[item.content._lctext].me : orderMessages[item.content._lctext].other }}
+              </template>
+              <template v-else>
+                {{ item.from === clientId ? orderMessages[item.content._lctext].me : orderMessages[item.content._lctext].other }}
+              </template>
             </template>
           </div>
         </template>
@@ -119,6 +124,10 @@
       infiniteScroll, // 无限load指令
     },
     props: {
+      isBuySide: {
+        type: Boolean,
+        default: false,
+      },
       client: {
         type: Object,
       },
