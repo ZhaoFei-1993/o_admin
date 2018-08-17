@@ -20,5 +20,5 @@
 <script>
   export default {
     props: ['data', 'columns', 'chartOption', 'hideTable'],
-  }
+  };
 </script>

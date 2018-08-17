@@ -1,8 +1,8 @@
-const log4js = require('log4js')
-const layouts = require('log4js/lib/layouts')
+const log4js = require('log4js');
+const layouts = require('log4js/lib/layouts');
 
-const isDev = process.env.MODE !== 'production'
-const globalLevel = isDev ? 'TRACE' : 'INFO'
+const isDev = process.env.MODE !== 'production';
+const globalLevel = isDev ? 'TRACE' : 'INFO';
 
 log4js.addLayout('filter', function (config) {
   // 去掉请求头里面的敏感用户信息
@@ -10,14 +10,14 @@ log4js.addLayout('filter', function (config) {
     if (logEvent && logEvent.data && logEvent.data.length) {
       logEvent.data.forEach(err => {
         if (err.config && err.config.headers) {
-          err.config.headers.Authorization = 'hidden by log4js'
-          err.config.headers.cookie = 'hidden by log4js'
+          err.config.headers.Authorization = 'hidden by log4js';
+          err.config.headers.cookie = 'hidden by log4js';
         }
-      })
+      });
     }
-    return layouts.basicLayout(logEvent, timezoneOffset)
-  }
-})
+    return layouts.basicLayout(logEvent, timezoneOffset);
+  };
+});
 
 const smtpAppender = {
   type: '@log4js-node/smtp',
@@ -42,7 +42,7 @@ const smtpAppender = {
   },
   html: false,
   sendInterval: 3600,
-}
+};
 
 const logConfig = {
   pm2: true,
@@ -81,7 +81,7 @@ const logConfig = {
       level: globalLevel,
     },
   },
-}
+};
 
 if (isDev) {
   // 非生产环境下，所有日志打印到console
@@ -90,7 +90,7 @@ if (isDev) {
       appenders: ['debug'],
       level: globalLevel,
     },
-  }
+  };
 }
 
 if (+process.env.OTC_ADMIN === 0 && !isDev) { // 只发送一个实例的log
@@ -124,18 +124,18 @@ if (+process.env.OTC_ADMIN === 0 && !isDev) { // 只发送一个实例的log
       level: 'INFO',
       appender: 'commonEmailSender',
     },
-  }
-  logConfig.categories.default.appenders.push('commonEmail', 'errorEmail')
+  };
+  logConfig.categories.default.appenders.push('commonEmail', 'errorEmail');
 }
 
-log4js.configure(logConfig)
-const logger = log4js.getLogger()
+log4js.configure(logConfig);
+const logger = log4js.getLogger();
 
-console.log = console.info = logger.info.bind(logger)
-console.error = logger.error.bind(logger)
-console.debug = logger.debug.bind(logger)
-console.warn = logger.warn.bind(logger)
-console.trace = logger.trace.bind(logger)
-console.fatal = logger.fatal.bind(logger)
+console.log = console.info = logger.info.bind(logger);
+console.error = logger.error.bind(logger);
+console.debug = logger.debug.bind(logger);
+console.warn = logger.warn.bind(logger);
+console.trace = logger.trace.bind(logger);
+console.fatal = logger.fatal.bind(logger);
 
-module.exports = logger
+module.exports = logger;

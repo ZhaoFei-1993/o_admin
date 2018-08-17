@@ -10,11 +10,11 @@
       return {
         visible: false,
         closing: false,
-      }
+      };
     },
     watch: {
       value(val) {
-        this.visible = val
+        this.visible = val;
       },
     },
     props: {
@@ -29,15 +29,15 @@
     },
     methods: {
       onClose() {
-        this.closing = true
+        this.closing = true;
         setTimeout(() => {
-          this.closing = false
-          this.visible = false
-          this.$emit('input', this.visible)
-        }, 400)
+          this.closing = false;
+          this.visible = false;
+          this.$emit('input', this.visible);
+        }, 400);
       },
     },
-  }
+  };
 </script>
 
 <style lang="scss">

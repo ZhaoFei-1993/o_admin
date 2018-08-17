@@ -96,7 +96,7 @@
                                 <el-row>
                                     <el-col :span="3">申诉人</el-col>
                                     <el-col :span="9">
-                                        {{appealSide(appeal)}}
+                                        {{appealSide}}
                                     </el-col>
                                     <el-col :span="3">申诉方</el-col>
                                     <el-col :span="9">
@@ -223,19 +223,19 @@
 </template>
 <script>
   import {
-    mapState
-  } from "vuex";
+    mapState,
+  } from 'vuex';
   import {
     orderStatusTypes,
     paymentTypes,
     appealStatusTypes,
     appealResultTypes,
-    orderResultTypes
-  } from "~/common/constants";
+    orderResultTypes,
+  } from '~/common/constants';
   import Chat from '~/components/chat';
   import History from './history';
 
-  const ORDER_PAY_TIME = 15 // 15分钟（未换算）
+  const ORDER_PAY_TIME = 15; // 15分钟（未换算）
   export default {
     components: {
       Chat,
@@ -257,16 +257,16 @@
         appealDialogVisible: false,
         convId: '',
         joinedChat: false,
-      }
+      };
     },
     computed: {
       ...mapState(['user', 'chat']),
       paymentMethod() {
-        const pay = this.currentResource.payment_methods[0]
-        return pay ? `${this.itemText(pay.method, paymentTypes)} 账号：${pay.account_no} 账户名：${pay.account_name}` : '--'
+        const pay = this.currentResource.payment_methods[0];
+        return pay ? `${this.itemText(pay.method, paymentTypes)} 账号：${pay.account_no} 账户名：${pay.account_name}` : '--';
       },
       canCloseAppeal() {
-        return this.appealResultIndex >= 0 && this.appealRemark && this.appealRemark.length >= 5
+        return this.appealResultIndex >= 0 && this.appealRemark && this.appealRemark.length >= 5;
       },
       lastUpdateLabel() {
         let label;
@@ -290,104 +290,104 @@
       this.initData();
     },
     beforeDestroy() {
-      this.stopCountDown()
+      this.stopCountDown();
     },
     methods: {
       initData() {
         this.initSingleResource('orders', this.id, () => {
           const order = this.currentResource;
-          this.convId = order.conversation_id // 聊天对话id
+          this.convId = order.conversation_id; // 聊天对话id
           if (order.merchant_side === 'sell') {
-            order.sell_user = order.merchant
-            order.buy_user = order.user
+            order.sell_user = order.merchant;
+            order.buy_user = order.user;
           } else {
-            order.sell_user = order.user
-            order.buy_user = order.merchant
+            order.sell_user = order.user;
+            order.buy_user = order.merchant;
           }
           if (order.status === 'created') {
-            this.orderExpireTime = (order.place_time + ORDER_PAY_TIME * 60) * 1000
-            this.payRemainTime = Math.floor((this.orderExpireTime - Date.now()) / 1000)
-            this.startCountDown()
+            this.orderExpireTime = (order.place_time + ORDER_PAY_TIME * 60) * 1000;
+            this.payRemainTime = Math.floor((this.orderExpireTime - Date.now()) / 1000);
+            this.startCountDown();
           }
         });
         this.$axios.get(`orders/${this.id}/appeal`).then(response => {
           if (response.data.data) {
-            this.appeal = response.data.data
+            this.appeal = response.data.data;
             if (this.appeal.staff_id === this.user.account.id) {
-              this.joinedChat = true
+              this.joinedChat = true;
             }
           }
-        })
+        });
       },
       isSellerAppeal(appeal) {
-        return appeal.user_id === this.currentResource.sell_user.id
+        return appeal.user_id === this.currentResource.sell_user.id;
       },
       appealSide(appeal) {
-        return this.isSellerAppeal ? `${this.currentResource.sell_user.name}` : `${this.currentResource.buy_user.name}`
+        return this.isSellerAppeal ? `${this.currentResource.sell_user.name}` : `${this.currentResource.buy_user.name}`;
       },
       processAppeal() {
-        this.patchAppeal({"operation_type": "process",})
+        this.patchAppeal({'operation_type': 'process'});
       },
       suspendAppeal() {
-        this.patchAppeal({"operation_type": "suspend",})
+        this.patchAppeal({'operation_type': 'suspend'});
       },
       resumeAppeal() {
-        this.patchAppeal({"operation_type": "resume",})
+        this.patchAppeal({'operation_type': 'resume'});
       },
       showAppealDialog() {
-        this.appealDialogVisible = true
+        this.appealDialogVisible = true;
       },
       closeAppeal() {
         this.appealDialogVisible = false;
-        this.joinedChat = false
-        let orderResult = this.orderResultTypes[this.appealResultIndex].value
+        this.joinedChat = false;
+        let orderResult = this.orderResultTypes[this.appealResultIndex].value;
         if (this.currentResource.status === 'success') {
-          orderResult = this.orderResultTypes[0].value
+          orderResult = this.orderResultTypes[0].value;
         }
         this.patchAppeal({
-          operation_type: "close",
+          operation_type: 'close',
           appeal_result: this.appealResultTypes[this.appealResultIndex].value,
           order_result: orderResult,
           remark: this.appealRemark
-        })
+        });
       },
       joinChat() {
         this.$axios.post(`orders/${this.id}/conversation`).then(response => {
-          this.joinedChat = true
-          this.$message('成功加入聊天', 'success')
-        })
+          this.joinedChat = true;
+          this.$message('成功加入聊天', 'success');
+        });
       },
       exitChat() {
         this.$axios.delete(`orders/${this.id}/conversation`).then(response => {
-          console.log(response)
+          console.log(response);
           if (response.data.data && !response.data.data.staff_id) {
-            this.joinedChat = false
-            this.$message('已经退出聊天')
+            this.joinedChat = false;
+            this.$message('已经退出聊天');
           } else {
-            this.$message('退出聊天出错，请刷新页面重试或联系开发人员', 'error')
+            this.$message('退出聊天出错，请刷新页面重试或联系开发人员', 'error');
           }
-        })
+        });
       },
       patchAppeal(payload) {
         this.$axios.patch(`/orders/${this.id}/appeal`, payload).then(response => {
-          this.appeal = response.data.data
-        })
+          this.appeal = response.data.data;
+        });
       },
       startCountDown() {
         this.secondCountdown = setInterval(() => {
           if (this.payRemainTime > 0) {
-            this.payRemainTime = Math.floor((this.orderExpireTime - Date.now()) / 1000)
+            this.payRemainTime = Math.floor((this.orderExpireTime - Date.now()) / 1000);
           } else {
-            this.stopCountDown()
+            this.stopCountDown();
           }
-        }, 1000)
+        }, 1000);
       },
       stopCountDown() {
-        if (!this.secondCountdown) return
-        clearInterval(this.secondCountdown)
+        if (!this.secondCountdown) return;
+        clearInterval(this.secondCountdown);
       },
     }
-  }
+  };
 </script>
 <style lang="scss">
     .page-order-detail {

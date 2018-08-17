@@ -1,1 +1,1 @@
-export {actions, mutations, state, getters} from '~/components/chat/store'
+export {actions, mutations, state, getters} from '~/components/chat/store';

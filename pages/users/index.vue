@@ -97,8 +97,8 @@
     </div>
 </template>
 <script>
-  import {userRoles, kycStatusTypes, userStatusTypes, merchantAuthStatusTypes} from "~/common/constants";
-  import {timeToLocale} from "~/common/utilities";
+  import {userRoles, kycStatusTypes, userStatusTypes, merchantAuthStatusTypes} from '~/common/constants';
+  import {timeToLocale} from '~/common/utilities';
 
   export default {
     layout: 'default',
@@ -118,7 +118,7 @@
           label: '注册时间',
           width: 96,
           formatter: (row, column, cellValue) => {
-            return timeToLocale(cellValue)
+            return timeToLocale(cellValue);
           },
           className: 'time',
         }, {
@@ -130,21 +130,21 @@
           label: '姓名',
           width: 80,
           formatter: (row, column, cellValue) => {
-            return cellValue || '未实名'
+            return cellValue || '未实名';
           },
         }, {
           prop: 'is_merchant',
           label: '角色',
           width: 72,
           formatter: (row, column, cellValue) => {
-            return this.itemText(cellValue, userRoles)
+            return this.itemText(cellValue, userRoles);
           },
         }, {
           prop: 'mobile',
           label: '手机',
           width: 120,
           formatter: (row, column, cellValue) => {
-            return cellValue || '--'
+            return cellValue || '--';
           },
         }, {
           prop: 'email',
@@ -154,22 +154,22 @@
           prop: 'status',
           label: '用户状态',
           formatter: (row, column, cellValue) => {
-            return this.itemText(cellValue, userStatusTypes)
+            return this.itemText(cellValue, userStatusTypes);
           },
-        },],
-      }
+        }],
+      };
     },
     mounted() {
       this.initResources('users', () => {
         if (this.resources && this.resources.length === 1) {
-          this.$router.push(`/users/${this.resources[0].id}`)
+          this.$router.push(`/users/${this.resources[0].id}`);
         }
       }, {
         user_search: this.$route.query.user_search
       });
     },
     methods: {}
-  }
+  };
 </script>
 
 <style lang="scss">

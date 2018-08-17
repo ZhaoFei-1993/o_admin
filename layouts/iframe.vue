@@ -14,16 +14,16 @@
 <script>
   import Header from '~/components/Header.vue';
 
-  export default {
+export default {
     components: {
       Header,
     },
     data() {
       return {
         sidenavOpened: false,
-      }
+      };
     }
-  }
+  };
 </script>
 <style lang="scss" scoped>
     #app {

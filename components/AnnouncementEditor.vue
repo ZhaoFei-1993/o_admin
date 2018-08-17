@@ -61,9 +61,9 @@
     </div>
 </template>
 <script>
-  import {languages} from "../common/constants";
+  import {languages} from '../common/constants';
 
-  export default {
+export default {
     data() {
       return {
         langs: languages,
@@ -74,10 +74,10 @@
         },
         showPreview: true,
         sideBySide: false,
-      }
+      };
     },
     props: ['announcement']
-  }
+  };
 </script>
 <style lang="scss" scoped>
     .announcement-header {

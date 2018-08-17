@@ -295,13 +295,13 @@
 </template>
 <script>
   import {
-    userStatusTypes, roles, kycStatusTypes, merchantAuthStatusTypes,
+    userStatusTypes, kycStatusTypes, merchantAuthStatusTypes,
     merchantStatusTypes, counterpartyLimitTypes,
     balanceHistoryTypes, paymentTypes,
     licenseTypes, paymentStatusTypes,
-  } from '~/common/constants'
-  import {findMatchedItems} from "~/common/utilities";
-  import {timeToLocale} from "../../common/utilities";
+  } from '~/common/constants';
+  import {findMatchedItems} from '~/common/utilities';
+  import {timeToLocale} from '../../common/utilities';
 
   export default {
     data() {
@@ -327,8 +327,8 @@
         forbidMerchantDialogVisible: false,
         historyTotalNum: 0,
         historyPageNum: 1,
-        changeNameDialogVisible:false,
-        newName:'',
+        changeNameDialogVisible: false,
+        newName: '',
         balanceColumns: [{
           prop: 'coin_type',
           label: '币种',
@@ -336,24 +336,24 @@
           prop: 'available',
           label: '可用余额',
           formatter: (row, col, value) => {
-            value.formatMoney()
-            return value
+            value.formatMoney();
+            return value;
           }
         }, {
           prop: 'frozen',
           label: '冻结余额',
           formatter: (row, col, value) => {
-            value.formatMoney()
-            return value
+            value.formatMoney();
+            return value;
           }
         }, {
           prop: 'total',
           label: '总额',
           formatter: (row, col, value) => {
-            value.formatMoney()
-            return value
+            value.formatMoney();
+            return value;
           }
-        },],
+        }],
         balanceHistoryColumns: [{
           prop: 'coin_type',
           label: '币种',
@@ -361,26 +361,26 @@
           prop: 'create_time',
           label: '时间',
           formatter: (row, column, cellValue) => {
-            return timeToLocale(cellValue)
+            return timeToLocale(cellValue);
           },
         }, {
           prop: 'business_type',
           label: '流水类型',
           formatter: (row, col, value) => {
-            return this.itemText(value, balanceHistoryTypes)
+            return this.itemText(value, balanceHistoryTypes);
           }
         }, {
           prop: 'amount',
           label: '金额数量',
           formatter: (row, col, value) => {
-            return value
+            return value;
           }
-        },],
-      }
+        }],
+      };
     },
     mounted() {
       this.initSingleResource('users', this.id, () => {
-        this.currentResource = Object.assign({}, this.currentResource, this.currentResource.user_kyc)
+        this.currentResource = Object.assign({}, this.currentResource, this.currentResource.user_kyc);
       });
       this.getMerchantInfo();
       this.getOTCBalance();
@@ -390,16 +390,16 @@
     },
     computed: {
       counterpartyLimit() {
-        return findMatchedItems(this.setting.counterparty_limit, counterpartyLimitTypes).map(o => o.text).join(', ')
+        return findMatchedItems(this.setting.counterparty_limit, counterpartyLimitTypes).map(o => o.text).join(', ');
       },
       kycName() {
-        return this.currentResource.user_kyc ? (this.currentResource.user_kyc.last_name + '' + this.currentResource.user_kyc.first_name) : '--'
+        return this.currentResource.user_kyc ? (this.currentResource.user_kyc.last_name + '' + this.currentResource.user_kyc.first_name) : '--';
       },
       kycLicense() {
-        return this.currentResource.user_kyc ? this.itemText(this.currentResource.user_kyc.id_type, this.licenseTypes) : '--'
+        return this.currentResource.user_kyc ? this.itemText(this.currentResource.user_kyc.id_type, this.licenseTypes) : '--';
       },
       kycNumber() {
-        return this.currentResource.user_kyc ? (this.currentResource.user_kyc.id_number) : '--'
+        return this.currentResource.user_kyc ? (this.currentResource.user_kyc.id_number) : '--';
       }
     },
     methods: {
@@ -408,34 +408,34 @@
           this.merchant = response.data.data;
         }).catch(err => {
           if (err.code === 605) {
-            this.merchant = null
+            this.merchant = null;
           }
-        })
+        });
       },
       getMerchantSetting() {
         this.$axios.get(`/users/${this.id}/settings`).then(response => {
           this.setting = response.data.data;
-        })
+        });
       },
       getOTCBalance() {
         this.$axios.get(`/users/${this.id}/balance/otc`).then(response => {
           this.balance = response.data.data;
-        })
+        });
       },
       getBalanceHistory() {
         // TODO 翻页
         this.$axios.get(`/users/${this.id}/balance/history?page=${this.historyPageNum}&limit=10`).then(response => {
           this.historyTotalNum = parseInt(response.data.data.total || response.data.total);
           this.balanceHistory = response.data.data.data;
-        })
+        });
       },
       getPaymentMethods() {
         this.$axios.get(`/users/${this.id}/payment/method`).then(response => {
           this.paymentMethods = response.data.data;
-        })
+        });
       },
       allowUser() {
-        this.toggleUserStatus(true, '')
+        this.toggleUserStatus(true, '');
       },
       forbidUser() {
         this.forbidUserRemark = null;
@@ -452,10 +452,10 @@
           this.forbidUserDialogVisible = false;
           this.$message({message: '用户交易权限已修改', type: 'success'});
           this.initSingleResource('users', this.id);
-        })
+        });
       },
       allowMerchant() {
-        this.toggleMerchantStatus(true, '')
+        this.toggleMerchantStatus(true, '');
       },
       forbidMerchant() {
         this.forbidMerchantRemark = null;
@@ -472,7 +472,7 @@
           this.forbidMerchantDialogVisible = false;
           this.$message({message: '商家发布广告权限已修改', type: 'success'});
           this.getMerchantInfo();
-        })
+        });
       },
       markAsMerchant() {
         this.$confirm(`确认以超级管理员权限将此用户 ${this.currentResource.name} 设置为认证商家?`, '认证商家提示', {
@@ -483,23 +483,23 @@
           // TODO
         });
       },
-      changeName(){
-        this.newName=this.currentResource.name;
-        this.changeNameDialogVisible= true;
+      changeName() {
+        this.newName = this.currentResource.name;
+        this.changeNameDialogVisible = true;
       },
-      confirmChangeName(){
-        this.$axios.put('/users/'+this.currentResource.id,{
+      confirmChangeName() {
+        this.$axios.put('/users/' + this.currentResource.id, {
           name: this.newName
-        }).then(response=>{
+        }).then(response => {
           this.currentResource.name = this.newName;
           this.changeNameDialogVisible = false;
-        }).catch(err=>{
-          this.$message('修改失败，请联系开发人员','error');
+        }).catch(err => {
+          this.$message(`修改失败，请联系开发人员，error=${err}`, 'error');
           this.changeNameDialogVisible = false;
-        })
+        });
       }
     }
-  }
+  };
 </script>
 <style lang="scss">
     @import "~assets/style/global.scss";

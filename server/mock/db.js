@@ -1,11 +1,11 @@
-const faker = require('faker/locale/zh_CN')
+const faker = require('faker/locale/zh_CN');
 
 module.exports = () => {
   const data = {
     users: [],
     items: [],
     orders: [],
-  }
+  };
   // Create data with faker
   for (let i = 0; i < 1000; i++) {
     data.users.push({
@@ -32,8 +32,8 @@ module.exports = () => {
       email_verified: faker.random.boolean(),
       phone_verified: faker.random.boolean(),
       idcard_verified: faker.random.boolean(),
-    })
-    const randUser = data.users[faker.random.number({max: i})]
+    });
+    const randUser = data.users[faker.random.number({max: i})];
     data.items.push({
       id: i,
       user_id: randUser.id,
@@ -55,8 +55,8 @@ module.exports = () => {
       status: faker.random.arrayElement([0, 1]),
       create_time: faker.date.past(),
       update_time: faker.date.past(),
-    })
-    const orderStatus = faker.random.arrayElement(['success', 'created', 'paid', 'cancel', 'closed'])
+    });
+    const orderStatus = faker.random.arrayElement(['success', 'created', 'paid', 'cancel', 'closed']);
     data.orders.push({
       id: i,
       item_id: faker.random.number(), // 可能广告不存在，顺便测试错误吧
@@ -78,7 +78,7 @@ module.exports = () => {
       pay_time: orderStatus === 'created' ? null : faker.date.past(),         // 支付时间
       complete_time: ['success', 'cancel', 'closed'].indexOf(orderStatus) > -1 ? faker.date.past() : null,    // 完成时间，success cancel closed状态
       appeal_time: faker.date.past(),      // 申诉时间
-    })
+    });
   }
-  return data
-}
+  return data;
+};

@@ -6,11 +6,9 @@
 </template>
 
 <script>
-  import {checkAuth} from "../common/utilities";
-
   export default {
     layout: 'default',
-  }
+  };
 </script>
 <style lang="scss" scoped>
     .size-test {

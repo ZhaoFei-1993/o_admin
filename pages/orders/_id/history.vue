@@ -57,13 +57,13 @@
     props: ['id', 'order'],
     filters: {
       formatDate(timestamp) {
-        const todayString = new Date().toDateString()
-        const date = new Date(timestamp)
-        let formatTime = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`
+        const todayString = new Date().toDateString();
+        const date = new Date(timestamp);
+        let formatTime = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
         if (todayString !== date.toDateString()) {
-          formatTime = `${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')} ${formatTime}`
+          formatTime = `${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')} ${formatTime}`;
         }
-        return formatTime
+        return formatTime;
       },
     },
     methods: {
@@ -80,12 +80,12 @@
       },
       scrollToBottom() {
         const tid = setTimeout(() => {
-          const target = this.$refs.chatLogBox
+          const target = this.$refs.chatLogBox;
           if (target) {
-            target.scrollTop = target.scrollHeight
+            target.scrollTop = target.scrollHeight;
           }
-          clearTimeout(tid)
-        }, 150)
+          clearTimeout(tid);
+        }, 150);
       },
       loadMore() {
         if (this.loadedAll) return;
@@ -101,12 +101,12 @@
       getChatLog(isLoadMore) {
         if (this.loading) return;
         this.loading = true;
-        let oldTarget
-        let oldScrollHeight = 0
+        let oldTarget;
+        let oldScrollHeight = 0;
         if (isLoadMore) {
-          oldTarget = this.$refs.chatLogBox
+          oldTarget = this.$refs.chatLogBox;
           if (oldTarget) {
-            oldScrollHeight = oldTarget.scrollHeight // 保存旧scrollHeight数据
+            oldScrollHeight = oldTarget.scrollHeight; // 保存旧scrollHeight数据
           }
         }
         this.$axios.get(`orders/${this.id}/message`, {
@@ -120,7 +120,7 @@
               const isBuyer = `${this.order.buy_user.id}` === item.from;
               const isSeller = `${this.order.sell_user.id}` === item.from;
               let side = '客服';
-              let text = msg._lctext;
+              const text = msg._lctext;
               side = isBuyer ? '买家' : side;
               side = isSeller ? '卖家' : side;
 
@@ -131,27 +131,27 @@
                 _side: side,
               };
             })
-            .filter(item => item.data._lctype !== this.messageType.order)  // 过滤掉订单系统消息
-            .reverse()
-            .concat(this.chatLogs);
+              .filter(item => item.data._lctype !== this.messageType.order)  // 过滤掉订单系统消息
+              .reverse()
+              .concat(this.chatLogs);
             if (!isLoadMore) {
               this.scrollToBottom();
             } else {
               this.$nextTick(() => {
-                const target = this.$refs.chatLogBox
+                const target = this.$refs.chatLogBox;
                 if (target) {
-                  target.scrollTop = target.scrollTop + (target.scrollHeight - oldScrollHeight) // 新的滚动高度 = 新高度 - 旧高度
+                  target.scrollTop = target.scrollTop + (target.scrollHeight - oldScrollHeight); // 新的滚动高度 = 新高度 - 旧高度
                 }
-              })
+              });
             }
           }
         }).catch(err => {
           console.error(err);
           this.loading = false;
-        })
+        });
       },
     },
-  }
+  };
 </script>
 
 <style lang="scss" scoped>

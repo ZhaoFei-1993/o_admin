@@ -1,9 +1,8 @@
-const VueLoader = require("vue-loader");
+const VueLoader = require('vue-loader');
 
-const baseDomain = require("./baseURL");
-const webpack = require('webpack');
-const SpritesmithPlugin = require("webpack-spritesmith");
-const path = require("path");
+const baseDomain = require('./baseURL');
+const SpritesmithPlugin = require('webpack-spritesmith');
+const path = require('path');
 const marked = require('marked');
 const renderer = new marked.Renderer();
 
@@ -19,22 +18,22 @@ module.exports = {
       name: 'viewport',
       content: 'width=device-width, initial-scale=1'
     }, {
-      renderer: "webkit"
+      renderer: 'webkit'
     }, {
-      name: "format-detection",
-      content: "telephone=no"
+      name: 'format-detection',
+      content: 'telephone=no'
     }, {
-      "http-equiv": 'X-UA-Compatible',
+      'http-equiv': 'X-UA-Compatible',
       content: 'IE=edge'
     }, {
-      hid: "description",
-      name: "description",
-      content: ""
+      hid: 'description',
+      name: 'description',
+      content: ''
     }, {
-      hid: "keywords",
-      name: "keywords",
-      content: ""
-    }
+      hid: 'keywords',
+      name: 'keywords',
+      content: ''
+    },
     ],
     link: [{
       rel: 'icon',
@@ -56,14 +55,14 @@ module.exports = {
   css: [
     'quill/dist/quill.core.css',
     {
-      src: "~/assets/style/global.scss",
-      lang: "scss"
+      src: '~/assets/style/global.scss',
+      lang: 'scss'
     },
     'element-ui/lib/theme-chalk/reset.css',
     'element-ui/lib/theme-chalk/index.css',
     {
-      src: "~/assets/style/announcement.scss",
-      lang: "scss"
+      src: '~/assets/style/announcement.scss',
+      lang: 'scss'
     },
   ],
 
@@ -79,29 +78,29 @@ module.exports = {
   build: {
     extractCSS: true,
     filenames: {
-      manifest: "manifest.[hash:7].js",
-      css: "style.[hash:7].css",
-      vendor: "vendor.[chunkhash:7].js",
-      app: "otc.coinex.[chunkhash:7].js",
-      chunk: "[name].[chunkhash:7].js"
+      manifest: 'manifest.[hash:7].js',
+      css: 'style.[hash:7].css',
+      vendor: 'vendor.[chunkhash:7].js',
+      app: 'otc.coinex.[chunkhash:7].js',
+      chunk: '[name].[chunkhash:7].js'
     },
-    vendor: ["babel-polyfill"],
+    vendor: ['babel-polyfill'],
     plugins: [
       new SpritesmithPlugin({
         src: {
-          cwd: path.resolve(__dirname, "../assets/img/concat"),
-          glob: "**/*.png"
+          cwd: path.resolve(__dirname, '../assets/img/concat'),
+          glob: '**/*.png'
         },
         target: {
-          image: path.resolve(__dirname, "../assets/spritesmith/sprite.png"),
-          css: path.resolve(__dirname, "../assets/spritesmith/sprite.scss")
+          image: path.resolve(__dirname, '../assets/spritesmith/sprite.png'),
+          css: path.resolve(__dirname, '../assets/spritesmith/sprite.scss')
         },
-        retina: "@2x",
+        retina: '@2x',
         apiOptions: {
-          cssImageRef: "~assets/spritesmith/sprite.png"
+          cssImageRef: '~assets/spritesmith/sprite.png'
         }
       }),
-      new VueLoader.VueLoaderPlugin()
+      new VueLoader.VueLoaderPlugin(),
     ],
     /*
      ** Run ESLint on save
@@ -112,14 +111,14 @@ module.exports = {
       config.resolve = config.resolve || {
         modules: []
       };
-      config.resolve.modules.push("spritesmith-generated");
+      config.resolve.modules.push('spritesmith-generated');
 
       config.module.rules.push({
         test: /\.md$/,
         use: [{
-          loader: "html-loader"
+          loader: 'html-loader'
         }, {
-          loader: "markdown-loader",
+          loader: 'markdown-loader',
           options: {
             renderer: renderer,
           }
@@ -135,13 +134,13 @@ module.exports = {
       if (!ctx.isDev) {
         config.module.rules.push({
           test: /\.(gif|png|jpe?g|svg)$/i,
-          //test: /\.(gif|svg)$/i,
+          // test: /\.(gif|svg)$/i,
           exclude: [path.resolve(__dirname, '../assets/img/inlineSvg')],
           loaders: [{
-            loader: "image-webpack-loader",
+            loader: 'image-webpack-loader',
             query: {
               pngquant: {
-                quality: "65-90",
+                quality: '65-90',
                 speed: 4,
                 optimizationLevel: 7,
                 interlaced: true
@@ -151,12 +150,12 @@ module.exports = {
               },
               mozjpeg: {
                 progressive: true,
-                //optimizationLevel: 3,
+                // optimizationLevel: 3,
                 quality: 80
               }
             }
           }]
-        })
+        });
       }
     }
   },
@@ -171,11 +170,11 @@ module.exports = {
   },
   plugins: [
     // {src: "~/plugins/quill", ssr: false},
-    "~/plugins/axios",
+    '~/plugins/axios',
     '~/plugins/polyfills',
-    "~/plugins/echarts",
-    "~/plugins/filters",
-    "~/plugins/globalMixin",
-    "~/plugins/element-ui",
+    '~/plugins/echarts',
+    '~/plugins/filters',
+    '~/plugins/globalMixin',
+    '~/plugins/element-ui',
   ]
 };

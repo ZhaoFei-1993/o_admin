@@ -88,9 +88,9 @@
     data() {
       return {
         activeIndex: this.$route.path,
-      }
+      };
     }
-  }
+  };
 </script>
 <style lang="scss" scoped>
     .side-nav {

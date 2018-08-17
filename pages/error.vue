@@ -9,7 +9,7 @@
 <script>
   export default {
     layout: 'iframe',
-  }
+  };
 </script>
 <style lang="scss" scoped>
     .forbidden-warning {

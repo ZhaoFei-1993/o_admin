@@ -5,62 +5,62 @@ const cookies = {
     if (!context || !context.cookie) {
       return null;
     }
-    return decodeURIComponent(context.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(sKey).replace(/[-.+*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
+    return decodeURIComponent(context.cookie.replace(new RegExp('(?:(?:^|.*;)\\s*' + encodeURIComponent(sKey).replace(/[-.+*]/g, '\\$&') + '\\s*\\=\\s*([^;]*).*$)|^.*$'), '$1')) || null;
   },
   setItem: function (context, sKey, sValue, vEnd, sPath, sDomain, bSecure) {
     if (!context || context.cookie === undefined || context.cookie === null || !sKey || /^(?:expires|max-age|path|domain|secure)$/i.test(sKey)) {
       return false;
     }
-    var sExpires = "";
+    let sExpires = '';
     if (vEnd) {
       switch (vEnd.constructor) {
         case Number:
-          sExpires = vEnd === Infinity ? "; expires=Fri, 31 Dec 9999 23:59:59 GMT" : "; max-age=" + vEnd;
+          sExpires = vEnd === Infinity ? '; expires=Fri, 31 Dec 9999 23:59:59 GMT' : '; max-age=' + vEnd;
           break;
         case String:
-          sExpires = "; expires=" + vEnd;
+          sExpires = '; expires=' + vEnd;
           break;
         case Date:
-          sExpires = "; expires=" + vEnd.toUTCString();
+          sExpires = '; expires=' + vEnd.toUTCString();
           break;
       }
     }
-    context.cookie = encodeURIComponent(sKey) + "=" + encodeURIComponent(sValue) + sExpires + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "") + (bSecure ? "; secure" : "");
+    context.cookie = encodeURIComponent(sKey) + '=' + encodeURIComponent(sValue) + sExpires + (sDomain ? '; domain=' + sDomain : '') + (sPath ? '; path=' + sPath : '') + (bSecure ? '; secure' : '');
     return true;
   },
   removeItem: function (context, sKey, sPath, sDomain) {
     if (!context || context.cookie === undefined || context.cookie === null || !sKey || !this.hasItem(context, sKey)) {
       return false;
     }
-    context.cookie = encodeURIComponent(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "");
+    context.cookie = encodeURIComponent(sKey) + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT' + (sDomain ? '; domain=' + sDomain : '') + (sPath ? '; path=' + sPath : '');
     return true;
   },
   hasItem: function (context, sKey) {
     if (!context || !context.cookie) {
       return null;
     }
-    return (new RegExp("(?:^|;\\s*)" + encodeURIComponent(sKey).replace(/[-.+*]/g, "\\$&") + "\\s*\\=")).test(context.cookie);
+    return (new RegExp('(?:^|;\\s*)' + encodeURIComponent(sKey).replace(/[-.+*]/g, '\\$&') + '\\s*\\=')).test(context.cookie);
   },
   keys: function (context) {
     if (!context || !context.cookie) {
       return null;
     }
-    var aKeys = context.cookie.replace(/((?:^|\s*;)[^=]+)(?=;|$)|^\s*|\s*(?:=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:=[^;]*)?;\s*/);
-    for (var nIdx = 0; nIdx < aKeys.length; nIdx++) {
+    const aKeys = context.cookie.replace(/((?:^|\s*;)[^=]+)(?=;|$)|^\s*|\s*(?:=[^;]*)?(?:\1|$)/g, '').split(/\s*(?:=[^;]*)?;\s*/);
+    for (let nIdx = 0; nIdx < aKeys.length; nIdx++) {
       aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]);
     }
     return aKeys;
   },
   parse(str, options) {
-    var pairSplitRegExp = /; */;
-    if (typeof str !== "string") {
+    const pairSplitRegExp = /; */;
+    if (typeof str !== 'string') {
       return {};
     }
 
-    var obj = {}
-    var opt = options || {};
-    var pairs = str.split(pairSplitRegExp);
-    var dec = opt.decode || decodeURIComponent;
+    const obj = {};
+    const opt = options || {};
+    const pairs = str.split(pairSplitRegExp);
+    const dec = opt.decode || decodeURIComponent;
 
     function tryDecode(str, decode) {
       try {
@@ -70,20 +70,20 @@ const cookies = {
       }
     }
 
-    for (var i = 0; i < pairs.length; i++) {
-      var pair = pairs[i];
-      var eq_idx = pair.indexOf("=");
+    for (let i = 0; i < pairs.length; i++) {
+      const pair = pairs[i];
+      let eqIdx = pair.indexOf('=');
 
       // skip things that don"t look like key=value
-      if (eq_idx < 0) {
+      if (eqIdx < 0) {
         continue;
       }
 
-      var key = pair.substr(0, eq_idx).trim()
-      var val = pair.substr(++eq_idx, pair.length).trim();
+      const key = pair.substr(0, eqIdx).trim();
+      let val = pair.substr(++eqIdx, pair.length).trim();
 
       // quoted values
-      if (val[0] === "\"") {
+      if (val[0] === '"') {
         val = val.slice(1, -1);
       }
 
@@ -97,4 +97,4 @@ const cookies = {
   }
 };
 
-export default cookies
+export default cookies;
