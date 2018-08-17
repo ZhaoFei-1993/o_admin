@@ -286,10 +286,10 @@
         return label;
       },
       isSellerAppeal() {
-        return this.appeal.user_id === this.currentResource.sell_user.id
+        return this.appeal.user_id === this.currentResource.sell_user.id;
       },
       appealSide() {
-        return this.isSellerAppeal ? `${this.currentResource.sell_user.name}` : `${this.currentResource.buy_user.name}`
+        return this.isSellerAppeal ? `${this.currentResource.sell_user.name}` : `${this.currentResource.buy_user.name}`;
       },
     },
     mounted() {
