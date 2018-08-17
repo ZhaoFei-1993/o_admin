@@ -96,7 +96,7 @@
                                 <el-row>
                                     <el-col :span="3">申诉人</el-col>
                                     <el-col :span="9">
-                                        {{appealSide(appeal)}}
+                                        {{appealSide}}
                                     </el-col>
                                     <el-col :span="3">申诉方</el-col>
                                     <el-col :span="9">
@@ -284,6 +284,12 @@
             label = '更新时间';
         }
         return label;
+      },
+      isSellerAppeal() {
+        return this.appeal.user_id === this.currentResource.sell_user.id
+      },
+      appealSide() {
+        return this.isSellerAppeal ? `${this.currentResource.sell_user.name}` : `${this.currentResource.buy_user.name}`
       },
     },
     mounted() {
