@@ -28,5 +28,5 @@ const domains = {
     cdn: ''
   }
 };
-console.log('mode', process.env.MODE)
+console.log('mode', process.env.MODE);
 module.exports = domains[process.env.MODE] || domains.production;

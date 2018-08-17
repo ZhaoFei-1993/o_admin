@@ -118,8 +118,8 @@
     </div>
 </template>
 <script>
-  import {timeToLocale} from "~/common/utilities";
-  import {orderStatusTypes, appealStatusTypes, coinTypes} from "~/common/constants";
+  import {timeToLocale} from '~/common/utilities';
+  import {orderStatusTypes, appealStatusTypes, coinTypes} from '~/common/constants';
 
   export default {
     layout: 'default',
@@ -138,7 +138,7 @@
           label: '下单时间',
           width: 96,
           formatter: (row, column, cellValue) => {
-            return timeToLocale(cellValue)
+            return timeToLocale(cellValue);
           },
         }, {
           prop: 'buy_user',
@@ -156,7 +156,7 @@
           prop: 'status',
           label: '订单状态',
           formatter: (row, column, cellValue) => {
-            return this.itemText(cellValue, orderStatusTypes)
+            return this.itemText(cellValue, orderStatusTypes);
           },
         }, {
           prop: 'coin_type',
@@ -168,21 +168,21 @@
           prop: 'price',
           label: '价格',
         }]
-      }
+      };
     },
     mounted() {
       this.initResources('orders', () => {
         if (this.resources && this.resources.length > 0) {
           if (this.resources.length === 1) {
-            return this.$router.push(`/orders/${this.resources[0].id}`)
+            return this.$router.push(`/orders/${this.resources[0].id}`);
           }
           this.resources.forEach(order => {
             if (order.merchant_side === 'sell') {
-              order.sell_user = order.merchant
-              order.buy_user = order.user
+              order.sell_user = order.merchant;
+              order.buy_user = order.user;
             } else {
-              order.sell_user = order.user
-              order.buy_user = order.merchant
+              order.sell_user = order.user;
+              order.buy_user = order.merchant;
             }
           });
         }
@@ -192,7 +192,7 @@
       });
     },
     methods: {}
-  }
+  };
 </script>
 <style lang="scss" scoped>
     .view-snapshot {

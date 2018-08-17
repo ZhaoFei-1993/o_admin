@@ -1,10 +1,10 @@
-import Vue from "vue"
+import Vue from 'vue';
 import API from '../config/api';
-import {timeToDateString} from "../common/utilities";
+import {timeToDateString} from '../common/utilities';
 
 export default ({app, store, redirect}) => {
   if (Vue.$plugins_facility_installed) {
-    return
+    return;
   }
   Vue.$plugins_facility_installed = true;
 
@@ -31,11 +31,11 @@ export default ({app, store, redirect}) => {
         loadingSingleResource: false,
         sortProp: null,
         isAscending: false,
-      }
+      };
     },
     computed: {
       isSuperAdmin() {
-        return this.$store.getters.isSuperAdmin
+        return this.$store.getters.isSuperAdmin;
       }
     },
     methods: {
@@ -66,12 +66,15 @@ export default ({app, store, redirect}) => {
         this.singleResLoadedCallback = loadedCallback;
         this.getSingleResource();
       },
+      backendStamp(date) {
+        return Math.floor(date.getTime() / 1000);
+      },
       getFilteredResources() {
         this.loadingResources = true;
         const range = this.resourcesDateRange && this.resourcesDateRange[0] ? {
-          start: this.resourcesDateRange[0].backendStamp(),
-          end: this.resourcesDateRange[1].backendStamp()
-        } : null
+          start: this.backendStamp(this.resourcesDateRange[0]),
+          end: this.backendStamp(this.resourcesDateRange[1]),
+        } : null;
         this.$axios.get(
           API.searchResources(
             this.resourcesPath, this.resourceFilters,
@@ -90,7 +93,7 @@ export default ({app, store, redirect}) => {
           if (this.resoucesLoadedCallback && this.resoucesLoadedCallback instanceof Function) {
             this.resoucesLoadedCallback(e);
           }
-        })
+        });
       },
       initStats(statsName, loadedCallback) {
         this.statsName = statsName;
@@ -99,7 +102,7 @@ export default ({app, store, redirect}) => {
         if (statsName.indexOf('income') >= 0) {
           this.statsFilters.coin_type = 0;
         }
-        let startDate = new Date();
+        const startDate = new Date();
         startDate.setMonth(startDate.getMonth() - 1);
         this.statsRange = [startDate, new Date()];
         this.statsByMonth = false;
@@ -124,7 +127,7 @@ export default ({app, store, redirect}) => {
           if (this.statsLoadedCallback && this.statsLoadedCallback instanceof Function) {
             this.statsLoadedCallback(e);
           }
-        })
+        });
       },
       getSingleResource() {
         this.loadingSingleResource = true;
@@ -139,7 +142,7 @@ export default ({app, store, redirect}) => {
           if (this.singleResLoadedCallback && this.singleResLoadedCallback instanceof Function) {
             this.singleResLoadedCallback(e);
           }
-        })
+        });
       },
       changePage() {
         // pageNum 要先改变
@@ -166,5 +169,5 @@ export default ({app, store, redirect}) => {
         this.getFilteredResources();
       }
     }
-  })
-}
+  });
+};

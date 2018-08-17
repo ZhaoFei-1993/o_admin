@@ -118,8 +118,8 @@
     </div>
 </template>
 <script>
-  import {roles, kycStatusTypes,licenseTypes, userStatusTypes, merchantAuthStatusTypes} from "~/common/constants";
-  import {timeToLocale} from "~/common/utilities";
+  import {licenseTypes, merchantAuthStatusTypes} from '~/common/constants';
+  import {timeToLocale} from '~/common/utilities';
 
   export default {
     layout: 'default',
@@ -135,7 +135,7 @@
           label: '申请时间',
           width: 96,
           formatter: (row, column, cellValue) => {
-            return timeToLocale(cellValue)
+            return timeToLocale(cellValue);
           },
           className: 'time',
         }, {
@@ -143,30 +143,30 @@
           label: '用户名',
           width: 80,
           formatter: (row, column, cellValue) => {
-            return row.user.name
+            return row.user.name;
           },
-        },{
+        }, {
           prop: 'first_name',
           label: '实名',
           width: 80,
           formatter: (row, column, cellValue) => {
-            return row.last_name + ' ' + row.first_name
+            return row.last_name + ' ' + row.first_name;
           },
         }, {
           prop: 'id_type',
           label: '证件',
           width: 120,
           formatter: (row, column, cellValue) => {
-            return this.itemText(cellValue, licenseTypes) + ': ' + row.id_number
+            return this.itemText(cellValue, licenseTypes) + ': ' + row.id_number;
           },
         }, {
           prop: 'guaranty_amount',
           label: 'CET保证金',
           width: 80,
-          formatter:(row, column, cellValue) => {
-            return parseInt(cellValue)
+          formatter: (row, column, cellValue) => {
+            return parseInt(cellValue);
           },
-        },{
+        }, {
           prop: 'mobile',
           label: '手机',
           width: 120,
@@ -183,10 +183,10 @@
           label: '认证状态',
           width: 96,
           formatter: (row, column, cellValue) => {
-            return this.itemText(cellValue, merchantAuthStatusTypes)
+            return this.itemText(cellValue, merchantAuthStatusTypes);
           },
-        },],
-      }
+        }],
+      };
     },
     mounted() {
       this.getMerchants();
@@ -195,7 +195,7 @@
       getMerchants() {
         this.initResources('users/merchant', () => {
           // 扁平化方便表格展示
-          this.resources = this.resources.map(r => Object.assign({}, r, r.user, r.user_kyc))
+          this.resources = this.resources.map(r => Object.assign({}, r, r.user, r.user_kyc));
         }, {
           user_search: this.$route.query.user_search
         });
@@ -218,10 +218,10 @@
           remark: comment
         }).then(response => {
           this.authDialogVisible = false;
-          this.$message({message: '商家认证结果已提交', type: 'success'})
+          this.$message({message: '商家认证结果已提交', type: 'success'});
           this.getMerchants();
-        })
+        });
       }
     }
-  }
+  };
 </script>

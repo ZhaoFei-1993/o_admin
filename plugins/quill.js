@@ -1,7 +1,7 @@
-import Vue from "vue"
+import Vue from 'vue';
 import Quill from 'quill';
-import undo from "../assets/img/inlineSvg/undo.svg";
-import redo from "../assets/img/inlineSvg/redo.svg";
+import undo from '../assets/img/inlineSvg/undo.svg';
+import redo from '../assets/img/inlineSvg/redo.svg';
 
 const customFonts = ['Helvetica-Neue', 'Helvetica', 'PingFangSC-Regular', '宋体', '黑体', 'Droid-Sans-Mono', 'Roboto', 'Ubuntu', 'Arial', 'Tahoma', 'Times-New-Roman'];
 
@@ -49,4 +49,4 @@ export default (app, store) => {
       },
     });
   }
-}
+};

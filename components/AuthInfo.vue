@@ -85,10 +85,10 @@
     </div>
 </template>
 <script>
-  import {authTypes, authStatus} from "../common/constants";
-  import {getAddressByCodes} from "../common/utilities";
+  import {authTypes, authStatus} from '../common/constants';
+import {getAddressByCodes} from '../common/utilities';
 
-  export default {
+export default {
     props: ['record', 'show'],
     computed: {
       aType() {
@@ -98,10 +98,10 @@
         return Object.values(authStatus).find(t => t.value === this.record.status) || authTypes.NONE;
       },
       address() {
-        return getAddressByCodes(this.record.address_country_code, this.record.address_province_code, this.record.address_city_code) + this.record.address_detail
+        return getAddressByCodes(this.record.address_country_code, this.record.address_province_code, this.record.address_city_code) + this.record.address_detail;
       }
     }
-  }
+  };
 </script>
 <style lang="scss" scoped>
     @import "~assets/style/global";

@@ -26,12 +26,9 @@
 </template>
 <script>
   import {
-    mapState
-  } from "vuex";
-  import {deleteAllCookies} from "../common/utilities";
-  import cookies from "../plugins/cookies";
-  import {loginURL} from "../common/constants";
-  import {checkAuth} from "../common/utilities";
+    mapState,
+  } from 'vuex';
+  import {loginURL} from '../common/constants';
 
   export default {
     computed: {
@@ -42,13 +39,13 @@
     },
     methods: {
       toggleSidenav() {
-        this.$emit('toggleSidenav')
+        this.$emit('toggleSidenav');
       },
       login() {
         window.location.href = loginURL;
       },
       logout() {
-        this.$store.dispatch('user/signOut')
+        this.$store.dispatch('user/signOut');
       },
       checkLogin() {
         if (window.location.href.indexOf('/forbidden') >= 0) {
@@ -56,17 +53,17 @@
         }
         this.$store.dispatch('user/fetchUserAccount').then(_ => {
           if (this.user.account && !this.chat.imClient) {
-            const clientId = `${this.user.account.id}`
-            this.$store.dispatch('chat/newChatClient', clientId)
+            const clientId = `${this.user.account.id}`;
+            this.$store.dispatch('chat/newChatClient', clientId);
           }
-        })
+        });
       }
     },
     mounted() {
-      this.checkLogin()
+      this.checkLogin();
     },
     props: ['sidenavOpened', 'iframeMode'],
-  }
+  };
 </script>
 <style lang="scss" scoped>
     .header {

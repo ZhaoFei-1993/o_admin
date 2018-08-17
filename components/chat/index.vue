@@ -84,14 +84,14 @@
 </template>
 
 <script>
-  import { TextMessage, Event, MessageStatus } from 'leancloud-realtime'
-  import AV from 'leancloud-storage'
-  import { ImageMessage } from 'leancloud-realtime-plugin-typed-messages'
-  import UserAvatar from './avatar'
-  import ImageModal from './image-modal'
-  import infiniteScroll from './infinite-scroll-directive.js'
-  import $toast from './toast.js'
-  import { COLORS, MESSAGE_TYPE, ORDER_MESSAGES } from './constant.js'
+  import { TextMessage, Event, MessageStatus } from 'leancloud-realtime';
+  import AV from 'leancloud-storage';
+  import { ImageMessage } from 'leancloud-realtime-plugin-typed-messages';
+  import UserAvatar from './avatar';
+  import ImageModal from './image-modal';
+  import infiniteScroll from './infinite-scroll-directive.js';
+  import $toast from './toast.js';
+  import { COLORS, MESSAGE_TYPE, ORDER_MESSAGES } from './constant.js';
 
   export default {
     data() {
@@ -118,7 +118,7 @@
         clientEventMap: {}, // 客户端级别事件
         convEventMap: {}, // 对话级别事件
         restartCount: 0, // 初始化遇到错误尝试重新初始化次数
-      }
+      };
     },
     directives: {
       infiniteScroll, // 无限load指令
@@ -163,97 +163,97 @@
     },
     watch: {
       unreadMessagesCount(count) {
-        const countText = count ? `(${count}) ` : ''
-        window.document.title = `${countText}${this.originalTitle}`
+        const countText = count ? `(${count}) ` : '';
+        window.document.title = `${countText}${this.originalTitle}`;
       },
       client() {
-        this.init()
+        this.init();
       },
       conversationId(newVal, oldVal) { // 异步获取对话id
         if (!oldVal && newVal) {
-          this.init()
+          this.init();
         }
       },
     },
     beforeDestroy() {
       if (this.client) {
         Object.keys(this.clientEventMap).forEach(evtType => {
-          this.client.off(evtType)
-        })
+          this.client.off(evtType);
+        });
       }
       if (this.conversation) {
         Object.keys(this.convEventMap).forEach(evtType => {
-          this.conversation.off(evtType)
-        })
-        this.conversation = null
-        this.messageIterator = null
+          this.conversation.off(evtType);
+        });
+        this.conversation = null;
+        this.messageIterator = null;
       }
-      window.document.removeEventListener('visibilitychange', this.handleVisibilityChange)
-      window.document.title = this.originalTitle // 还原title
-      this.$nuxt.$off('IM.Event.UNREAD_MESSAGES_COUNT_UPDATE')
+      window.document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+      window.document.title = this.originalTitle; // 还原title
+      this.$nuxt.$off('IM.Event.UNREAD_MESSAGES_COUNT_UPDATE');
     },
     mounted() {
-      this.init()
-      $toast.init(this.$refs.chatWrapper) // 初始化toast
-      this.originalTitle = window.document.title
+      this.init();
+      $toast.init(this.$refs.chatWrapper); // 初始化toast
+      this.originalTitle = window.document.title;
       this.$nuxt.$on('IM.Event.UNREAD_MESSAGES_COUNT_UPDATE', conversations => {
         const conv = conversations.find(item => {
-          return item.id === this.conversationId
-        })
+          return item.id === this.conversationId;
+        });
         if (conv) {
-          this.unreadMessagesCount = conv.unreadMessagesCount
+          this.unreadMessagesCount = conv.unreadMessagesCount;
         }
-      })
+      });
     },
     methods: {
       init() { // 全部功能初始化
-        const { client, conversationId } = this
-        if (!client) return
-        if (!conversationId) return
+        const { client, conversationId } = this;
+        if (!client) return;
+        if (!conversationId) return;
 
         client
           .getConversation(conversationId)
           .then(conversation => {
             if (conversation) {
-              this.conversation = conversation
-              this.unreadMessagesCount = this.conversation.unreadMessagesCount
-              this.members = this.conversation.members
+              this.conversation = conversation;
+              this.unreadMessagesCount = this.conversation.unreadMessagesCount;
+              this.members = this.conversation.members;
               this.messageIterator = this.conversation.createMessagesIterator({
                 limit: this.limit,
-              })
-              this.initMsgLog() // 初始化聊天记录
-              this.restartCount = 1000
+              });
+              this.initMsgLog(); // 初始化聊天记录
+              this.restartCount = 1000;
             } else {
-              return Promise.reject(new Error(`getConversation error, conversation=${conversation}`))
+              return Promise.reject(new Error(`getConversation error, conversation=${conversation}`));
             }
           })
           .catch(err => {
-            const maxRestartCount = 3 // 最多重新初始化次数
-            this.restartCount += 1
-            console.error(this.restartCount, err)
+            const maxRestartCount = 3; // 最多重新初始化次数
+            this.restartCount += 1;
+            console.error(this.restartCount, err);
             if (this.restartCount < maxRestartCount) {
               const tid = setTimeout(() => {
-                clearTimeout(tid)
-                this.init()
-              }, 1000)
+                clearTimeout(tid);
+                this.init();
+              }, 1000);
             }
-          })
+          });
       },
       handleVisibilityChange() { // 监听页面隐藏事件，取消未读
         if (!window.document.hidden) {
-          this.conversation.read()
-          this.unreadMessagesCount = 0
+          this.conversation.read();
+          this.unreadMessagesCount = 0;
         }
       },
       onJoin() { // 主动加入群聊
         this.conversation.join().then(conversation => {
-          this.members = conversation.members
-        }).catch(console.error.bind(console))
+          this.members = conversation.members;
+        }).catch(console.error.bind(console));
       },
       onLeave() { // 主动退出群聊
         this.conversation.quit().then(conversation => {
-          this.members = conversation.members
-        }).catch(console.error.bind(console))
+          this.members = conversation.members;
+        }).catch(console.error.bind(console));
       },
       pushSystemMessage(text) { // 添加系统临时消息，不会保存到服务器，暂时支持纯文字
         this.msgLog.push({
@@ -264,200 +264,200 @@
             _lctype: this.messageType.text,
           },
           _timestamp: Date.now(),
-        })
+        });
       },
       onClickImage(src) {
-        this.imageModalData.src = src
-        this.imageModalData.show = true
+        this.imageModalData.src = src;
+        this.imageModalData.show = true;
       },
       onUpload(evt) {
-        const file = evt.target.files[0]
-        if (!file) return
+        const file = evt.target.files[0];
+        if (!file) return;
         if (file.size > 5000000) {
-          this.$refs.fileSelector.value = '' // 需要重置dom
-          $toast.show('单文件不可超过5M', 1500)
-          return
+          this.$refs.fileSelector.value = ''; // 需要重置dom
+          $toast.show('单文件不可超过5M', 1500);
+          return;
         }
         if (file.name && this.conversation) {
-          $toast.show('发送中...0%')
-          const fileObj = new AV.File(file.name, file)
+          $toast.show('发送中...0%');
+          const fileObj = new AV.File(file.name, file);
           fileObj.save({
             onprogress(e) {
-              $toast.show(`发送中...${Math.round(e.percent)}%`)
+              $toast.show(`发送中...${Math.round(e.percent)}%`);
             },
           }).then(savedFile => {
-            const message = new ImageMessage(savedFile)
-            return this.conversation.send(message)
+            const message = new ImageMessage(savedFile);
+            return this.conversation.send(message);
           }).then((message) => {
-            this.$nuxt.$emit('IM.Event.SINGLE_MESSAGE_UPDATE', message)
-            $toast.show('发送成功...100%', 1000)
+            this.$nuxt.$emit('IM.Event.SINGLE_MESSAGE_UPDATE', message);
+            $toast.show('发送成功...100%', 1000);
             this.messageHandler({
               ...message,
               content: { // leancloud返回字段content=undefined，需要自己构造
                 _lcfile: message._lcfile,
                 _lctype: message.type,
               },
-            })
+            });
           }).catch(err => {
-            $toast.show(`发送失败 ${err}`, 1500)
-          })
+            $toast.show(`发送失败 ${err}`, 1500);
+          });
         }
       },
       onSelectFile() {
-        this.$refs.fileSelector.click()
+        this.$refs.fileSelector.click();
       },
       messageHandler(msg) {
-        this.msgLog = this.msgLog.concat(this.memberInfoMapper([msg]))
-        this.scrollToBottom()
+        this.msgLog = this.msgLog.concat(this.memberInfoMapper([msg]));
+        this.scrollToBottom();
         if (!window.document.hidden) {
-          this.conversation.read()
+          this.conversation.read();
         }
       },
       memberInfoMapper(arr) { // 遍历每一个消息，对用户头像进行映射，以防部分已退出用户没有头像
-        const { conversation } = this
+        const { conversation } = this;
         if (conversation) {
-          const { _attributes: { attr: { username } } } = conversation
+          const { _attributes: { attr: { username } } } = conversation;
           arr.forEach(item => {
             if (!this.memberInfoMap[item.from]) {
               this.memberInfoMap[item.from] = {
                 color: this.colors[item.from % 10],
                 name: !!username && !!username[item.from] ? username[item.from] : '',
-              }
+              };
             }
-          })
+          });
         }
-        return arr
+        return arr;
       },
       initMsgLog() {
         this.messageIterator.next().then((res) => {
           if (res.value) {
-            this.msgLog = this.memberInfoMapper(res.value).concat(this.msgLog)
-            this.pushSystemMessage('现在可以开始聊天')
-            this.scrollToBottom() // 滚动到底部
-            this.conversation.read() // 对话标记为已读
+            this.msgLog = this.memberInfoMapper(res.value).concat(this.msgLog);
+            this.pushSystemMessage('现在可以开始聊天');
+            this.scrollToBottom(); // 滚动到底部
+            this.conversation.read(); // 对话标记为已读
           }
           const tid = setTimeout(() => {
-            this.bindClientEvent() // 需要初始化聊天记录后才能绑定事件，否则会出现重复消息问题
-            this.bindConversationEvent() // 完成初始化后才绑定对话级别事件
-            clearTimeout(tid)
-          })
-        })
+            this.bindClientEvent(); // 需要初始化聊天记录后才能绑定事件，否则会出现重复消息问题
+            this.bindConversationEvent(); // 完成初始化后才绑定对话级别事件
+            clearTimeout(tid);
+          });
+        });
       },
       bindClientEvent() {
-        const self = this
+        const self = this;
         this.clientEventMap = {
           [Event.DISCONNECT]: () => {
-            $toast.show('连接已断开')
+            $toast.show('连接已断开');
           },
           [Event.OFFLINE]: () => {
-            $toast.show('网络不可用，请检查网络设置')
+            $toast.show('网络不可用，请检查网络设置');
           },
           [Event.ONLINE]: () => {
-            $toast.show('网络已恢复', 1500)
+            $toast.show('网络已恢复', 1500);
           },
           [Event.SCHEDULE]: (attempt, time) => {
-            $toast.show(`${time / 1000}s 后进行第 ${attempt + 1} 次重连`)
+            $toast.show(`${time / 1000}s 后进行第 ${attempt + 1} 次重连`);
           },
           [Event.RETRY]: (attempt) => {
-            $toast.show(`正在进行第 ${attempt + 1} 次重连`)
+            $toast.show(`正在进行第 ${attempt + 1} 次重连`);
           },
           [Event.RECONNECT]: () => {
-            self.conversation.join()
+            self.conversation.join();
           },
           [Event.RECONNECT_ERROR]: () => {
-            $toast.show('重连失败，请刷新页面重试')
+            $toast.show('重连失败，请刷新页面重试');
           },
-        }
+        };
         Object.keys(this.clientEventMap).forEach(evtType => {
-          this.client.on(evtType, this.clientEventMap[evtType])
-        })
-        window.document.addEventListener('visibilitychange', this.handleVisibilityChange)
+          this.client.on(evtType, this.clientEventMap[evtType]);
+        });
+        window.document.addEventListener('visibilitychange', this.handleVisibilityChange);
       },
       bindConversationEvent() {
-        const self = this
+        const self = this;
         this.convEventMap = {
           [Event.MESSAGE]: (message) => {
-            self.messageHandler(message)
+            self.messageHandler(message);
           },
           [Event.MEMBERS_JOINED]: (payload) => { // 有用户被添加至某个对话
-            self.pushSystemMessage(`${payload.invitedBy === 'REST_API' ? '客服' : payload.invitedBy}已加入对话`)
+            self.pushSystemMessage(`${payload.invitedBy === 'REST_API' ? '客服' : payload.invitedBy}已加入对话`);
           },
           [Event.MEMBERS_LEFT]: (payload) => { // 有成员被从某个对话中移除
-            self.pushSystemMessage(`${payload.kickedBy === 'REST_API' ? '客服' : payload.kickedBy}已退出对话`)
+            self.pushSystemMessage(`${payload.kickedBy === 'REST_API' ? '客服' : payload.kickedBy}已退出对话`);
           },
           [Event.KICKED]: (payload) => { // 当前用户被从某个对话中移除
-            if (payload.kickedBy === 'REST_API') return // 系统邀请信息不展示
-            self.pushSystemMessage(`${payload.kickedBy} 将你移出对话`)
+            if (payload.kickedBy === 'REST_API') return; // 系统邀请信息不展示
+            self.pushSystemMessage(`${payload.kickedBy} 将你移出对话`);
           },
-        }
+        };
         Object.keys(this.convEventMap).forEach(evtType => {
-          this.conversation.on(evtType, this.convEventMap[evtType])
-        })
+          this.conversation.on(evtType, this.convEventMap[evtType]);
+        });
       },
       loadMore() {
         if (!this.loading && this.messageIterator && !this.loadAll) {
-          this.loading = true
-          const oldTarget = this.$refs.chatbox
-          let oldScrollHeight = 0
+          this.loading = true;
+          const oldTarget = this.$refs.chatbox;
+          let oldScrollHeight = 0;
           if (oldTarget) {
-            oldScrollHeight = oldTarget.scrollHeight // 保存旧scrollHeight数据
+            oldScrollHeight = oldTarget.scrollHeight; // 保存旧scrollHeight数据
           }
           this.messageIterator.next().then((res) => {
-            this.loading = false
-            this.loadAll = res.done
+            this.loading = false;
+            this.loadAll = res.done;
             if (res.value) {
-              this.msgLog = this.memberInfoMapper(res.value).concat(this.msgLog)
+              this.msgLog = this.memberInfoMapper(res.value).concat(this.msgLog);
               this.$nextTick(() => {
-                const target = this.$refs.chatbox
+                const target = this.$refs.chatbox;
                 if (target) {
-                  target.scrollTop = target.scrollTop + (target.scrollHeight - oldScrollHeight) // 新的滚动高度 = 新高度 - 旧高度
+                  target.scrollTop = target.scrollTop + (target.scrollHeight - oldScrollHeight); // 新的滚动高度 = 新高度 - 旧高度
                 }
-              })
+              });
             }
-          })
+          });
         }
       },
       onSendMsg() {
-        const msg = this.message.trim()
+        const msg = this.message.trim();
         if (msg && this.conversation) {
           this.conversation.send(new TextMessage(msg)).then(message => {
-            this.$nuxt.$emit('IM.Event.SINGLE_MESSAGE_UPDATE', message) // 手动强制更新聊天列表
+            this.$nuxt.$emit('IM.Event.SINGLE_MESSAGE_UPDATE', message); // 手动强制更新聊天列表
             this.messageHandler({
               ...message,
               content: { // leancloud返回字段content=undefined，需要自己补充
                 _lctext: message._lctext,
                 _lctype: message.type,
               },
-            })
+            });
           }).catch(err => {
-            console.error(err)
-            $toast.show(`发送失败: ${err}`, 1500)
-          })
-          this.message = ''
+            console.error(err);
+            $toast.show(`发送失败: ${err}`, 1500);
+          });
+          this.message = '';
         }
       },
       scrollToBottom() {
         const tid = setTimeout(() => {
-          const target = this.$refs.chatbox
+          const target = this.$refs.chatbox;
           if (target) {
-            target.scrollTop = target.scrollHeight
+            target.scrollTop = target.scrollHeight;
           }
-          clearTimeout(tid)
-        }, 150)
+          clearTimeout(tid);
+        }, 150);
       },
     },
     filters: {
       formatTime(timestamp) {
-        const todayString = new Date().toDateString()
-        const date = new Date(timestamp)
-        let formatTime = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
+        const todayString = new Date().toDateString();
+        const date = new Date(timestamp);
+        let formatTime = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
         if (todayString !== date.toDateString()) {
-          formatTime = `${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')} ${formatTime}`
+          formatTime = `${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')} ${formatTime}`;
         }
-        return formatTime
+        return formatTime;
       },
     },
-  }
+  };
 </script>
 
 <style lang="scss">

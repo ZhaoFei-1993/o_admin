@@ -128,8 +128,8 @@
     </div>
 </template>
 <script>
-  import {sides, pricingTypes, itemStatusTypes, counterpartyLimitTypes} from "~/common/constants";
-  import {findMatchedItems} from "../../../common/utilities";
+  import {sides, pricingTypes, itemStatusTypes, counterpartyLimitTypes} from '~/common/constants';
+  import {findMatchedItems} from '../../../common/utilities';
 
   export default {
     components: {},
@@ -139,11 +139,11 @@
         pricingTypes,
         itemStatusTypes,
         id: this.$route.params.id,
-      }
+      };
     },
     computed: {
       counterpartyLimit() {
-        return findMatchedItems(this.currentResource.counterparty_limit, counterpartyLimitTypes).map(o => o.text).join(', ')
+        return findMatchedItems(this.currentResource.counterparty_limit, counterpartyLimitTypes).map(o => o.text).join(', ');
       }
     },
     mounted() {
@@ -153,10 +153,10 @@
       initData() {
         this.initSingleResource('items', this.id, response => {
           if (!response.data) {
-            this.$message('获取广告信息失败，请联系开发人员')
+            this.$message('获取广告信息失败，请联系开发人员');
           }
         });
       },
     }
-  }
+  };
 </script>

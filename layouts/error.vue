@@ -24,7 +24,7 @@
   import Header from '~/components/Header.vue';
 
   export default {
-    props: ["error"],
+    props: ['error'],
     components: {
       Sidenav,
       Header,
@@ -32,14 +32,14 @@
     data() {
       return {
         sidenavOpened: true,
-      }
+      };
     },
     methods: {
       toggleSidenav() {
         this.sidenavOpened = !this.sidenavOpened;
       }
     }
-  }
+  };
 </script>
 
 <style lang="scss" scoped>

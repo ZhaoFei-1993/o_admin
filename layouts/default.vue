@@ -22,7 +22,7 @@
 <script>
   import Sidenav from '~/components/Sidenav.vue';
   import Header from '~/components/Header.vue';
-  import ChatList from '~/components/chat-list'
+  import ChatList from '~/components/chat-list';
 
   export default {
     components: {
@@ -33,14 +33,14 @@
     data() {
       return {
         sidenavOpened: true,
-      }
+      };
     },
     methods: {
       toggleSidenav() {
         this.sidenavOpened = !this.sidenavOpened;
       }
     }
-  }
+  };
 </script>
 <style lang="scss">
     #app {

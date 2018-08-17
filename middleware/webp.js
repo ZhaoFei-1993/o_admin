@@ -8,9 +8,9 @@ export default function ({
 }) {
   // console.log('process.SERVER_BUILD', process.SERVER_BUILD)
   if (process.SERVER_BUILD) {
-    var accept = req.headers["accept"]
+    const accept = req.headers['accept'];
     if (/html/i.test(accept) && /webp/i.test(accept)) {
-      store.commit("webp", true)
+      store.commit('webp', true);
     }
   }
 }

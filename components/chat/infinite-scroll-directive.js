@@ -1,199 +1,199 @@
 // 参考https://github.com/ElemeFE/vue-infinite-scroll
 
-const ctx = '@@InfiniteScroll'
+const ctx = '@@InfiniteScroll';
 
 const throttle = function (fn, delay) {
-  let now
-  let lastExec
-  let timer
-  let context
-  let args
+  let now;
+  let lastExec;
+  let timer;
+  let context;
+  let args;
 
   const execute = function () {
-    fn.apply(context, args)
-    lastExec = now
-  }
+    fn.apply(context, args);
+    lastExec = now;
+  };
 
   return function () {
-    context = this
-    args = arguments
+    context = this;
+    args = arguments;
 
-    now = Date.now()
+    now = Date.now();
 
     if (timer) {
-      clearTimeout(timer)
-      timer = null
+      clearTimeout(timer);
+      timer = null;
     }
 
     if (lastExec) {
-      const diff = delay - (now - lastExec)
+      const diff = delay - (now - lastExec);
       if (diff < 0) {
-        execute()
+        execute();
       } else {
         timer = setTimeout(() => {
-          execute()
-        }, diff)
+          execute();
+        }, diff);
       }
     } else {
-      execute()
+      execute();
     }
-  }
-}
+  };
+};
 
 const getScrollTop = function (element) {
   if (element === window) {
-    return Math.max(window.pageYOffset || 0, document.documentElement.scrollTop)
+    return Math.max(window.pageYOffset || 0, document.documentElement.scrollTop);
   }
 
-  return element.scrollTop
-}
+  return element.scrollTop;
+};
 
-const getComputedStyle = process.browser ? document.defaultView.getComputedStyle : null
+const getComputedStyle = process.browser ? document.defaultView.getComputedStyle : null;
 
 const getScrollEventTarget = function (element) {
-  let currentNode = element
+  let currentNode = element;
   // bugfix, see http://w3help.org/zh-cn/causes/SD9013 and http://stackoverflow.com/questions/17016740/onscroll-function-is-not-working-for-chrome
   while (currentNode && currentNode.tagName !== 'HTML' && currentNode.tagName !== 'BODY' && currentNode.nodeType === 1) {
-    const overflowY = getComputedStyle(currentNode).overflowY
+    const overflowY = getComputedStyle(currentNode).overflowY;
     if (overflowY === 'scroll' || overflowY === 'auto') {
-      return currentNode
+      return currentNode;
     }
-    currentNode = currentNode.parentNode
+    currentNode = currentNode.parentNode;
   }
-  return window
-}
+  return window;
+};
 
 const getVisibleHeight = function (element) {
   if (element === window) {
-    return document.documentElement.clientHeight
+    return document.documentElement.clientHeight;
   }
 
-  return element.clientHeight
-}
+  return element.clientHeight;
+};
 
 const getElementTop = function (element) {
   if (element === window) {
-    return getScrollTop(window)
+    return getScrollTop(window);
   }
-  return element.getBoundingClientRect().top + getScrollTop(window)
-}
+  return element.getBoundingClientRect().top + getScrollTop(window);
+};
 
 const isAttached = function (element) {
-  let currentNode = element.parentNode
+  let currentNode = element.parentNode;
   while (currentNode) {
     if (currentNode.tagName === 'HTML') {
-      return true
+      return true;
     }
     if (currentNode.nodeType === 11) {
-      return false
+      return false;
     }
-    currentNode = currentNode.parentNode
+    currentNode = currentNode.parentNode;
   }
-  return false
-}
+  return false;
+};
 
 const doBind = function () {
-  if (this.binded) return
-  this.binded = true
+  if (this.binded) return;
+  this.binded = true;
 
-  const directive = this
-  const element = directive.el
+  const directive = this;
+  const element = directive.el;
 
-  const throttleDelayExpr = element.getAttribute('infinite-scroll-throttle-delay')
-  let throttleDelay = 200
+  const throttleDelayExpr = element.getAttribute('infinite-scroll-throttle-delay');
+  let throttleDelay = 200;
   if (throttleDelayExpr) {
-    throttleDelay = Number(directive.vm[throttleDelayExpr] || throttleDelayExpr)
+    throttleDelay = Number(directive.vm[throttleDelayExpr] || throttleDelayExpr);
     if (isNaN(throttleDelay) || throttleDelay < 0) {
-      throttleDelay = 200
+      throttleDelay = 200;
     }
   }
-  directive.throttleDelay = throttleDelay
+  directive.throttleDelay = throttleDelay;
 
-  directive.scrollEventTarget = getScrollEventTarget(element)
-  directive.scrollListener = throttle(doCheck.bind(directive), directive.throttleDelay)
-  directive.scrollEventTarget.addEventListener('scroll', directive.scrollListener)
+  directive.scrollEventTarget = getScrollEventTarget(element);
+  directive.scrollListener = throttle(doCheck.bind(directive), directive.throttleDelay);
+  directive.scrollEventTarget.addEventListener('scroll', directive.scrollListener);
 
   this.vm.$on('hook:beforeDestroy', function () {
-    directive.scrollEventTarget.removeEventListener('scroll', directive.scrollListener)
-  })
+    directive.scrollEventTarget.removeEventListener('scroll', directive.scrollListener);
+  });
 
-  const disabledExpr = element.getAttribute('infinite-scroll-disabled')
-  let disabled = false
+  const disabledExpr = element.getAttribute('infinite-scroll-disabled');
+  let disabled = false;
 
   if (disabledExpr) {
     this.vm.$watch(disabledExpr, function (value) {
-      directive.disabled = value
+      directive.disabled = value;
       if (!value && directive.immediateCheck) {
-        doCheck.call(directive)
+        doCheck.call(directive);
       }
-    })
-    disabled = Boolean(directive.vm[disabledExpr])
+    });
+    disabled = Boolean(directive.vm[disabledExpr]);
   }
-  directive.disabled = disabled
+  directive.disabled = disabled;
 
-  const distanceExpr = element.getAttribute('infinite-scroll-distance')
-  let distance = 0
+  const distanceExpr = element.getAttribute('infinite-scroll-distance');
+  let distance = 0;
   if (distanceExpr) {
-    distance = Number(directive.vm[distanceExpr] || distanceExpr)
+    distance = Number(directive.vm[distanceExpr] || distanceExpr);
     if (isNaN(distance)) {
-      distance = 0
+      distance = 0;
     }
   }
-  directive.distance = distance
+  directive.distance = distance;
 
-  const immediateCheckExpr = element.getAttribute('infinite-scroll-immediate-check')
-  let immediateCheck = true
+  const immediateCheckExpr = element.getAttribute('infinite-scroll-immediate-check');
+  let immediateCheck = true;
   if (immediateCheckExpr) {
-    immediateCheck = Boolean(directive.vm[immediateCheckExpr])
+    immediateCheck = Boolean(directive.vm[immediateCheckExpr]);
   }
-  directive.immediateCheck = immediateCheck
+  directive.immediateCheck = immediateCheck;
 
   if (immediateCheck) {
-    doCheck.call(directive)
+    doCheck.call(directive);
   }
 
-  const eventName = element.getAttribute('infinite-scroll-listen-for-event')
+  const eventName = element.getAttribute('infinite-scroll-listen-for-event');
   if (eventName) {
     directive.vm.$on(eventName, function () {
-      doCheck.call(directive)
-    })
+      doCheck.call(directive);
+    });
   }
-  directive.reversedCheck = element.hasAttribute('infinite-scroll-reverse')
-}
+  directive.reversedCheck = element.hasAttribute('infinite-scroll-reverse');
+};
 
 const doCheck = function (force) {
-  const scrollEventTarget = this.scrollEventTarget
-  const element = this.el
-  const distance = this.distance
-  const reversed = this.reversedCheck
+  const scrollEventTarget = this.scrollEventTarget;
+  const element = this.el;
+  const distance = this.distance;
+  const reversed = this.reversedCheck;
 
-  if (force !== true && this.disabled) return
-  const viewportScrollTop = getScrollTop(scrollEventTarget)
-  const viewportBottom = viewportScrollTop + getVisibleHeight(scrollEventTarget)
+  if (force !== true && this.disabled) return;
+  const viewportScrollTop = getScrollTop(scrollEventTarget);
+  const viewportBottom = viewportScrollTop + getVisibleHeight(scrollEventTarget);
 
-  let shouldTrigger = false
+  let shouldTrigger = false;
 
   if (scrollEventTarget === element) {
     if (reversed) {
-      shouldTrigger = scrollEventTarget.scrollTop <= distance
+      shouldTrigger = scrollEventTarget.scrollTop <= distance;
     } else {
-      shouldTrigger = scrollEventTarget.scrollHeight - viewportBottom <= distance
+      shouldTrigger = scrollEventTarget.scrollHeight - viewportBottom <= distance;
     }
   } else {
-    const elementTop = getElementTop(element) - getElementTop(scrollEventTarget)
-    const elementBottom = getElementTop(element) - getElementTop(scrollEventTarget) + element.offsetHeight + viewportScrollTop
+    const elementTop = getElementTop(element) - getElementTop(scrollEventTarget);
+    const elementBottom = getElementTop(element) - getElementTop(scrollEventTarget) + element.offsetHeight + viewportScrollTop;
 
     if (reversed) {
-      shouldTrigger = viewportScrollTop <= elementTop
+      shouldTrigger = viewportScrollTop <= elementTop;
     } else {
-      shouldTrigger = viewportBottom + distance >= elementBottom
+      shouldTrigger = viewportBottom + distance >= elementBottom;
     }
   }
 
   if (shouldTrigger && this.expression) {
-    this.expression()
+    this.expression();
   }
-}
+};
 
 export default {
   bind(el, binding, vnode) {
@@ -201,32 +201,32 @@ export default {
       el,
       vm: vnode.context,
       expression: binding.value
-    }
-    const args = arguments
+    };
+    const args = arguments;
     el[ctx].vm.$on('hook:mounted', function () {
       el[ctx].vm.$nextTick(function () {
         if (isAttached(el)) {
-          doBind.call(el[ctx], args)
+          doBind.call(el[ctx], args);
         }
 
-        el[ctx].bindTryCount = 0
+        el[ctx].bindTryCount = 0;
 
         const tryBind = function () {
-          if (el[ctx].bindTryCount > 10) return
-          el[ctx].bindTryCount++
+          if (el[ctx].bindTryCount > 10) return;
+          el[ctx].bindTryCount++;
           if (isAttached(el)) {
-            doBind.call(el[ctx], args)
+            doBind.call(el[ctx], args);
           } else {
-            setTimeout(tryBind, 50)
+            setTimeout(tryBind, 50);
           }
-        }
+        };
 
-        tryBind()
-      })
-    })
+        tryBind();
+      });
+    });
   },
 
   unbind(el) {
-    if (el && el[ctx] && el[ctx].scrollEventTarget) { el[ctx].scrollEventTarget.removeEventListener('scroll', el[ctx].scrollListener) }
+    if (el && el[ctx] && el[ctx].scrollEventTarget) { el[ctx].scrollEventTarget.removeEventListener('scroll', el[ctx].scrollListener); }
   }
-}
+};

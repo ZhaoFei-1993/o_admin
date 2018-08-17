@@ -109,8 +109,8 @@
     </div>
 </template>
 <script>
-  import {sides, coinTypes, paymentTypes, itemStatusTypes} from "~/common/constants";
-  import {getItemStatusOfIndex, timeToLocale} from "~/common/utilities";
+  import {sides, coinTypes, paymentTypes, itemStatusTypes} from '~/common/constants';
+  import {timeToLocale} from '~/common/utilities';
 
   export default {
     layout: 'default',
@@ -160,22 +160,22 @@
           label: '上架时间',
           width: 96,
           formatter: (row, column, cellValue) => {
-            return timeToLocale(cellValue)
+            return timeToLocale(cellValue);
           },
-        },],
-      }
+        }],
+      };
     },
     mounted() {
       this.initResources('items', () => {
         if (this.resources && this.resources.length === 1) {
-          this.$router.push(`/items/${this.resources[0].id}`)
+          this.$router.push(`/items/${this.resources[0].id}`);
         }
       }, {
         user_search: this.$route.query.user_search
       });
     },
     methods: {}
-  }
+  };
 </script>
 <style lang="scss" scoped>
 

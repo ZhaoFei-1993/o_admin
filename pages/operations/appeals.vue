@@ -87,8 +87,8 @@
     </div>
 </template>
 <script>
-  import {appealStatusTypes, appealResultTypes, orderStatusTypes} from "~/common/constants";
-  import {timeToLocale} from "~/common/utilities";
+  import {appealStatusTypes, appealResultTypes, orderStatusTypes} from '~/common/constants';
+  import {timeToLocale} from '~/common/utilities';
 
   export default {
     layout: 'default',
@@ -106,21 +106,21 @@
           prop: 'order',
           label: '订单状态',
           formatter: (row, column, value) => {
-            return this.itemText(value.status, orderStatusTypes)
+            return this.itemText(value.status, orderStatusTypes);
           },
         }, {
           prop: 'create_time',
           label: '申诉时间',
           width: 96,
           formatter: (row, column, cellValue) => {
-            return timeToLocale(cellValue)
+            return timeToLocale(cellValue);
           },
           className: 'time',
         }, {
           prop: 'status',
           label: '申诉状态',
           formatter: (row, column, cellValue) => {
-            return this.itemText(cellValue, appealStatusTypes)
+            return this.itemText(cellValue, appealStatusTypes);
           },
         }, {
           prop: 'user',
@@ -136,16 +136,16 @@
           label: '申诉详情',
           width: 120,
           formatter: (row, column, cellValue) => {
-            return cellValue && cellValue.length > 50 ? `${cellValue.slice(0, 50)}...` : cellValue
+            return cellValue && cellValue.length > 50 ? `${cellValue.slice(0, 50)}...` : cellValue;
           },
         }, {
           prop: 'result',
           label: '申诉结果',
           formatter: (row, column, cellValue) => {
-            return this.itemText(cellValue, appealResultTypes)
+            return this.itemText(cellValue, appealResultTypes);
           },
-        },],
-      }
+        }],
+      };
     },
     mounted() {
       // TODO 清空search的时候去掉query
@@ -155,5 +155,5 @@
     },
     methods: {
     }
-  }
+  };
 </script>

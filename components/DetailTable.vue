@@ -38,7 +38,7 @@
         return prop;
       }
     }
-  }
+  };
 </script>
 <style lang="scss" scoped>
     .prop-container {

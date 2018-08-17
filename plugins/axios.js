@@ -1,23 +1,23 @@
-import {loginURL} from "../common/constants";
+import {loginURL} from '../common/constants';
 import Vue from 'vue';
-import cookies from "./cookies";
+import cookies from './cookies';
 
 export default function ({app, $axios, store, redirect, req}) {
   let cookieString = '';
   if (process.client) {
-    cookieString = document.cookie
+    cookieString = document.cookie;
   } else {
-    cookieString = req.headers.cookie
+    cookieString = req.headers.cookie;
   }
-  const cookiesObj = cookies.parse(cookieString)
-  $axios.setHeader('Authorization', cookiesObj.token)
+  const cookiesObj = cookies.parse(cookieString);
+  $axios.setHeader('Authorization', cookiesObj.token);
 
   $axios.onResponse(response => {
     const data = response.data;
     const $message = Vue.prototype.$message || console.log;
     if (data && data.code === 401) {
       $message({message: '请登录之后再尝试', type: 'warning', duration: 8000});
-      return window.location.href = loginURL;
+      window.location.href = loginURL;
     }
     if (data && data.code === 403) {
       // logged in but without admin role
@@ -26,24 +26,24 @@ export default function ({app, $axios, store, redirect, req}) {
       return redirect('/forbidden');
     }
     if (data && data.code) {
-      const err = new Error(data.message)
-      err.code = data.code
-      err.data = data.data
-      err.message = data.message
+      const err = new Error(data.message);
+      err.code = data.code;
+      err.data = data.data;
+      err.message = data.message;
 
-      return Promise.reject(err)
+      return Promise.reject(err);
     }
 
-    return response
+    return response;
   });
   $axios.onError(error => {
     const code = parseInt(error.response && error.response.status);
     if (code === 401) {
-      return window.location.href = loginURL;
+      window.location.href = loginURL;
     }
     if (code === 403) {
       return redirect('/forbidden');
     }
-    //return redirect('/error');
-  })
+    // return redirect('/error');
+  });
 };

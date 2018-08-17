@@ -1,28 +1,28 @@
-import {loginURL} from "./constants";
-import cookies from "../plugins/cookies";
-import {locations} from "./locations";
+import {loginURL} from './constants';
+import cookies from '../plugins/cookies';
+import {locations} from './locations';
 import chineseConverter from './chineseConverter';
 
 export const getFormattedLang = (lang) => {
-  let formattedLang = "en_US";
+  let formattedLang = 'en_US';
   if (/cn/i.test(lang)) {
-    formattedLang = "zh_Hans_CN"
+    formattedLang = 'zh_Hans_CN';
   } else if (/hk|tw/i.test(lang)) {
-    formattedLang = "zh_Hant_HK"
+    formattedLang = 'zh_Hant_HK';
   }
   return formattedLang;
 };
 
 export const timeToLocale = (timestamp, showOnlyDay) => {
   if (!timestamp) {
-    return "NA";
+    return 'NA';
   }
   if (typeof timestamp === 'number') {
-    timestamp *= 1000
+    timestamp *= 1000;
   } else if (timestamp.length && timestamp.indexOf('Z') < 0 && timestamp.indexOf('+') < 0 && timestamp.indexOf('-') < 0) {
     timestamp += 'Z';
   }
-  const time = new Date(timestamp)
+  const time = new Date(timestamp);
   return time.toLocaleString('chinese', {
     year: 'numeric',
     month: '2-digit',
@@ -30,34 +30,33 @@ export const timeToLocale = (timestamp, showOnlyDay) => {
     hour: showOnlyDay ? undefined : '2-digit',
     minute: showOnlyDay ? undefined : '2-digit',
     hour12: false,
-  })
+  });
 };
 
 export const timeToDateString = (time, withoutDay) => {
   return time.getFullYear() + '-' + (time.getMonth() + 1) + (withoutDay ? '' : ('-' + time.getDate()));
 };
 
-export const getApproxCny = (price, price_type) => {
-  return parseInt(price) * (parseInt(price_type) === 2 ? 6.5 : 1)
+export const getApproxCny = (price, priceType) => {
+  return parseInt(price) * (parseInt(priceType) === 2 ? 6.5 : 1);
 };
-
 
 export const getItemStatusOfIndex = (index, list) => {
   if (index !== undefined && index < list.length - 1) {
-    return list[index + 1]
+    return list[index + 1];
   } else {
     return '其他';
   }
 };
 
-export const is_2fa = (bool) => {
-  return bool ? "已设置" : " -- ";
+export const is2fa = (bool) => {
+  return bool ? '已设置' : ' -- ';
 };
 
 export const areaStackChartOption = (data, props) => {
-  let xAxisData = [];
-  let legends = [];
-  let seriesData = props.yAxisLines.map(line => {
+  const xAxisData = [];
+  const legends = [];
+  const seriesData = props.yAxisLines.map(line => {
     legends.push(line.label);
     return {
       type: 'line',
@@ -111,24 +110,24 @@ export const areaStackChartOption = (data, props) => {
         type: 'category',
         boundaryGap: false,
         data: xAxisData,
-      }
+      },
     ],
     yAxis: [
       {
         type: 'value'
-      }
+      },
     ],
     series: seriesData,
-  }
+  };
 };
 
 export const deleteAllCookies = () => {
-  const cookies = document.cookie.split(";");
+  const cookies = document.cookie.split(';');
   for (let i = 0; i < cookies.length; i++) {
     const cookie = cookies[i];
-    const eqPos = cookie.indexOf("=");
+    const eqPos = cookie.indexOf('=');
     const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT';
   }
 };
 
@@ -150,7 +149,7 @@ export const checkAuth = (axios, store) => {
       store.commit('authorize', true);
     }).catch(e => {
       store.commit('checkAuth', false);
-      console.log(e.response)
+      console.log(e.response);
       if (e.response && e.response.status === 404) {
         window.location.href = window.location.hostname + '/forbidden';
       } else {
@@ -192,29 +191,29 @@ export const formatOrder = (order) => {
   order.snapshot = {
     id: order.order_no,
     text: '查看快照'
-  }
+  };
 };
 
 export const s2t = chineseConverter;
 export const pickProps = (keys, obj) => keys.reduce((a, c) => ({...a, [c]: obj[c]}), {});
 export const readableHash = (hash) => {
-  const K = 1000
-  const M = K * 1000
-  const G = M * 1000
-  const T = G * 1000
-  const P = T * 1000
+  const K = 1000;
+  const M = K * 1000;
+  const G = M * 1000;
+  const T = G * 1000;
+  const P = T * 1000;
 
-  const unitList = ['P', 'T', 'G', 'M', 'K']
-  const unitMap = {P, T, G, M, K}
+  const unitList = ['P', 'T', 'G', 'M', 'K'];
+  const unitMap = {P, T, G, M, K};
 
-  for (let unit of unitList) {
-    let unitAmount = unitMap[unit]
+  for (const unit of unitList) {
+    const unitAmount = unitMap[unit];
 
     if (hash >= unitAmount) {
-      return {text: hash / unitAmount + unit + 'H/s', number: hash / unitAmount, unit: unitAmount}
+      return {text: hash / unitAmount + unit + 'H/s', number: hash / unitAmount, unit: unitAmount};
     }
   }
-  return {text: hash + 'H/s', number: hash, unit: 1}
+  return {text: hash + 'H/s', number: hash, unit: 1};
 };
 export const JSONToCSV = (objArray) => {
   const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
@@ -222,8 +221,8 @@ export const JSONToCSV = (objArray) => {
 
   for (let i = 0; i < array.length; i++) {
     let line = '';
-    for (let index in array[i]) {
-      if (line !== '') line += ','
+    for (const index in array[i]) {
+      if (line !== '') line += ',';
 
       line += array[i][index];
     }
@@ -238,14 +237,14 @@ export const exportCSVFile = (headers, items, fileTitle) => {
   if (headers) {
     target.unshift(headers);
     items.forEach(i => {
-      let item = {}
-      for (let prop in headers) {
-        item[prop] = i[prop] || ''
+      const item = {};
+      for (const prop in headers) {
+        item[prop] = i[prop] || '';
       }
-      target.push(item)
-    })
+      target.push(item);
+    });
   } else {
-    target = items.slice(0)
+    target = items.slice(0);
   }
 
   // Convert Object to JSON
@@ -259,12 +258,12 @@ export const exportCSVFile = (headers, items, fileTitle) => {
   if (navigator.msSaveBlob) { // IE 10+
     navigator.msSaveBlob(blob, exportedFilenmae);
   } else {
-    const link = document.createElement("a");
+    const link = document.createElement('a');
     if (link.download !== undefined) { // feature detection
       // Browsers that support HTML5 download attribute
       const url = URL.createObjectURL(blob);
-      link.setAttribute("href", url);
-      link.setAttribute("download", exportedFilenmae);
+      link.setAttribute('href', url);
+      link.setAttribute('download', exportedFilenmae);
       link.style.visibility = 'hidden';
       document.body.appendChild(link);
       link.click();
@@ -274,6 +273,6 @@ export const exportCSVFile = (headers, items, fileTitle) => {
 };
 
 export const findMatchedItems = (target, options) => {
-  if (!target || !options || !target.length || !options.length) return []
-  return options.filter(o => target.indexOf(o.value) >= 0)
-}
+  if (!target || !options || !target.length || !options.length) return [];
+  return options.filter(o => target.indexOf(o.value) >= 0);
+};

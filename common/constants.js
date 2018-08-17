@@ -1,4 +1,4 @@
-const baseDomain = require("../config/baseURL");
+const baseDomain = require('../config/baseURL');
 export const loginURL = baseDomain.loginURL;
 export const roles = [{
   value: 'merchant', text: '认证商家',
@@ -9,7 +9,7 @@ export const userStatusTypes = [{
   value: 'normal', text: '正常',
 }, {
   value: 'forbidden', text: '限制交易',
-},];
+}];
 export const itemStatusTypes = [{
   value: 'on', text: '上架',
 }, {
@@ -22,26 +22,26 @@ export const pricingTypes = [{
   value: 'fixed', text: '固定',
 }, {
   value: 'float', text: '浮动',
-},];
+}];
 export const merchantStatusTypes = [{
   value: 'normal', text: '正常',
 }, {
   value: 'forbidden', text: '限制发布广告',
-},];
+}];
 export const merchantAuthStatusTypes = [{
   value: 'created', text: '商家认证中',
 }, {
   value: 'pass', text: '认证商家',
 }, {
   value: 'no', text: '审核未通过',
-},];
+}];
 export const kycStatusTypes = [{
   value: 'no', text: '未实名',
 }, {
   value: 'processing', text: '认证中',
 }, {
   value: 'passed', text: '已认证',
-},];
+}];
 export const orderStatusTypes = [{
   value: 'created', text: '已下单',
 }, {
@@ -89,12 +89,12 @@ export const paymentTypes = [{
   value: 'wechat', text: '微信支付',
 }, {
   value: 'bankcard', text: '银行卡',
-},]
+}];
 export const sides = [{
   value: 'buy', text: '买入',
 }, {
   value: 'sell', text: '卖出',
-},]
+}];
 
 export const counterpartyLimitTypes = [{
   text: '交易方必须通过手机验证',
@@ -105,13 +105,13 @@ export const counterpartyLimitTypes = [{
 }, {
   text: '交易方必须完成过 1 次交易',
   value: 'one_deal',
-}]
+}];
 
 export const userRoles = [{
   value: true, text: '认证商家',
 }, {
   value: false, text: '普通用户',
-},]
+}];
 export const balanceHistoryTypes = [{
   value: 'buy_order', text: '购买',
 }, {
@@ -120,17 +120,17 @@ export const balanceHistoryTypes = [{
   value: 'transfer_in', text: '转入',
 }, {
   value: 'transfer_out', text: '转出',
-}]
+}];
 export const licenseTypes = [{
   value: 'id_card', text: '身份证',
 }, {
   value: 'passport', text: '护照',
 }, {
   value: 'driving_license', text: '驾驶证',
-}]
+}];
 export const paymentStatusTypes = [{
   value: 'on', text: '开启',
 }, {
   value: 'off', text: '关闭',
-}]
-export const COLORS = ['#b2d9fd', '#fae7a3', '#ceeaaf', '#ffddd3', '#d4bfe8', '#b1ebde', '#ffd5bb', '#a9b2e0', '#e0a9cf', '#e0d0a9'] // 头像基础色号
+}];
+export const COLORS = ['#b2d9fd', '#fae7a3', '#ceeaaf', '#ffddd3', '#d4bfe8', '#b1ebde', '#ffd5bb', '#a9b2e0', '#e0a9cf', '#e0d0a9']; // 头像基础色号

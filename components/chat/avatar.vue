@@ -43,17 +43,17 @@
 </template>
 
 <script>
-const colorList = ['red', '#52cbca']
+const colorList = ['red', '#52cbca'];
 export default {
   name: 'user-avatar',
   computed: {
     // 头像背景色，有color用color，有index用index(循环颜色)，都没有就随机
     bgc: function () {
-      if (this.color) return this.color
+      if (this.color) return this.color;
 
-      if (this.index) return colorList[this.index % colorList.length]
+      if (this.index) return colorList[this.index % colorList.length];
 
-      return colorList[Math.floor(Math.random() * colorList.length)]
+      return colorList[Math.floor(Math.random() * colorList.length)];
     }
   },
   props: {
@@ -81,5 +81,5 @@ export default {
       default: '',
     },
   }
-}
+};
 </script>
