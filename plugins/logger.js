@@ -1,6 +1,7 @@
 const log4js = require('log4js');
 const layouts = require('log4js/lib/layouts');
-
+const os = require('os')
+const serverName = os.hostname()
 const isDev = process.env.MODE !== 'production';
 const globalLevel = isDev ? 'TRACE' : 'INFO';
 
@@ -21,7 +22,7 @@ log4js.addLayout('filter', function (config) {
 
 const smtpAppender = {
   type: '@log4js-node/smtp',
-  recipients: 'dengshen@viabtc.com',
+  recipients: 'dengshen@viabtc.com,linjunfeng@viabtc.com',
   sender: 'alert@viabtc.com',
   attachment: {
     enable: true,
@@ -93,12 +94,12 @@ if (isDev) {
   };
 }
 
-if (+process.env.OTC_ADMIN === 0 && !isDev) { // 只发送一个实例的log
+if (!isDev) { // 生产环境才发送log，log4js会自动根据instanceVar来处理log文件（https://log4js-node.github.io/log4js-node/clustering.html）
   logConfig.appenders = {
     ...logConfig.appenders,
     errorEmailSender: {
       ...smtpAppender,
-      subject: '[❌Error] OTC ADMIN最近1小时错误日志',
+      subject: serverName + '[❌Error] OTC ADMIN最近1小时错误日志',
       attachment: {
         ...smtpAppender.attachment,
         filename: 'error.log',
@@ -112,7 +113,7 @@ if (+process.env.OTC_ADMIN === 0 && !isDev) { // 只发送一个实例的log
     },
     commonEmailSender: {
       ...smtpAppender,
-      subject: '[⚠️Common] OTC ADMIN最近4小时普通日志',
+      subject: serverName + '[⚠️Common] OTC ADMIN最近4小时普通日志',
       attachment: {
         ...smtpAppender.attachment,
         filename: 'common.log',
