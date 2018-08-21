@@ -1,7 +1,7 @@
 const log4js = require('log4js');
 const layouts = require('log4js/lib/layouts');
-const os = require('os')
-const serverName = os.hostname()
+const os = require('os');
+const serverName = os.hostname();
 const isDev = process.env.MODE !== 'production';
 const globalLevel = isDev ? 'TRACE' : 'INFO';
 
