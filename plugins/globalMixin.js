@@ -26,7 +26,7 @@ export default ({app, store, redirect}) => {
         statsRange: [],
         startMon: null,
         endMon: null,
-        statsByMonth: false,
+        statsPeriod: 'day',
         loadingStats: false,
         loadingSingleResource: false,
         sortProp: null,
@@ -66,6 +66,18 @@ export default ({app, store, redirect}) => {
         this.singleResLoadedCallback = loadedCallback;
         this.getSingleResource();
       },
+      initStats(statsName, loadedCallback) {
+        this.statsName = statsName;
+        this.resources = [];
+        this.statsFilters = {};
+        const startDate = new Date();
+        startDate.setMonth(startDate.getMonth() - 1);
+        this.statsRange = [startDate, new Date()];
+        this.statsPeriod = 'day';
+        this.loadingStats = false;
+        this.statsLoadedCallback = loadedCallback;
+        this.getFilteredStats();
+      },
       backendStamp(date) {
         return Math.floor(date.getTime() / 1000);
       },
@@ -94,21 +106,6 @@ export default ({app, store, redirect}) => {
             this.resoucesLoadedCallback(e);
           }
         });
-      },
-      initStats(statsName, loadedCallback) {
-        this.statsName = statsName;
-        this.resources = [];
-        this.statsFilters = {};
-        if (statsName.indexOf('income') >= 0) {
-          this.statsFilters.coin_type = 0;
-        }
-        const startDate = new Date();
-        startDate.setMonth(startDate.getMonth() - 1);
-        this.statsRange = [startDate, new Date()];
-        this.statsByMonth = false;
-        this.loadingStats = false;
-        this.statsLoadedCallback = loadedCallback;
-        this.getFilteredStats();
       },
       getFilteredStats() {
         this.loadingStats = true;

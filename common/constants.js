@@ -1,3 +1,5 @@
+import {timeToLocale} from "./utilities";
+
 const baseDomain = require('../config/baseURL');
 export const loginURL = baseDomain.loginURL;
 export const roles = [{
@@ -134,3 +136,60 @@ export const paymentStatusTypes = [{
   value: 'off', text: '关闭',
 }];
 export const COLORS = ['#b2d9fd', '#fae7a3', '#ceeaaf', '#ffddd3', '#d4bfe8', '#b1ebde', '#ffd5bb', '#a9b2e0', '#e0a9cf', '#e0d0a9']; // 头像基础色号
+export const statsCategories = ['items', 'orders', 'users', 'merchants'];
+export const statsPeriodTypes = [{
+  value: 'day', text: '每天',
+}, {
+  value: 'off', text: '每周',
+}, {
+  value: 'off', text: '每月',
+}];
+export const itemStatsColumns = [
+  {
+    prop: 'date',
+    label: '日期',
+    formatter: (row, col, cell) => {
+      return timeToLocale(cell, true);
+    },
+    sortable: true,
+    xAxis: true,
+  }, {
+    prop: 'coin_type',
+    label: '币种',
+    sortable: false,
+    formatter: (row, col, cell) => {
+      return cell || '全部';
+    },
+  }, {
+    prop: 'on',
+    label: '上架广告',
+    sortable: true,
+    chartLine: true,
+  }, {
+    prop: 'off',
+    label: '下架广告',
+    sortable: true,
+    chartLine: true,
+  },  {
+    prop: 'deleted',
+    label: '已删除广告',
+    sortable: true,
+    chartLine: true,
+  }, {
+    prop: 'new_total',
+    label: '新增广告',
+    sortable: true,
+  }, {
+    prop: 'total',
+    label: '广告总数',
+    sortable: true,
+  },
+];
+export const statsProps = {
+  items: {
+    label: '广告',
+    columns: itemStatsColumns,
+    defaultFilters: {},
+    link: 'report/item',
+  },
+};
