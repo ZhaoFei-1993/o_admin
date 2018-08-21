@@ -285,6 +285,12 @@
         }
         return label;
       },
+      isSellerAppeal() {
+        return this.appeal.user_id === this.currentResource.sell_user.id;
+      },
+      appealSide() {
+        return this.isSellerAppeal ? `${this.currentResource.sell_user.name}` : `${this.currentResource.buy_user.name}`;
+      },
     },
     mounted() {
       this.initData();
@@ -318,12 +324,6 @@
             }
           }
         });
-      },
-      isSellerAppeal(appeal) {
-        return appeal.user_id === this.currentResource.sell_user.id;
-      },
-      appealSide(appeal) {
-        return this.isSellerAppeal ? `${this.currentResource.sell_user.name}` : `${this.currentResource.buy_user.name}`;
       },
       processAppeal() {
         this.patchAppeal({'operation_type': 'process'});
