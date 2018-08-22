@@ -32,7 +32,7 @@
 
   export default {
     computed: {
-      ...mapState(['user', 'chat'])
+      ...mapState(['user'])
     },
     head: {
       link: [{rel: 'stylesheet', href: '//at.alicdn.com/t/font_702301_jaydxd42e09.css'}]
@@ -45,18 +45,18 @@
         window.location.href = loginURL;
       },
       logout() {
-        this.$store.dispatch('user/signOut');
+        this.$store.dispatch('chat/logout').then(() => {
+          this.$store.dispatch('user/signOut');
+        }).catch(err => {
+          console.error(`IM退出失败${err}`);
+          this.$store.dispatch('user/signOut');
+        });
       },
       checkLogin() {
         if (window.location.href.indexOf('/forbidden') >= 0) {
           return;
         }
-        this.$store.dispatch('user/fetchUserAccount').then(_ => {
-          if (this.user.account && !this.chat.imClient) {
-            const clientId = `${this.user.account.id}`;
-            this.$store.dispatch('chat/newChatClient', clientId);
-          }
-        });
+        this.$store.dispatch('user/fetchUserAccount');
       }
     },
     mounted() {

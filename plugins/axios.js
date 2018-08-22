@@ -46,4 +46,22 @@ export default function ({app, $axios, store, redirect, req}) {
     }
     // return redirect('/error');
   });
+  $axios.interceptors.request.use(
+    function (config) {
+      if (!/get|options/i.test(config.method)) {
+        const token = Math.random().toString(36).substring(2, 15);
+
+        config.headers.common['X-CSRF-TOKEN'] = token;
+        if (/\?/.test(config.url)) {
+          config.url += '&X-CSRF-TOKEN=' + token;
+        } else {
+          config.url += '?X-CSRF-TOKEN=' + token;
+        }
+      }
+      return config;
+    },
+    function (error) {
+      return Promise.reject(error);
+    }
+  );
 };
