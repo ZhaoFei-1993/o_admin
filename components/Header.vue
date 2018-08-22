@@ -45,7 +45,12 @@
         window.location.href = loginURL;
       },
       logout() {
-        this.$store.dispatch('user/signOut');
+        this.$store.dispatch('chat/logout').then(() => {
+          this.$store.dispatch('user/signOut');
+        }).catch(err => {
+          console.error(`IM退出失败${err}`);
+          this.$store.dispatch('user/signOut');
+        });
       },
       checkLogin() {
         if (window.location.href.indexOf('/forbidden') >= 0) {
