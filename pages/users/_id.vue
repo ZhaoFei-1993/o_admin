@@ -13,7 +13,7 @@
                     <el-button type="primary" class="view-detail">申诉</el-button>
                 </router-link>
             </div>
-            <el-tabs type="border-card" v-model="currentTab">
+            <el-tabs type="border-card" v-model="currentTab" @tab-click="tabClick">
                 <el-tab-pane label="基本信息" name="basic">
                     <div class="info-block">
                         <div class="info-header">账户信息</div>
@@ -379,14 +379,7 @@
       };
     },
     mounted() {
-      this.initSingleResource('users', this.id, () => {
-        this.currentResource = Object.assign({}, this.currentResource, this.currentResource.user_kyc);
-      });
-      this.getMerchantInfo();
-      this.getOTCBalance();
-      this.getBalanceHistory();
-      this.getMerchantSetting();
-      this.getPaymentMethods();
+      this.getUserInfo();
     },
     computed: {
       counterpartyLimit() {
@@ -403,6 +396,13 @@
       }
     },
     methods: {
+      getUserInfo() {
+        this.initSingleResource('users', this.id, () => {
+          this.currentResource = Object.assign({}, this.currentResource, this.currentResource.user_kyc);
+        });
+        this.getOTCBalance();
+        this.getBalanceHistory();
+      },
       getMerchantInfo() {
         this.$axios.get(`/users/merchant/${this.id}`).then(response => {
           this.merchant = response.data.data;
@@ -411,6 +411,7 @@
             this.merchant = null;
           }
         });
+        this.getMerchantSetting();
       },
       getMerchantSetting() {
         this.$axios.get(`/users/${this.id}/settings`).then(response => {
@@ -497,7 +498,18 @@
           this.$message(`修改失败，请联系开发人员，error=${err}`, 'error');
           this.changeNameDialogVisible = false;
         });
-      }
+      },
+      tabClick(tab) {
+        if (tab.name === 'basic') {
+          this.getUserInfo();
+        }
+        if (tab.name === 'merchant') {
+          this.getMerchantInfo();
+        }
+        if (tab.name === 'transaction') {
+          this.getPaymentMethods();
+        }
+      },
     }
   };
 </script>
