@@ -81,23 +81,25 @@
       },
     },
     watch: {
-      'chat.imClient'(newVal, oldVal) {
-        if (newVal && !oldVal) {
-          this.init();
+      'user.account'(account) {
+        if (!this.chat.imClient && account && account.id) {
+          const clientId = `${account.id}`;
+          this.$store.dispatch('chat/newChatClient', clientId)
+            .then(() => {
+              this.init();
+            })
+            .catch(err => {
+              this.$errorTips(`初始化聊天失败，error=${err}`);
+            });
+          this.$nuxt.$on('IM.Event.SINGLE_MESSAGE_UPDATE', () => {  // 手动强制更新聊天列表
+            this.fetchMessageList({
+              success: (convList) => {
+                this.convList = convList;
+              },
+            });
+          });
         }
       },
-    },
-    mounted() {
-      if (this.chat.imClient) {
-        this.init(); // 从不同layout跳转过来时候需要初始化一次
-      }
-      this.$nuxt.$on('IM.Event.SINGLE_MESSAGE_UPDATE', () => {  // 手动强制更新聊天列表
-        this.fetchMessageList({
-          success: (convList) => {
-            this.convList = convList;
-          },
-        });
-      });
     },
     beforeDestroy() {
       this.unbindClientEvent();
@@ -110,7 +112,7 @@
             this.convList = convList;
           },
           error: (err) => {
-            console.error(`获取消息失败，error=${err}`); // 不显示错误提示
+            console.error(`获取消息列表失败，error=${err}`); // 不显示错误提示
           },
         });
         this.bindClientEvent(); // 绑定事件
