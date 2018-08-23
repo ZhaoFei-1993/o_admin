@@ -13,7 +13,23 @@
                     <el-button type="primary" class="view-detail">申诉</el-button>
                 </router-link>
             </div>
-            <el-tabs type="border-card" v-model="currentTab" @tab-click="tabClick">
+            <div class="with-margin-top today-limit" v-if="todayLimit">
+                <span>当日取消订单次数过多限制：</span>
+                <span v-if="!todayLimit.can_place_order">
+                    限制下单
+                    <el-button type="danger" @click="allowPlaceOrder">
+                        取消限制
+                    </el-button>
+                </span>
+                <span v-if="!todayLimit.can_publish_item">
+                    限制发布广告
+                    <el-button type="danger" @click="allowPublishItem">
+                        取消限制
+                    </el-button>
+                </span>
+                <span v-if="todayLimit.can_place_order&&todayLimit.can_publish_item">未限制</span>
+            </div>
+            <el-tabs type="border-card" v-model="currentTab" @tab-click="tabClick" class="with-margin-top">
                 <el-tab-pane label="基本信息" name="basic">
                     <div class="info-block">
                         <div class="info-header">账户信息</div>
@@ -329,6 +345,7 @@
         historyPageNum: 1,
         changeNameDialogVisible: false,
         newName: '',
+        todayLimit: {},
         balanceColumns: [{
           prop: 'coin_type',
           label: '币种',
@@ -380,6 +397,7 @@
     },
     mounted() {
       this.getUserInfo();
+      this.getTodayLimit();
     },
     computed: {
       counterpartyLimit() {
@@ -402,6 +420,11 @@
         });
         this.getOTCBalance();
         this.getBalanceHistory();
+      },
+      getTodayLimit() {
+        this.$axios.get(`/users/${this.id}/today/limit`).then(response => {
+          this.todayLimit = response.data.data;
+        });
       },
       getMerchantInfo() {
         this.$axios.get(`/users/merchant/${this.id}`).then(response => {
@@ -510,6 +533,22 @@
           this.getPaymentMethods();
         }
       },
+      allowPublishItem() {
+        this.$axios.post(`/users/${this.id}/today/limit`, {
+          ...this.todayLimit,
+          can_publish_item: true,
+        }).then(response => {
+          this.getTodayLimit();
+        });
+      },
+      allowPlaceOrder() {
+        this.$axios.post(`/users/${this.id}/today/limit`, {
+          ...this.todayLimit,
+          can_place_order: true,
+        }).then(response => {
+          this.getTodayLimit();
+        });
+      },
     }
   };
 </script>
@@ -517,6 +556,11 @@
     @import "~assets/style/global.scss";
 
     .page-user-detail {
+        .today-limit {
+            & > span {
+                margin-right: 2rem;
+            }
+        }
         .shortcuts {
             margin-bottom: 10px;
             .el-button {
