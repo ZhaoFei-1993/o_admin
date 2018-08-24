@@ -18,13 +18,13 @@
                 <span v-if="!todayLimit.can_place_order">
                     限制下单
                     <el-button type="danger" @click="allowPlaceOrder">
-                        取消限制
+                        恢复交易权限
                     </el-button>
                 </span>
                 <span v-if="!todayLimit.can_publish_item">
                     限制发布广告
                     <el-button type="danger" @click="allowPublishItem">
-                        取消限制
+                        恢复广告权限
                     </el-button>
                 </span>
                 <span v-if="todayLimit.can_place_order&&todayLimit.can_publish_item">未限制</span>
