@@ -174,6 +174,7 @@ module.exports = {
     '~/plugins/polyfills',
     '~/plugins/echarts',
     '~/plugins/filters',
+    '~/plugins/sentry',
     '~/plugins/globalMixin',
     '~/plugins/element-ui',
   ]
