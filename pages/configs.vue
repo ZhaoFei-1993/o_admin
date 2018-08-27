@@ -134,7 +134,7 @@
     },
     computed: {
       invalidName() {
-        return !this.currentConfig.name || !!this.currentConfig.name.match(/[^a-zA-Z_0-9]/)
+        return !this.currentConfig.name || !!this.currentConfig.name.match(/[^a-zA-Z_0-9]/);
       }
     },
     methods: {
@@ -144,7 +144,7 @@
       createConfig() {
         this.currentConfig = {
           project: this.resourceFilters.project,
-        }
+        };
         this.createConfigDialogVisible = true;
       },
       editConfig(config) {
