@@ -64,7 +64,7 @@
             <p>修改配置'{{currentConfig.name}}'</p>
             <el-input
                     type="textarea"
-                    :rows="20"
+                    :rows="16"
                     placeholder="请输入内容"
                     v-model="currentConfig.detail">
             </el-input>
@@ -161,11 +161,15 @@
         this.$axios.post('/system/config', this.currentConfig).then(res => {
           this.createConfigDialogVisible = false;
           this.getConfigs();
+        }).catch(e => {
+          this.$message({message: '创建失败' + e.message, type: 'error', duration: 8000});
         });
       },
       confirmEditConfig() {
         this.$axios.put('/system/config', this.currentConfig).then(res => {
           this.editConfigDialogVisible = false;
+        }).catch(e => {
+          this.$message({message: '修改失败' + e.message, type: 'error', duration: 8000});
         });
       },
       isValidJson(json) {
