@@ -158,18 +158,15 @@
         this.currentConfig.path = this.currentConfig.path || this.currentConfig.name;
         this.currentConfig.description = this.currentConfig.description || '';
         this.currentConfig.detail = '{}';
-        this.updateConfig().then(res => {
+        this.$axios.post('/system/config', this.currentConfig).then(res => {
           this.createConfigDialogVisible = false;
           this.getConfigs();
         });
       },
       confirmEditConfig() {
-        this.updateConfig().then(res => {
+        this.$axios.put('/system/config', this.currentConfig).then(res => {
           this.editConfigDialogVisible = false;
         });
-      },
-      updateConfig() {
-        return this.$axios.post('/system/config', this.currentConfig);
       },
       isValidJson(json) {
         try {
