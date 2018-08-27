@@ -78,6 +78,10 @@
                 <i class="iconfont icon-team"></i>
                 <span slot="title">用户管理</span>
             </el-menu-item>
+            <el-menu-item index="/configs">
+                <i class="iconfont icon-setting"></i>
+                <span slot="title">配置管理</span>
+            </el-menu-item>
 
         </el-menu>
     </div>
