@@ -38,9 +38,17 @@ export const merchantAuthStatusTypes = [{
 export const kycStatusTypes = [{
   value: 'no', text: '未实名',
 }, {
-  value: 'processing', text: '认证中',
+  value: 'processing', text: '初级认证中',
 }, {
-  value: 'passed', text: '已认证',
+  value: 'passed', text: '初级认证成功',
+},{
+  value: 'fail', text: '初级认证失败',
+}, {
+  value: 'advanced_processing', text: '高级认证中',
+}, {
+  value: 'advanced_passed', text: '高级认证成功',
+}, {
+  value: 'advanced_fail', text: '高级认证失败',
 }];
 export const orderStatusTypes = [{
   value: 'created', text: '已下单',

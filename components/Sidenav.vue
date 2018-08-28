@@ -82,7 +82,10 @@
                 <i class="iconfont icon-setting"></i>
                 <span slot="title">配置管理</span>
             </el-menu-item>
-
+            <el-menu-item index="/activities/mining">
+                <i class="iconfont icon-trophy"></i>
+                <span slot="title">挖矿活动</span>
+            </el-menu-item>
         </el-menu>
     </div>
 </template>
