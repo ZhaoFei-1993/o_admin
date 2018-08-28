@@ -21,8 +21,8 @@
     }
     .dot {
       position: absolute;
-      height: 8px;
-      width: 8px;
+      height: 10px;
+      width: 10px;
       right: 8px;
       top: 8px;
       border-radius: 50%;

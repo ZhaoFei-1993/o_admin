@@ -4,13 +4,13 @@
     <div class="chat-list-btn" @click="onShowList">
       <div class="chat-list-btn-rotate">
         <i class="iconfont icon-talk"></i>
-        <sup class="chat-badge" v-show="hasUnreadMessage"></sup>
+        <sup class="chat-badge" v-show="hasUnreadMessage"><span>NEW</span></sup>
       </div>
     </div>
     <transition name="chat-list-fade">
       <div class="chat-list" v-show="showList" v-prevent-parent-scroll>
         <ul>
-          <li class="chat-list-item" v-for="item in convList" :key="item.id" @click="toOrderDetail(item._attributes.name)" @mouseover="item._showBtn = true" @mouseout="item._showBtn = false">
+          <li class="chat-list-item" v-for="item in convList" :key="item.id" @click="toOrderDetail(item)" @mouseover="item._showBtn = true" @mouseout="item._showBtn = false">
             <div>
               <UserAvatar :username="item._otherMembers[0]" :online="false" :color="item._defaultColor" :size="42" :dot="item._unreadMessageCount > 0"></UserAvatar>
             </div>
@@ -22,7 +22,20 @@
               <div class="detail-wrapper detail-col2">
                 <span class="detail-content detail-text" v-if="item.lastMessage">
                   <template v-if="item.lastMessage.content._lctype === messageType.order">
-                    {{ item.lastMessage.from === `${user.account.id}` ? orderMessages[item.lastMessage.content._lctext].me : orderMessages[item.lastMessage.content._lctext].other }}
+                    <template v-if="item.lastMessage.content._lctext === 'order_create'">
+                      <template v-if="item._side === 'buyer'">
+                        {{ orderMessages[item.lastMessage.content._lctext].me }}
+                      </template>
+                      <template v-else-if="item._side === 'seller'">
+                        {{ orderMessages[item.lastMessage.content._lctext].other }}
+                      </template>
+                      <template v-else>
+                        {{ orderMessages[item.lastMessage.content._lctext].customer }}
+                      </template>
+                    </template>
+                    <template v-else>
+                      {{ item.lastMessage.from === `${user.account.id}` ? orderMessages[item.lastMessage.content._lctext].me : orderMessages[item.lastMessage.content._lctext].other }}
+                    </template>
                   </template>
                   <template v-else-if="[messageType.text, messageType.auto].indexOf(item.lastMessage.content._lctype) > -1">
                     {{ item.lastMessage.content._lctext }}
@@ -135,8 +148,14 @@
             });
         }
       },
-      toOrderDetail(name) {
-        const orderId = name.match(/\d+/);
+      toOrderDetail(item) {
+        const { _attributes: { attr: { order }, name } } = item;
+        let orderId;
+        if (order && order.id) { // 兼容旧数据，优先使用扩展字段id
+          orderId = order.id;
+        } else if (name) {
+          orderId = name.match(/\d+/);
+        }
         if (orderId) {
           this.$router.push(`/orders/${orderId}`);
         }
@@ -179,8 +198,20 @@
                     formatTime = `${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
                   }
                 }
+                const orderInfo = conv._attributes.attr.order;
+                let side = 'buyer';
+                if (orderInfo) {
+                  if (+orderInfo.buyer === +myClientId) {
+                    side = 'buyer';
+                  } else if (+orderInfo.seller === +myClientId) {
+                    side = 'seller';
+                  } else {
+                    side = 'customer';
+                  }
+                }
                 convList.push({
                   ...conv,
+                  _side: side, // 当前用户身份：买方、卖方、客服
                   _showBtn: false, // 是否显示已读按钮
                   _formatTime: formatTime,
                   _otherMembers: otherMembers, // 除了自己以外的聊天用户
@@ -243,7 +274,7 @@
       width: 60px;
       height: 60px;
       line-height: 60px;
-      background-color: #fff;
+      background-image: linear-gradient(to left, #22e6b8, #00c1ce);
       border-radius: 100px;
       box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.1);
       text-align: center;
@@ -255,20 +286,28 @@
         }
       }
       .icon-talk {
-        color: #52cbca;
-        font-size: 31px;
+        color: #fff;
+        font-size: 35px;
       }
       .chat-badge {
         position: absolute;
-        height: 7px;
-        width: 7px;
-        border-radius: 50%;
-        top: 18px;
-        right: 20px;
+        top: 14px;
+        right: 38px;
+        display: inline-block;
+        height: 14px;
+        line-height: 14px;
+        font-size: 12px;
+        padding: 0 1px;
+        text-align: center;
+        white-space: nowrap;
+        border-radius: 10px;
+        color: #fff;
         transform: translate3d(100%, -50%, 0);
         background-color: #e35555;
-        border: solid 1px #fff;
-        display: inline-block;
+        span {
+          display: inline-block;
+          transform: scale(.8);
+        }
       }
     }
     .chat-list-fade-enter-active, .chat-list-fade-leave-active {
