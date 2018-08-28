@@ -15,4 +15,4 @@ export const reportError = (err) => {
   } else {
     console.error(err);
   }
-}
+};

@@ -81,7 +81,7 @@ export const orderResultTypes = [{
   value: 'cancel_order', text: '将冻结的币释放给卖家',
 }];
 
-export const coinTypes = ['BTC', 'BCH', 'ETH', 'USDT'];
+export const coinTypes = ['BCH', 'BTC', 'ETH', 'USDT', 'CET'];
 
 export const paymentTypes = [{
   value: 'alipay', text: '支付宝',
@@ -120,6 +120,8 @@ export const balanceHistoryTypes = [{
   value: 'transfer_in', text: '转入',
 }, {
   value: 'transfer_out', text: '转出',
+}, {
+  value: 'gift', text: '赠送',
 }];
 export const licenseTypes = [{
   value: 'id_card', text: '身份证',
