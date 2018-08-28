@@ -1,6 +1,7 @@
 import {loginURL} from '../common/constants';
 import Vue from 'vue';
 import cookies from './cookies';
+import {reportError} from './sentry';
 
 export default function ({app, $axios, store, redirect, req}) {
   let cookieString = '';
@@ -40,10 +41,12 @@ export default function ({app, $axios, store, redirect, req}) {
     const code = parseInt(error.response && error.response.status);
     if (code === 401) {
       window.location.href = loginURL;
+      return;
     }
     if (code === 403) {
       return redirect('/forbidden');
     }
+    reportError(error);
     // return redirect('/error');
   });
   $axios.interceptors.request.use(
