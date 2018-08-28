@@ -71,7 +71,7 @@
                         <el-row>
                             <el-col :span="3">实名状态</el-col>
                             <el-col :span="9">
-                                {{currentResource.user_kyc|itemText}}
+                                {{currentResource.kyc_status |itemText(kycStatusTypes)}}
                             </el-col>
                             <el-col :span="3">真实姓名</el-col>
                             <el-col :span="9">{{kycName}}</el-col>

@@ -40,13 +40,13 @@ export const kycStatusTypes = [{
 }, {
   value: 'processing', text: '初级认证中',
 }, {
-  value: 'passed', text: '初级认证成功',
-},{
+  value: 'pass', text: '初级认证成功',
+}, {
   value: 'fail', text: '初级认证失败',
 }, {
   value: 'advanced_processing', text: '高级认证中',
 }, {
-  value: 'advanced_passed', text: '高级认证成功',
+  value: 'advanced_pass', text: '高级认证成功',
 }, {
   value: 'advanced_fail', text: '高级认证失败',
 }];
