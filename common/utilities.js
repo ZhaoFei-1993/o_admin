@@ -33,10 +33,6 @@ export const timeToLocale = (timestamp, showOnlyDay) => {
   });
 };
 
-export const timeToDateString = (time, withoutDay) => {
-  return time.getFullYear() + '-' + (time.getMonth() + 1) + (withoutDay ? '' : ('-' + time.getDate()));
-};
-
 export const getApproxCny = (price, priceType) => {
   return parseInt(price) * (parseInt(priceType) === 2 ? 6.5 : 1);
 };
@@ -275,4 +271,17 @@ export const exportCSVFile = (headers, items, fileTitle) => {
 export const findMatchedItems = (target, options) => {
   if (!target || !options || !target.length || !options.length) return [];
   return options.filter(o => target.indexOf(o.value) >= 0);
+};
+
+export const toBackendTimeStamp = (date) => {
+  return parseInt(date.getTime() / 1000, 10);
+};
+
+export const getDate = (date) => {
+  // 某一天的0点或者今天0点
+  const d = date || new Date();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  const year = String(d.getFullYear()).padStart(2, '0');
+  return new Date([year, month, day].join('-'));
 };

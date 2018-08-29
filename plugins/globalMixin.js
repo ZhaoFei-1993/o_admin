@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import API from '../config/api';
-import {timeToDateString} from '../common/utilities';
+import {getDate, toBackendTimeStamp} from '../common/utilities';
 import {reportError} from './sentry';
 
 export default ({app, store, redirect}) => {
@@ -25,9 +25,7 @@ export default ({app, store, redirect}) => {
         statsName: '',
         resourcesDateRange: null,
         statsRange: [],
-        startMon: null,
-        endMon: null,
-        statsByMonth: false,
+        statsPeriod: 'day',
         loadingStats: false,
         loadingSingleResource: false,
         sortProp: null,
@@ -67,6 +65,18 @@ export default ({app, store, redirect}) => {
         this.singleResLoadedCallback = loadedCallback;
         this.getSingleResource();
       },
+      initStats(statsName, loadedCallback) {
+        this.statsName = statsName;
+        this.resources = [];
+        this.statsFilters = {};
+        const startDate = new Date();
+        startDate.setMonth(startDate.getMonth() - 1);
+        this.statsRange = [startDate, new Date()];
+        this.statsPeriod = 'day';
+        this.loadingStats = false;
+        this.statsLoadedCallback = loadedCallback;
+        this.getFilteredStats();
+      },
       backendStamp(date) {
         return Math.floor(date.getTime() / 1000);
       },
@@ -97,26 +107,11 @@ export default ({app, store, redirect}) => {
           reportError(e);
         });
       },
-      initStats(statsName, loadedCallback) {
-        this.statsName = statsName;
-        this.resources = [];
-        this.statsFilters = {};
-        if (statsName.indexOf('income') >= 0) {
-          this.statsFilters.coin_type = 0;
-        }
-        const startDate = new Date();
-        startDate.setMonth(startDate.getMonth() - 1);
-        this.statsRange = [startDate, new Date()];
-        this.statsByMonth = false;
-        this.loadingStats = false;
-        this.statsLoadedCallback = loadedCallback;
-        this.getFilteredStats();
-      },
       getFilteredStats() {
         this.loadingStats = true;
-        const start = timeToDateString(this.statsRange[0], this.statsByMonth);
-        const end = timeToDateString(this.statsRange[1], this.statsByMonth);
-        this.$axios.get(API.getStats(this.statsName, this.statsFilters, this.statsByMonth, start, end)).then(response => {
+        const start = toBackendTimeStamp(getDate(this.statsRange[0]));
+        const end = toBackendTimeStamp(getDate(this.statsRange[1]));
+        this.$axios.get(API.getStats(this.statsName, this.statsFilters, this.statsPeriod, start, end)).then(response => {
           this.loadingStats = false;
           this.statsData = response.data.data.sort((a, b) =>
             new Date(a.target_time) - new Date(b.target_time)
@@ -171,7 +166,7 @@ export default ({app, store, redirect}) => {
         this.sortProp = sort.prop;
         this.isAscending = sort.order === 'ascending';
         this.getFilteredResources();
-      }
+      },
     }
   });
 };

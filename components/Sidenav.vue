@@ -12,15 +12,15 @@
                 <i class="iconfont icon-dashboard"></i>
                 <span slot="title">状态监控</span>
             </el-menu-item>
-            <el-submenu hidden index="/statistics">
+            <el-submenu index="/statistics">
                 <template slot="title">
                     <i class="iconfont icon-snippets"></i>
                     <span>统计报表</span>
                 </template>
-                <el-menu-item index="/statistics/items">广告统计</el-menu-item>
-                <el-menu-item index="/statistics/orders">订单统计</el-menu-item>
-                <el-menu-item index="/statistics/incomes">收入统计</el-menu-item>
-                <el-menu-item index="/statistics/users">用户统计</el-menu-item>
+                <el-menu-item index="/statistics/item">广告统计</el-menu-item>
+                <el-menu-item index="/statistics/order">订单统计</el-menu-item>
+                <el-menu-item index="/statistics/user">用户统计</el-menu-item>
+                <el-menu-item index="/statistics/merchant">商家统计</el-menu-item>
             </el-submenu>
             <el-submenu hidden index="/accounting">
                 <template slot="title">

@@ -1,3 +1,5 @@
+import {timeToLocale} from './utilities';
+
 const baseDomain = require('../config/baseURL');
 export const loginURL = baseDomain.loginURL;
 export const roles = [{
@@ -90,6 +92,7 @@ export const orderResultTypes = [{
 }];
 
 export const coinTypes = ['BCH', 'BTC', 'ETH', 'USDT', 'CET'];
+export const activeCoinTypes = ['BCH', 'BTC', 'ETH', 'USDT'];
 
 export const paymentTypes = [{
   value: 'alipay', text: '支付宝',
@@ -149,3 +152,186 @@ export const configProjectTypes = [{
 }, {
   value: 'mobile', text: '移动端',
 }];
+export const statsCategories = ['item', 'order', 'user', 'merchant'];
+export const statsPeriodTypes = [{
+  value: 'day', text: '每天',
+}, {
+  value: 'week', text: '每周',
+}, {
+  value: 'month', text: '每月',
+}];
+export const itemStatsColumns = [
+  {
+    prop: 'report_date',
+    label: '日期',
+    formatter: (row, col, cell) => {
+      return timeToLocale(cell, true);
+    },
+    xAxis: true,
+  }, {
+    prop: 'coin_type',
+    label: '币种',
+    formatter: (row, col, cell) => {
+      return cell || '全部';
+    },
+  }, {
+    prop: 'item_count',
+    label: '上架广告数',
+    chartLine: true,
+  }, {
+    prop: 'merchant_count',
+    label: '上架商家数',
+    chartLine: true,
+  }, {
+    prop: 'deal_count',
+    label: '成交订单数',
+    chartLine: true,
+  }, {
+    prop: 'cash_amount',
+    label: '成交额',
+  }, {
+    prop: 'cash_avg_amount',
+    label: '广告平均成交',
+  },
+];
+export const orderStatsColumns = [
+  {
+    prop: 'report_date',
+    label: '日期',
+    formatter: (row, col, cell) => {
+      return timeToLocale(cell, true);
+    },
+    xAxis: true,
+  }, {
+    prop: 'coin_type',
+    label: '币种',
+    formatter: (row, col, cell) => {
+      return cell || '全部';
+    },
+  }, {
+    prop: 'order_count',
+    label: '下单笔数',
+    chartLine: true,
+  }, {
+    prop: 'deal_count',
+    label: '成交笔数',
+    chartLine: true,
+  }, {
+    prop: 'coin_amount',
+    label: '成交币量',
+    chartLine: true,
+  }, {
+    prop: 'deal_rate',
+    label: '成交率',
+  }, {
+    prop: 'cash_avg_amount',
+    label: '成交比均',
+  }, {
+    prop: 'appeal_count',
+    label: '申诉书',
+  }, {
+    prop: 'appeal_rate',
+    label: '申诉率',
+  },
+];
+export const userStatsColumns = [
+  {
+    prop: 'report_date',
+    label: '日期',
+    formatter: (row, col, cell) => {
+      return timeToLocale(cell, true);
+    },
+    xAxis: true,
+  }, {
+    prop: 'total_count',
+    label: '用户数',
+    chartLine: true,
+  }, {
+    prop: 'new_count',
+    label: '新增用户数',
+    chartLine: true,
+  }, {
+    prop: 'trade_count',
+    label: '交易过的用户数',
+    chartLine: true,
+  }, {
+    prop: 'trade_rate',
+    label: '交易率',
+    chartLine: true,
+  }, {
+    prop: 'deal_count',
+    label: '成交过用户数',
+  }, {
+    prop: 'deal_rate',
+    label: '成交率',
+  },
+];
+export const merchantStatsColumns = [
+  {
+    prop: 'report_date',
+    label: '日期',
+    formatter: (row, col, cell) => {
+      return timeToLocale(cell, true);
+    },
+    xAxis: true,
+  }, {
+    prop: 'total_count',
+    label: '商家数',
+    chartLine: true,
+  }, {
+    prop: 'new_count',
+    label: '新增商家数',
+    chartLine: true,
+  }, {
+    prop: 'trade_count',
+    label: '挂单商家数',
+    chartLine: true,
+  }, {
+    prop: 'trade_rate',
+    label: '挂单率',
+    chartLine: true,
+  }, {
+    prop: 'deal_count',
+    label: '成交笔数',
+  }, {
+    prop: 'deal_avg_count',
+    label: '平均成交笔数',
+  }, {
+    prop: 'cash_amount',
+    label: '成交额',
+  }, {
+    prop: 'cash_avg_amount',
+    label: '平均成交额',
+  },
+];
+export const statsProps = {
+  item: {
+    label: '广告',
+    columns: itemStatsColumns,
+    filters: [
+      {name: 'side', text: '方向', value: 'buy', options: sides, clearable: true},
+      {name: 'coin_type', text: '币种', value: 'BCH', options: activeCoinTypes, clearable: true},
+    ],
+    link: 'report/item',
+  },
+  order: {
+    label: '订单',
+    columns: orderStatsColumns,
+    filters: [
+      {name: 'coin_type', text: '币种', value: 'BCH', options: activeCoinTypes, clearable: true},
+    ],
+    link: 'report/order',
+  },
+  user: {
+    label: '用户',
+    columns: userStatsColumns,
+    filters: null,
+    link: 'report/user',
+  },
+  merchant: {
+    label: '商家',
+    columns: merchantStatsColumns,
+    filters: null,
+    link: 'report/merchant',
+  },
+};
