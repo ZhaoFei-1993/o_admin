@@ -1,4 +1,4 @@
-import {timeToLocale} from "./utilities";
+import {timeToLocale} from './utilities';
 
 const baseDomain = require('../config/baseURL');
 export const loginURL = baseDomain.loginURL;

@@ -25,8 +25,6 @@ export default ({app, store, redirect}) => {
         statsName: '',
         resourcesDateRange: null,
         statsRange: [],
-        startMon: null,
-        endMon: null,
         statsPeriod: 'day',
         loadingStats: false,
         loadingSingleResource: false,

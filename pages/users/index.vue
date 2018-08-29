@@ -132,7 +132,7 @@
           formatter: (row, column, cellValue) => {
             return this.itemText(cellValue, kycStatusTypes);
           },
-        },{
+        }, {
           prop: 'kyc_name',
           label: '姓名',
           width: 80,

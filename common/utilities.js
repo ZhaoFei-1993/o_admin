@@ -277,7 +277,7 @@ export const toBackendTimeStamp = (date) => {
   return parseInt(date.getTime() / 1000, 10);
 };
 
-export const getDate=(date)=> {
+export const getDate = (date) => {
   // 某一天的0点或者今天0点
   const d = date || new Date();
   const month = String(d.getMonth() + 1).padStart(2, '0');
