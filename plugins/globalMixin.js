@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import API from '../config/api';
-import {timeToDateString} from '../common/utilities';
+import {getDate, toBackendTimeStamp} from '../common/utilities';
 import {reportError} from './sentry';
 
 export default ({app, store, redirect}) => {
@@ -111,9 +111,9 @@ export default ({app, store, redirect}) => {
       },
       getFilteredStats() {
         this.loadingStats = true;
-        const start = timeToDateString(this.statsRange[0], this.statsByMonth);
-        const end = timeToDateString(this.statsRange[1], this.statsByMonth);
-        this.$axios.get(API.getStats(this.statsName, this.statsFilters, this.statsByMonth, start, end)).then(response => {
+        const start = toBackendTimeStamp(getDate(this.statsRange[0]));
+        const end = toBackendTimeStamp(getDate(this.statsRange[1]));
+        this.$axios.get(API.getStats(this.statsName, this.statsFilters, this.statsPeriod, start, end)).then(response => {
           this.loadingStats = false;
           this.statsData = response.data.data.sort((a, b) =>
             new Date(a.target_time) - new Date(b.target_time)
@@ -168,7 +168,7 @@ export default ({app, store, redirect}) => {
         this.sortProp = sort.prop;
         this.isAscending = sort.order === 'ascending';
         this.getFilteredResources();
-      }
+      },
     }
   });
 };

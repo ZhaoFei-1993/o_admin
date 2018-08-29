@@ -97,7 +97,7 @@
 </template>
 <script>
   import {sides, coinTypes, paymentTypes, itemStatusTypes} from '~/common/constants';
-  import {timeToLocale} from '~/common/utilities';
+  import {timeToLocale, getDate, toBackendTimeStamp} from '~/common/utilities';
 
   export default {
     layout: 'default',
@@ -165,14 +165,6 @@
           this.getUserMining();
         }
       },
-      getDate(date) {
-        const d = date || new Date();
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-        const year = String(d.getFullYear()).padStart(2, '0');
-
-        return new Date([year, month, day].join('-'));
-      },
       getUserMining() {
         this.$router.replace({
           query: {...this.$route.query, user_id: this.userId || undefined}
@@ -188,14 +180,14 @@
       },
       getMiningRank() {
         // 后端分成两个接口的。。。
-        if (this.getDate(this.miningDate).getTime() === this.getDate().getTime()) {
+        if (getDate(this.miningDate).getTime() === getDate().getTime()) {
           this.$axios.get('/mining/rank').then(res => {
             this.rankList = res.data.data;
           });
         } else {
           this.$axios.get('/mining/history', {
             params: {
-              date: parseInt(this.getDate(this.miningDate).getTime() / 1000, 10)
+              date: toBackendTimeStamp(getDate(this.miningDate))
             }
           }).then(res => {
             this.rankList = res.data.data;

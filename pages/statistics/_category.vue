@@ -1,16 +1,16 @@
 <template>
     <div class="main-content">
         <h1>{{category.label}}统计</h1>
-        <el-row type="flex" justify="end">
+        <el-row type="flex" justify="start">
             <el-col :span="4">
                 <el-select v-model="statsPeriod"
                            @change="getFilteredStats"
                            placeholder="统计周期">
                     <el-option
-                            v-for="(period,index) in stats"
-                            :key="index+1"
-                            :label="product"
-                            :value="index+1">
+                            v-for="(period,index) in statsPeriodTypes"
+                            :key="index"
+                            :label="period.text"
+                            :value="period.value">
                     </el-option>
                 </el-select>
             </el-col>
@@ -61,35 +61,26 @@
                             </span>
                 </el-col>
             </no-ssr>
-            <el-col v-if="showProduct" :span="5">
-                <el-select v-model="statsFilters.kind_category_id"
-                           @change="getFilteredStats"
-                           placeholder="产品类型">
+            <el-col :span="10">
+                <el-select
+                        v-for="(filter,index) in category.filters"
+                        :key="index"
+                        v-model="statsFilters[filter.name]"
+                        @change="getFilteredStats"
+                        :clearable="filter.clearable"
+                        :placeholder="filter.text">
                     <el-option
-                            v-for="(product,index) in productTypes"
-                            :key="index+1"
-                            :label="product"
-                            :value="index+1">
-                    </el-option>
-                </el-select>
-            </el-col>
-
-            <el-col v-if="showCoin" :span="5">
-                <el-select v-model="statsFilters.coin_type"
-                           @change="getFilteredStats"
-                           placeholder="收入币种">
-                    <el-option
-                            v-for="(stats,index) in coinNames"
+                            v-for="(option,index) in filter.options"
                             :key="index"
-                            :label="stats"
-                            :value="index">
+                            :label="option.text || option"
+                            :value="option.value || option">
                     </el-option>
                 </el-select>
             </el-col>
         </el-row>
         <el-tabs class="with-margin-top" type="border-card">
             <el-tab-pane label="表格展示">
-                <StatsTable :data="statsData" :columns="stats_colums"></StatsTable>
+                <StatsTable :data="statsData" :columns="category.columns"></StatsTable>
             </el-tab-pane>
             <el-tab-pane v-if="chartOption" label="图形展示">
                 <div class="chart-container">
@@ -101,8 +92,8 @@
 </template>
 <script>
   import StatsTable from '~/components/StatsTable';
-  import {areaStackChartOption} from '~/common/utilities';
-  import {coinNames, productTypes, statsCategories, statsProps, statsTypes, statsPeriodTypes} from '~/common/constants';
+  // import {areaStackChartOption} from '~/common/utilities';
+  import {statsCategories, statsProps, statsPeriodTypes} from '~/common/constants';
 
   export default {
     components: {
@@ -111,16 +102,10 @@
     data() {
       const categoryName = this.$route.params.category;
       return {
-        statsTypes,
         statsPeriodTypes,
         categoryName,
         category: statsProps[categoryName],
-        productTypes: productTypes,
-        coinNames,
-        stats_colums: statsProps[categoryName].columns,
         chartOption: null,
-        showCoin: categoryName === 'incomes',
-        showProduct: categoryName === 'items' || categoryName === 'orders',
       };
     },
     computed: {
@@ -134,13 +119,14 @@
       }
       this.initStats(
         this.category.link,
-        () => {
-          this.chartOption = areaStackChartOption(this.sortedData, {
-            title: this.category.label + '趋势堆叠图',
-            xAxis: this.stats_colums.find(c => c.xAxis),
-            yAxisLines: this.stats_colums.filter(c => c.chartLine),
-          });
-        });
+        // () => {
+        //   this.chartOption = areaStackChartOption(this.sortedData, {
+        //     title: this.category.label + '曲线图',
+        //     xAxis: this.stats_colums.find(c => c.xAxis),
+        //     yAxisLines: this.stats_colums.filter(c => c.chartLine),
+        //   });
+        // }
+      );
     }
   };
 </script>
