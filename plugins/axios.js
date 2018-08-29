@@ -1,6 +1,7 @@
 import {loginURL} from '../common/constants';
 import Vue from 'vue';
 import cookies from './cookies';
+import {reportError} from './sentry';
 
 export default function ({app, $axios, store, redirect, req}) {
   let cookieString = '';
@@ -40,10 +41,30 @@ export default function ({app, $axios, store, redirect, req}) {
     const code = parseInt(error.response && error.response.status);
     if (code === 401) {
       window.location.href = loginURL;
+      return;
     }
     if (code === 403) {
       return redirect('/forbidden');
     }
+    reportError(error);
     // return redirect('/error');
   });
+  $axios.interceptors.request.use(
+    function (config) {
+      if (!/get|options/i.test(config.method)) {
+        const token = Math.random().toString(36).substring(2, 15);
+
+        config.headers.common['X-CSRF-TOKEN'] = token;
+        if (/\?/.test(config.url)) {
+          config.url += '&X-CSRF-TOKEN=' + token;
+        } else {
+          config.url += '?X-CSRF-TOKEN=' + token;
+        }
+      }
+      return config;
+    },
+    function (error) {
+      return Promise.reject(error);
+    }
+  );
 };

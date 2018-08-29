@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import API from '../config/api';
 import {timeToDateString} from '../common/utilities';
+import {reportError} from './sentry';
 
 export default ({app, store, redirect}) => {
   if (Vue.$plugins_facility_installed) {
@@ -105,6 +106,7 @@ export default ({app, store, redirect}) => {
           if (this.resoucesLoadedCallback && this.resoucesLoadedCallback instanceof Function) {
             this.resoucesLoadedCallback(e);
           }
+          reportError(e);
         });
       },
       getFilteredStats() {
@@ -124,6 +126,7 @@ export default ({app, store, redirect}) => {
           if (this.statsLoadedCallback && this.statsLoadedCallback instanceof Function) {
             this.statsLoadedCallback(e);
           }
+          reportError(e);
         });
       },
       getSingleResource() {
@@ -139,6 +142,7 @@ export default ({app, store, redirect}) => {
           if (this.singleResLoadedCallback && this.singleResLoadedCallback instanceof Function) {
             this.singleResLoadedCallback(e);
           }
+          reportError(e);
         });
       },
       changePage() {

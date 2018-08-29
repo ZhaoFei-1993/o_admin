@@ -40,6 +40,7 @@
     "nuxt": "1.4.0",
     "qr.js": "0.0.0",
     "query-string": "5.0.1",
+    "raven-js": "^3.26.4",
     "vue": "2.5.16",
     "vue-echarts": "3.0.7",
     "vue-functional-data-merge": "2.0.3",

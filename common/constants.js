@@ -40,9 +40,17 @@ export const merchantAuthStatusTypes = [{
 export const kycStatusTypes = [{
   value: 'no', text: '未实名',
 }, {
-  value: 'processing', text: '认证中',
+  value: 'processing', text: '初级认证中',
 }, {
-  value: 'passed', text: '已认证',
+  value: 'pass', text: '初级认证成功',
+}, {
+  value: 'fail', text: '初级认证失败',
+}, {
+  value: 'advanced_processing', text: '高级认证中',
+}, {
+  value: 'advanced_pass', text: '高级认证成功',
+}, {
+  value: 'advanced_fail', text: '高级认证失败',
 }];
 export const orderStatusTypes = [{
   value: 'created', text: '已下单',
@@ -83,7 +91,7 @@ export const orderResultTypes = [{
   value: 'cancel_order', text: '将冻结的币释放给卖家',
 }];
 
-export const coinTypes = ['BTC', 'BCH', 'ETH', 'USDT'];
+export const coinTypes = ['BCH', 'BTC', 'ETH', 'USDT', 'CET'];
 
 export const paymentTypes = [{
   value: 'alipay', text: '支付宝',
@@ -122,6 +130,8 @@ export const balanceHistoryTypes = [{
   value: 'transfer_in', text: '转入',
 }, {
   value: 'transfer_out', text: '转出',
+}, {
+  value: 'gift', text: '赠送',
 }];
 export const licenseTypes = [{
   value: 'id_card', text: '身份证',
@@ -136,6 +146,11 @@ export const paymentStatusTypes = [{
   value: 'off', text: '关闭',
 }];
 export const COLORS = ['#b2d9fd', '#fae7a3', '#ceeaaf', '#ffddd3', '#d4bfe8', '#b1ebde', '#ffd5bb', '#a9b2e0', '#e0a9cf', '#e0d0a9']; // 头像基础色号
+export const configProjectTypes = [{
+  value: 'web', text: '网页端',
+}, {
+  value: 'mobile', text: '移动端',
+}];
 export const statsCategories = ['items', 'orders', 'users', 'merchants'];
 export const statsPeriodTypes = [{
   value: 'day', text: '每天',

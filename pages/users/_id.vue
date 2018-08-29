@@ -13,7 +13,23 @@
                     <el-button type="primary" class="view-detail">申诉</el-button>
                 </router-link>
             </div>
-            <el-tabs type="border-card" v-model="currentTab">
+            <div class="with-margin-top today-limit" v-if="todayLimit">
+                <span>当日取消订单次数过多限制：</span>
+                <span v-if="!todayLimit.can_place_order">
+                    限制下单
+                    <el-button type="danger" @click="allowPlaceOrder">
+                        恢复交易权限
+                    </el-button>
+                </span>
+                <span v-if="!todayLimit.can_publish_item">
+                    限制发布广告
+                    <el-button type="danger" @click="allowPublishItem">
+                        恢复广告权限
+                    </el-button>
+                </span>
+                <span v-if="todayLimit.can_place_order&&todayLimit.can_publish_item">未限制</span>
+            </div>
+            <el-tabs type="border-card" v-model="currentTab" @tab-click="tabClick" class="with-margin-top">
                 <el-tab-pane label="基本信息" name="basic">
                     <div class="info-block">
                         <div class="info-header">账户信息</div>
@@ -55,7 +71,7 @@
                         <el-row>
                             <el-col :span="3">实名状态</el-col>
                             <el-col :span="9">
-                                {{currentResource.user_kyc?'已认证':'未实名'}}
+                                {{currentResource.kyc_status |itemText(kycStatusTypes)}}
                             </el-col>
                             <el-col :span="3">真实姓名</el-col>
                             <el-col :span="9">{{kycName}}</el-col>
@@ -329,6 +345,7 @@
         historyPageNum: 1,
         changeNameDialogVisible: false,
         newName: '',
+        todayLimit: {},
         balanceColumns: [{
           prop: 'coin_type',
           label: '币种',
@@ -379,14 +396,8 @@
       };
     },
     mounted() {
-      this.initSingleResource('users', this.id, () => {
-        this.currentResource = Object.assign({}, this.currentResource, this.currentResource.user_kyc);
-      });
-      this.getMerchantInfo();
-      this.getOTCBalance();
-      this.getBalanceHistory();
-      this.getMerchantSetting();
-      this.getPaymentMethods();
+      this.getUserInfo();
+      this.getTodayLimit();
     },
     computed: {
       counterpartyLimit() {
@@ -403,6 +414,18 @@
       }
     },
     methods: {
+      getUserInfo() {
+        this.initSingleResource('users', this.id, () => {
+          this.currentResource = Object.assign({}, this.currentResource, this.currentResource.user_kyc);
+        });
+        this.getOTCBalance();
+        this.getBalanceHistory();
+      },
+      getTodayLimit() {
+        this.$axios.get(`/users/${this.id}/today/limit`).then(response => {
+          this.todayLimit = response.data.data;
+        });
+      },
       getMerchantInfo() {
         this.$axios.get(`/users/merchant/${this.id}`).then(response => {
           this.merchant = response.data.data;
@@ -411,6 +434,7 @@
             this.merchant = null;
           }
         });
+        this.getMerchantSetting();
       },
       getMerchantSetting() {
         this.$axios.get(`/users/${this.id}/settings`).then(response => {
@@ -497,7 +521,34 @@
           this.$message(`修改失败，请联系开发人员，error=${err}`, 'error');
           this.changeNameDialogVisible = false;
         });
-      }
+      },
+      tabClick(tab) {
+        if (tab.name === 'basic') {
+          this.getUserInfo();
+        }
+        if (tab.name === 'merchant') {
+          this.getMerchantInfo();
+        }
+        if (tab.name === 'transaction') {
+          this.getPaymentMethods();
+        }
+      },
+      allowPublishItem() {
+        this.$axios.post(`/users/${this.id}/today/limit`, {
+          ...this.todayLimit,
+          can_publish_item: true,
+        }).then(response => {
+          this.getTodayLimit();
+        });
+      },
+      allowPlaceOrder() {
+        this.$axios.post(`/users/${this.id}/today/limit`, {
+          ...this.todayLimit,
+          can_place_order: true,
+        }).then(response => {
+          this.getTodayLimit();
+        });
+      },
     }
   };
 </script>
@@ -505,6 +556,11 @@
     @import "~assets/style/global.scss";
 
     .page-user-detail {
+        .today-limit {
+            & > span {
+                margin-right: 2rem;
+            }
+        }
         .shortcuts {
             margin-bottom: 10px;
             .el-button {
