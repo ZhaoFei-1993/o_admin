@@ -147,7 +147,7 @@
           }
         }],
         userId: this.$route.query.user_id,
-        miningDate: this.getDate(),
+        miningDate: getDate(),
         currentTab: this.$route.query.tab || 'rank',
         userMining: null,
         page: 1,
