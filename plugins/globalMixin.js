@@ -113,9 +113,7 @@ export default ({app, store, redirect}) => {
         const end = toBackendTimeStamp(getDate(this.statsRange[1]));
         this.$axios.get(API.getStats(this.statsName, this.statsFilters, this.statsPeriod, start, end)).then(response => {
           this.loadingStats = false;
-          this.statsData = response.data.data.sort((a, b) =>
-            new Date(a.target_time) - new Date(b.target_time)
-          );
+          this.statsData = response.data.data.data;
           if (this.statsLoadedCallback && this.statsLoadedCallback instanceof Function) {
             this.statsLoadedCallback(response);
           }
