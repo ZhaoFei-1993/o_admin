@@ -301,9 +301,6 @@ export const merchantStatsColumns = [
     prop: 'deal_count',
     label: '成交笔数',
   }, {
-    prop: 'deal_avg_count',
-    label: '平均成交笔数',
-  }, {
     prop: 'cash_amount',
     label: '成交额',
   }, {
