@@ -154,11 +154,11 @@ export const configProjectTypes = [{
 }];
 export const statsCategories = ['item', 'order', 'user', 'merchant'];
 export const statsPeriodTypes = [{
-  value: 'day', text: '每天',
+  value: 'daily', text: '每天',
 }, {
-  value: 'week', text: '每周',
+  value: 'weekly', text: '每周',
 }, {
-  value: 'month', text: '每月',
+  value: 'monthly', text: '每月',
 }];
 export const itemStatsColumns = [
   {
