@@ -72,7 +72,7 @@ export default ({app, store, redirect}) => {
         const startDate = new Date();
         startDate.setMonth(startDate.getMonth() - 1);
         this.statsRange = [startDate, new Date()];
-        this.statsPeriod = 'day';
+        this.statsPeriod = 'daily';
         this.loadingStats = false;
         this.statsLoadedCallback = loadedCallback;
         this.getFilteredStats();
