@@ -274,7 +274,7 @@ export const findMatchedItems = (target, options) => {
 };
 
 export const toBackendTimeStamp = (date) => {
-  return parseInt(date.getTime() / 1000, 10);
+  return parseInt(date.getTime() / 1000, 10) - 8 * 3600;// 后端用的是北京时间零点。。。。
 };
 
 export const getDate = (date) => {
