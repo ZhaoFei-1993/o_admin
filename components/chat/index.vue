@@ -314,19 +314,26 @@
         }
       },
       memberInfoMapper(arr) { // 遍历每一个消息，对用户头像进行映射，以防部分已退出用户没有头像
-        const { conversation } = this;
+        const {conversation} = this
         if (conversation) {
-          const { _attributes: { attr: { username } } } = conversation;
+          const {_attributes: {attr: {username, order}}} = conversation
           arr.forEach(item => {
             if (!this.memberInfoMap[item.from]) {
+              const isCustomer = !!order && item.from !== `${order.buyer}` && item.from !== `${order.seller}`
+              let name = ''
+              if (isCustomer) {
+                name = '客服'
+              } else {
+                name = !!username && !!username[item.from] ? username[item.from] : ''
+              }
               this.memberInfoMap[item.from] = {
                 color: this.colors[item.from % 10],
-                name: !!username && !!username[item.from] ? username[item.from] : '',
-              };
+                name,
+              }
             }
-          });
+          })
         }
-        return arr;
+        return arr
       },
       initMsgLog() {
         this.messageIterator.next().then((res) => {
