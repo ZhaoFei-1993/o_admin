@@ -77,7 +77,7 @@ export const appealStatusTypes = [{
 }];
 
 export const appealResultTypes = [{
-  value: 'draw', text: '平局',
+  value: 'draw', text: '取消申诉',
 }, {
   value: 'buyer_win', text: '买家胜诉',
 }, {
