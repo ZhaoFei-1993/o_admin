@@ -16,7 +16,7 @@
             </el-col>
             <no-ssr>
                 <el-col :span="10">
-                    <span v-if="statsPeriod==='month'">
+                    <span v-if="statsPeriod==='monthly'">
                         <el-date-picker
                                 v-model="statsRange[0]"
                                 type="month"
@@ -32,7 +32,7 @@
                                 placeholder="结束月">
                         </el-date-picker>
                     </span>
-                    <span v-if="statsPeriod==='week'">
+                    <span v-if="statsPeriod==='weekly'">
                         <el-date-picker
                                 v-model="statsRange[0]"
                                 type="week"
@@ -48,7 +48,7 @@
                                 placeholder="结束周">
                         </el-date-picker>
                     </span>
-                    <span v-if="statsPeriod==='day'">
+                    <span v-if="statsPeriod==='daily'">
                                 <el-date-picker
                                         v-model="statsRange"
                                         type="daterange"
