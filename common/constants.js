@@ -1,4 +1,5 @@
 import {timeToLocale} from './utilities';
+import {itemText} from '../plugins/filters';
 
 const baseDomain = require('../config/baseURL');
 export const loginURL = baseDomain.loginURL;
@@ -173,6 +174,12 @@ export const itemStatsColumns = [
     label: '币种',
     formatter: (row, col, cell) => {
       return cell || '全部';
+    },
+  }, {
+    prop: 'side',
+    label: '方向',
+    formatter: (row, col, cell) => {
+      return itemText(cell, sides);
     },
   }, {
     prop: 'item_count',
