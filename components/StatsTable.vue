@@ -1,6 +1,5 @@
 <template>
     <div class="stats-container">
-
         <el-table :data="data"
                   style="width: 100%"
                   class="stats-table">
