@@ -25,7 +25,7 @@ export default ({app, store, redirect}) => {
         statsName: '',
         resourcesDateRange: null,
         statsRange: [],
-        statsPeriod: 'day',
+        statsPeriod: 'daily',
         loadingStats: false,
         loadingSingleResource: false,
         sortProp: null,
