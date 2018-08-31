@@ -10,6 +10,7 @@
     "build-online": "cross-env NODE_ENV=production MODE=production nuxt build --config-file config/nuxt.prd.js",
     "build-pre": "cross-env NODE_ENV=production MODE=pre nuxt build --config-file config/nuxt.pre.js",
     "deploy-online": "git pull && npm i && npm run build-online && pm2 startOrRestart ecosystem.json --update-env --env production",
+    "jenkins-deploy-pre": "npm i && npm run build-pre &&  pm2 startOrRestart ecosystem.json --update-env --env pre",
     "deploy-pre": "git pull && npm i && npm run build-pre &&  pm2 startOrRestart ecosystem.json --update-env --env pre",
     "lint": "eslint --fix --ext .js,.vue --ignore-path .gitignore ."
   },
