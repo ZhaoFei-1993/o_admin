@@ -232,10 +232,10 @@ export const orderStatsColumns = [
     label: '成交率',
   }, {
     prop: 'cash_avg_amount',
-    label: '成交比均',
+    label: '每笔平均成交额',
   }, {
     prop: 'appeal_count',
-    label: '申诉书',
+    label: '申诉数',
   }, {
     prop: 'appeal_rate',
     label: '申诉率',

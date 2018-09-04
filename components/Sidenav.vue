@@ -8,9 +8,25 @@
                 text-color="#fff"
                 :default-active="activeIndex"
                 :collapse="!sidenavOpened">
-            <el-menu-item index="/">
-                <i class="iconfont icon-dashboard"></i>
-                <span slot="title">状态监控</span>
+            <el-menu-item index="/users">
+                <i class="iconfont icon-team"></i>
+                <span slot="title">用户管理</span>
+            </el-menu-item>
+            <el-menu-item index="/orders">
+                <i class="iconfont icon-detail"></i>
+                <span slot="title">订单管理</span>
+            </el-menu-item>
+            <el-menu-item index="/operations/appeals">
+                <i class="iconfont icon-customerservice"></i>
+                <span slot="title">申诉管理</span>
+            </el-menu-item>
+            <el-menu-item index="/items">
+                <i class="iconfont icon-barcode"></i>
+                <span slot="title">广告管理</span>
+            </el-menu-item>
+            <el-menu-item index="/operations/merchants">
+                <i class="iconfont icon-audit"></i>
+                <span slot="title">商家审核</span>
             </el-menu-item>
             <el-submenu index="/statistics">
                 <template slot="title">
@@ -21,7 +37,14 @@
                 <el-menu-item index="/statistics/order">订单统计</el-menu-item>
                 <el-menu-item index="/statistics/user">用户统计</el-menu-item>
                 <el-menu-item index="/statistics/merchant">商家统计</el-menu-item>
+                <el-menu-item index="/activities/mining">
+                    挖矿活动
+                </el-menu-item>
             </el-submenu>
+            <el-menu-item index="/configs">
+                <i class="iconfont icon-setting"></i>
+                <span slot="title">配置管理</span>
+            </el-menu-item>
             <el-submenu hidden index="/accounting">
                 <template slot="title">
                     <i class="iconfont icon-YUAN"></i>
@@ -46,22 +69,8 @@
             <!--</template>-->
             <!---->
             <!--</el-submenu>-->
-            <el-menu-item index="/operations/merchants">
-                <i class="iconfont icon-audit"></i>
-                <span slot="title">商家审核</span>
-            </el-menu-item>
-            <el-menu-item index="/operations/appeals">
-                <i class="iconfont icon-customerservice"></i>
-                <span slot="title">申诉管理</span>
-            </el-menu-item>
-            <el-menu-item index="/items">
-                <i class="iconfont icon-barcode"></i>
-                <span slot="title">广告管理</span>
-            </el-menu-item>
-            <el-menu-item index="/orders">
-                <i class="iconfont icon-detail"></i>
-                <span slot="title">订单管理</span>
-            </el-menu-item>
+
+
             <el-menu-item hidden index="/incomes">
                 <i class="iconfont icon-moneycollect"></i>
                 <span slot="title">广告收入</span>
@@ -74,18 +83,8 @@
                 <i class="iconfont icon-tag"></i>
                 <span slot="title">品牌型号</span>
             </el-menu-item>
-            <el-menu-item index="/users">
-                <i class="iconfont icon-team"></i>
-                <span slot="title">用户管理</span>
-            </el-menu-item>
-            <el-menu-item index="/configs">
-                <i class="iconfont icon-setting"></i>
-                <span slot="title">配置管理</span>
-            </el-menu-item>
-            <el-menu-item index="/activities/mining">
-                <i class="iconfont icon-trophy"></i>
-                <span slot="title">挖矿活动</span>
-            </el-menu-item>
+
+
         </el-menu>
     </div>
 </template>

@@ -1,13 +1,15 @@
 <template>
     <div class="main-content">
-        <h1>状态监控</h1>
-        <p>以后可以在这里实时显示当前的状态，例如：用户数，cpu占用，错误日志</p>
+        <h1>欢迎回来</h1>
     </div>
 </template>
 
 <script>
   export default {
     layout: 'default',
+    beforeCreate() {
+      this.$router.replace('/users');
+    },
   };
 </script>
 <style lang="scss" scoped>
