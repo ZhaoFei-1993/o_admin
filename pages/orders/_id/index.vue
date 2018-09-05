@@ -187,21 +187,23 @@
                     :visible.sync="appealDialogVisible"
                     width="30%">
                 <div class="title">申诉结果</div>
-                <el-select v-model="appealResultIndex" placeholder="请选择申诉结果">
+                <el-select v-model="appealResult" placeholder="请选择申诉结果">
                     <el-option
                             v-for="(item,index) in appealResultTypes"
                             :key="item.value"
                             :label="item.text"
-                            :value="index">
+                            :value="item">
                     </el-option>
                 </el-select>
                 <div class="title">订单处理结果</div>
-                <div class="order-result" v-if="currentResource.status==='success'">
-                    {{orderResultTypes[0].text}}
-                </div>
-                <div class="order-result" v-else>
-                    {{orderResultTypes[appealResultIndex].text}}
-                </div>
+                <el-select v-model="orderResult" placeholder="请选择订单结果">
+                    <el-option
+                            v-for="(item,index) in orderResultTypes"
+                            :key="item.value"
+                            :label="item.text"
+                            :value="item">
+                    </el-option>
+                </el-select>
 
                 <div class="title">申诉处理备注</div>
                 <el-input :rows="4" type="textarea" placeholder="请填写申诉审核判定依据，方便追溯"
@@ -249,7 +251,8 @@
         appealResultTypes,
         orderStatusTypes,
         orderResultTypes,
-        appealResultIndex: 0,
+        appealResult: null,
+        orderResult: null,
         appealRemark: null,
         payRemainTime: 0,
         orderExpireTime: 0,
@@ -266,7 +269,7 @@
         return pay ? `${this.itemText(pay.method, paymentTypes)} 账号：${pay.account_no} 账户名：${pay.account_name}` : '--';
       },
       canCloseAppeal() {
-        return this.appealResultIndex >= 0 && this.appealRemark && this.appealRemark.length >= 5;
+        return this.appealResult && this.appealRemark && this.appealRemark.length >= 5;
       },
       lastUpdateLabel() {
         let label;
@@ -340,14 +343,10 @@
       closeAppeal() {
         this.appealDialogVisible = false;
         this.joinedChat = false;
-        let orderResult = this.orderResultTypes[this.appealResultIndex].value;
-        if (this.currentResource.status === 'success') {
-          orderResult = this.orderResultTypes[0].value;
-        }
         this.patchAppeal({
           operation_type: 'close',
-          appeal_result: this.appealResultTypes[this.appealResultIndex].value,
-          order_result: orderResult,
+          appeal_result: this.appealResult.value,
+          order_result: this.orderResult.value,
           remark: this.appealRemark
         });
       },
