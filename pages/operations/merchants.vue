@@ -49,7 +49,6 @@
             <el-table-column
                     key="id"
                     label="ID"
-                    min-width="60"
             >
                 <template slot-scope="scope">
                     <router-link :to="'/users/'+scope.row.user_id">
@@ -142,14 +141,11 @@
         authDialogVisible: false,
         merchantAuthStatusTypes,
         licenseTypes,
-        itemColumns: [{
-          prop: 'create_time',
-          label: '申请认证时间',
-          formatter: (row, column, cellValue) => {
-            return timeToLocale(cellValue);
-          },
-          className: 'time',
-        }, {
+      };
+    },
+    computed: {
+      itemColumns() {
+        let defaultColums = [{
           prop: 'user',
           label: '用户名',
           width: 80,
@@ -163,28 +159,54 @@
             return row.last_name + ' ' + row.first_name;
           },
         }, {
-          prop: 'id_type',
-          label: '证件',
-          formatter: (row, column, cellValue) => {
-            return this.itemText(cellValue, licenseTypes) + ': ' + row.id_number;
-          },
-        }, {
           prop: 'mobile',
           label: '手机',
         }, {
           prop: 'email',
           label: '邮箱',
         }, {
-          prop: 'wechat',
-          label: '微信号',
-        }, {
           prop: 'auth_status',
           label: '认证状态',
           formatter: (row, column, cellValue) => {
             return this.itemText(cellValue, merchantAuthStatusTypes);
           },
-        }],
-      };
+        }];
+        if (this.resourceFilters.auth_status === 'cancelled') {
+          defaultColums = defaultColums.concat([{
+            prop: 'auth_cancel_time',
+            label: '取消认证时间',
+            formatter: (row, column, cellValue) => {
+              return cellValue ? timeToLocale(cellValue) : '--';
+            },
+            className: 'time',
+          }, {
+            prop: 'title',
+            label: '取消原因',
+            formatter: (row, column, cellValue) => {
+              return row.title + ' ' + row.detail;
+            },
+          }]);
+        } else {
+          defaultColums = defaultColums.concat([{
+            prop: 'create_time',
+            label: '申请认证时间',
+            formatter: (row, column, cellValue) => {
+              return cellValue ? timeToLocale(cellValue) : '--';
+            },
+            className: 'time',
+          }, {
+            prop: 'id_type',
+            label: '证件',
+            formatter: (row, column, cellValue) => {
+              return this.itemText(cellValue, licenseTypes) + ': ' + row.id_number;
+            },
+          }, {
+            prop: 'wechat',
+            label: '微信号',
+          }]);
+        }
+        return defaultColums;
+      }
     },
     mounted() {
       this.getMerchants();
@@ -210,7 +232,8 @@
       confirmFailAuth() {
         this.changeAuth('no', this.authComment);
       },
-      cancelAuth() {
+      cancelAuth(merchant) {
+        this.currentMerchant = merchant;
         this.changeAuth('cancelled', '');
       },
       changeAuth(newStatus, comment) {
