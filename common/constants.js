@@ -32,11 +32,15 @@ export const merchantStatusTypes = [{
   value: 'forbidden', text: '限制发布广告',
 }];
 export const merchantAuthStatusTypes = [{
-  value: 'created', text: '商家认证中',
+  value: 'created', text: '申请商家认证中',
 }, {
-  value: 'pass', text: '认证商家',
+  value: 'pass', text: '已通过商家认证',
 }, {
-  value: 'no', text: '审核未通过',
+  value: 'no', text: '商家认证未通过',
+}, {
+  value: 'cancelling', text: '申请取消审核中',
+}, {
+  value: 'cancelled', text: '已取消商家认证',
 }];
 export const kycStatusTypes = [{
   value: 'no', text: '未实名',

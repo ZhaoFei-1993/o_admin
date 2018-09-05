@@ -70,7 +70,6 @@
             <el-table-column
                     key="action"
                     label="操作"
-                    min-width="200"
             >
                 <template slot-scope="scope">
                     <template v-if="scope.row.auth_status === 'created'">
@@ -83,7 +82,20 @@
                             <el-button>详情</el-button>
                         </router-link>
                     </template>
+                    <template v-if="scope.row.auth_status === 'cancelling'">
+                        <el-button type="danger" @click="cancelAuth(scope.row)">取消认证</el-button>
+                        <router-link :to="'/users/'+scope.row.user_id">
+                            <el-button>详情</el-button>
+                        </router-link>
+                    </template>
                     <template v-if="scope.row.auth_status === 'no'">
+                        <!--<el-button type="success" @click="passAuth(scope.row)">通过</el-button>-->
+                        <router-link :to="'/users/'+scope.row.user_id">
+                            <el-button>详情</el-button>
+                        </router-link>
+                    </template>
+                    <!--这些地方暂时不优化，以后说不定要改-->
+                    <template v-if="scope.row.auth_status === 'cancelled'">
                         <!--<el-button type="success" @click="passAuth(scope.row)">通过</el-button>-->
                         <router-link :to="'/users/'+scope.row.user_id">
                             <el-button>详情</el-button>
@@ -132,8 +144,7 @@
         licenseTypes,
         itemColumns: [{
           prop: 'create_time',
-          label: '申请时间',
-          width: 96,
+          label: '申请认证时间',
           formatter: (row, column, cellValue) => {
             return timeToLocale(cellValue);
           },
@@ -148,40 +159,27 @@
         }, {
           prop: 'first_name',
           label: '实名',
-          width: 80,
           formatter: (row, column, cellValue) => {
             return row.last_name + ' ' + row.first_name;
           },
         }, {
           prop: 'id_type',
           label: '证件',
-          width: 120,
           formatter: (row, column, cellValue) => {
             return this.itemText(cellValue, licenseTypes) + ': ' + row.id_number;
           },
         }, {
-          prop: 'guaranty_amount',
-          label: 'CET保证金',
-          width: 80,
-          formatter: (row, column, cellValue) => {
-            return parseInt(cellValue);
-          },
-        }, {
           prop: 'mobile',
           label: '手机',
-          width: 120,
         }, {
           prop: 'email',
           label: '邮箱',
-          width: 120,
         }, {
           prop: 'wechat',
           label: '微信号',
-          width: 120,
         }, {
           prop: 'auth_status',
           label: '认证状态',
-          width: 96,
           formatter: (row, column, cellValue) => {
             return this.itemText(cellValue, merchantAuthStatusTypes);
           },
@@ -202,7 +200,7 @@
       },
       passAuth(merchant) {
         this.currentMerchant = merchant;
-        this.changeAuth(true, '');
+        this.changeAuth('pass', '');
       },
       failAuth(merchant) {
         this.currentMerchant = merchant;
@@ -210,11 +208,14 @@
         this.authDialogVisible = true;
       },
       confirmFailAuth() {
-        this.changeAuth(false, this.authComment);
+        this.changeAuth('no', this.authComment);
       },
-      changeAuth(isSuccess, comment) {
+      cancelAuth() {
+        this.changeAuth('cancelled', '');
+      },
+      changeAuth(newStatus, comment) {
         this.$axios.post(`/users/merchant/${this.currentMerchant.id}`, {
-          auth_status: isSuccess ? 'pass' : 'no',
+          auth_status: newStatus,
           remark: comment
         }).then(response => {
           this.authDialogVisible = false;

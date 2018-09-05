@@ -92,11 +92,11 @@
 <script>
   export default {
     props: ['sidenavOpened'],
-    data() {
-      return {
-        activeIndex: this.$route.path,
-      };
-    }
+    computed: {
+      activeIndex() {
+        return this.$route.path;
+      },
+    },
   };
 </script>
 <style lang="scss" scoped>
