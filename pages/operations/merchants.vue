@@ -182,6 +182,7 @@
           }, {
             prop: 'title',
             label: '取消原因',
+            width: 200,
             formatter: (row, column, cellValue) => {
               return row.title + ' ' + row.detail;
             },
