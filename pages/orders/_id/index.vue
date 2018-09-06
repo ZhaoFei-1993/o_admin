@@ -91,6 +91,7 @@
                                     <el-col :span="3">申诉结果</el-col>
                                     <el-col :span="9">
                                         <span>{{appeal.result | itemText(appealResultTypes)}}</span>
+                                        <span>{{appeal.order_result | itemText(orderResultTypes)}}</span>
                                     </el-col>
                                 </el-row>
                                 <el-row>
@@ -188,8 +189,11 @@
                     id="appeal-dialog"
                     :visible.sync="appealDialogVisible"
                     width="30%">
+                <div v-if="currentResource">
+                    订单状态：{{currentResource.status | itemText(orderStatusTypes)}}
+                </div>
                 <div class="title">申诉结果</div>
-                <el-select v-model="appealResult" placeholder="请选择申诉结果">
+                <el-select v-model="appealResult" placeholder="请选择申诉结果" @change="selectAppealResult">
                     <el-option
                             v-for="(item,index) in appealResultTypes"
                             :key="item.value"
@@ -197,18 +201,19 @@
                             :value="item">
                     </el-option>
                 </el-select>
-                <div class="title">订单处理结果</div>
-                <el-select v-model="orderResult" placeholder="请选择订单结果">
-                    <!--取消申诉一一对应-->
-                    <el-option
-                            v-for="(item,index) in orderResultTypes"
-                            :disabled="shouldDisableOrderResult(item)"
-                            :key="item.value"
-                            :label="item.text"
-                            :value="item">
-                    </el-option>
-                </el-select>
-
+                <template v-if="currentResource&&currentResource.status!=='success'">
+                    <div class="title">订单处理结果</div>
+                    <el-select v-model="orderResult" placeholder="请选择订单结果">
+                        <!--取消申诉一一对应-->
+                        <el-option
+                                v-for="(item,index) in orderResultTypes"
+                                :disabled="shouldDisableOrderResult(item)"
+                                :key="item.value"
+                                :label="item.text"
+                                :value="item">
+                        </el-option>
+                    </el-select>
+                </template>
                 <div class="title">申诉处理备注</div>
                 <el-input :rows="4" type="textarea" placeholder="请填写申诉审核判定依据，方便追溯"
                           v-model="appealRemark"></el-input>
@@ -391,14 +396,14 @@
       },
       selectAppealResult(selected) {
         // 暂时不用了
-        if (selected.value === 'draw') {
-          this.orderResult = this.orderResultTypes.find(r => r.value === 'none');
+        if (this.currentResource.status === 'success') {
+          this.orderResult = this.orderResultTypes.find(r => r.value === 'none');// 已完成的后端不能操作
         } else {
           this.orderResult = null;
         }
       },
       shouldDisableOrderResult(item) {
-        return (this.currentResource && this.currentResource.status === 'success' && item.value !== 'receipt_order');
+        return (this.appealResult && this.appealResult.value !== 'draw' && item.value === 'none');
       }
     }
   };
