@@ -189,7 +189,7 @@
                     :visible.sync="appealDialogVisible"
                     width="30%">
                 <div class="title">申诉结果</div>
-                <el-select v-model="appealResult" placeholder="请选择申诉结果" @change="selectAppealResult">
+                <el-select v-model="appealResult" placeholder="请选择申诉结果">
                     <el-option
                             v-for="(item,index) in appealResultTypes"
                             :key="item.value"
@@ -198,8 +198,7 @@
                     </el-option>
                 </el-select>
                 <div class="title">订单处理结果</div>
-                <el-select v-model="orderResult" placeholder="请选择订单结果"
-                           :disabled="appealResult&&appealResult.value==='draw'">
+                <el-select v-model="orderResult" placeholder="请选择订单结果">
                     <!--取消申诉一一对应-->
                     <el-option
                             v-for="(item,index) in orderResultTypes"
@@ -391,6 +390,7 @@
         clearInterval(this.secondCountdown);
       },
       selectAppealResult(selected) {
+        // 暂时不用了
         if (selected.value === 'draw') {
           this.orderResult = this.orderResultTypes.find(r => r.value === 'none');
         } else {
@@ -398,7 +398,7 @@
         }
       },
       shouldDisableOrderResult(item) {
-        return (this.currentResource && this.currentResource.status === 'success' && item.value !== 'receipt_order') || (this.appealResult && this.appealResult.value !== 'draw' && item.value === 'none');
+        return (this.currentResource && this.currentResource.status === 'success' && item.value !== 'receipt_order');
       }
     }
   };
