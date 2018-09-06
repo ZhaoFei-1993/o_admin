@@ -89,11 +89,11 @@ export const appealResultTypes = [{
 }];
 
 export const orderResultTypes = [{
-  value: 'none', text: '协调双方自行解决',
+  value: 'none', text: '订单不变（取消申诉）',
 }, {
-  value: 'receipt_order', text: '将币划给买方',
+  value: 'receipt_order', text: '订单完成（币给买方）',
 }, {
-  value: 'cancel_order', text: '将冻结的币释放给卖家',
+  value: 'cancel_order', text: '订单取消（币给卖家）',
 }];
 
 export const coinTypes = ['BCH', 'BTC', 'ETH', 'USDT', 'CET'];

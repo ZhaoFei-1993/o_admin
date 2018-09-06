@@ -142,42 +142,44 @@
                 </el-col>
                 <el-col :span="12" class="with-padding-left">
                     <el-card>
-                      <div class="appeal-wrapper">
-                        <div v-if="appeal">
-                          <div class="chat-actions">
-                              <el-button type="success" v-if="appeal.status==='created'" @click="processAppeal">
-                                  处理申诉
-                              </el-button>
-                              <template v-if="appeal.status==='processing'">
-                                  <el-button type="success" v-if="!joinedChat && !appeal.staff_id" @click="joinChat">
-                                      加入聊天
-                                  </el-button>
-                                  <el-button type="success" v-if="joinedChat" @click="exitChat">
-                                      退出聊天
-                                  </el-button>
-                                  <el-button type="warning" @click="suspendAppeal">
-                                      挂起申诉
-                                  </el-button>
-                                  <el-button type="danger"
-                                             @click="showAppealDialog">
-                                      处理完成
-                                  </el-button>
-                              </template>
+                        <div class="appeal-wrapper">
+                            <div v-if="appeal">
+                                <div class="chat-actions">
+                                    <el-button type="success" v-if="appeal.status==='created'" @click="processAppeal">
+                                        处理申诉
+                                    </el-button>
+                                    <template v-if="appeal.status==='processing'">
+                                        <el-button type="success" v-if="!joinedChat && !appeal.staff_id"
+                                                   @click="joinChat">
+                                            加入聊天
+                                        </el-button>
+                                        <el-button type="success" v-if="joinedChat" @click="exitChat">
+                                            退出聊天
+                                        </el-button>
+                                        <el-button type="warning" @click="suspendAppeal">
+                                            挂起申诉
+                                        </el-button>
+                                        <el-button type="danger"
+                                                   @click="showAppealDialog">
+                                            处理完成
+                                        </el-button>
+                                    </template>
 
-                              <el-button type="warning" v-if="appeal.status==='pending'" @click="resumeAppeal">
-                                  恢复处理
-                              </el-button>
-                          </div>
-                          <Chat v-if="joinedChat" :client="chat.imClient" :conversation-id="convId"
-                                :each-user-id="{ customer: `${user.account.id}`, buyer: `${currentResource.buy_user.id}`, seller: `${currentResource.sell_user.id}` }"
-                                :client-id="`${user.account.id}`" style="margin: 10px 0 0 0;border: solid 1px #ddd;"></Chat>
-                          <div v-else>
-                              未加入聊天
-                          </div>
+                                    <el-button type="warning" v-if="appeal.status==='pending'" @click="resumeAppeal">
+                                        恢复处理
+                                    </el-button>
+                                </div>
+                                <Chat v-if="joinedChat" :client="chat.imClient" :conversation-id="convId"
+                                      :each-user-id="{ customer: `${user.account.id}`, buyer: `${currentResource.buy_user.id}`, seller: `${currentResource.sell_user.id}` }"
+                                      :client-id="`${user.account.id}`"
+                                      style="margin: 10px 0 0 0;border: solid 1px #ddd;"></Chat>
+                                <div v-else>
+                                    未加入聊天
+                                </div>
+                            </div>
+                            <div v-else>未发起申诉，无法查看聊天内容</div>
+                            <History :order="currentResource" :id="id" style="margin-left: 10px;"></History>
                         </div>
-                        <div v-else>未发起申诉，无法查看聊天内容</div>
-                        <History :order="currentResource" :id="id" style="margin-left: 10px;"></History>
-                      </div>
                     </el-card>
                 </el-col>
             </el-row>
@@ -187,7 +189,7 @@
                     :visible.sync="appealDialogVisible"
                     width="30%">
                 <div class="title">申诉结果</div>
-                <el-select v-model="appealResult" placeholder="请选择申诉结果">
+                <el-select v-model="appealResult" placeholder="请选择申诉结果" @change="selectAppealResult">
                     <el-option
                             v-for="(item,index) in appealResultTypes"
                             :key="item.value"
@@ -196,9 +198,12 @@
                     </el-option>
                 </el-select>
                 <div class="title">订单处理结果</div>
-                <el-select v-model="orderResult" placeholder="请选择订单结果">
+                <el-select v-model="orderResult" placeholder="请选择订单结果"
+                           :disabled="appealResult&&appealResult.value==='draw'">
+                    <!--取消申诉一一对应-->
                     <el-option
                             v-for="(item,index) in orderResultTypes"
+                            :disabled="shouldDisableOrderResult(item)"
                             :key="item.value"
                             :label="item.text"
                             :value="item">
@@ -385,6 +390,16 @@
         if (!this.secondCountdown) return;
         clearInterval(this.secondCountdown);
       },
+      selectAppealResult(selected) {
+        if (selected.value === 'draw') {
+          this.orderResult = this.orderResultTypes.find(r => r.value === 'none');
+        } else {
+          this.orderResult = null;
+        }
+      },
+      shouldDisableOrderResult(item) {
+        return (this.currentResource && this.currentResource.status === 'success' && item.value !== 'receipt_order') || (this.appealResult && this.appealResult.value !== 'draw' && item.value === 'none');
+      }
     }
   };
 </script>
