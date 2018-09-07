@@ -403,7 +403,7 @@
         }
       },
       shouldDisableOrderResult(item) {
-        return (this.appealResult && this.appealResult.value !== 'draw' && item.value === 'none');
+        return (this.appealResult && this.appealResult.value !== 'draw' && item.value === 'none')||(this.appealResult && this.appealResult.value === 'draw' && item.value === 'receipt_order');
       }
     }
   };
