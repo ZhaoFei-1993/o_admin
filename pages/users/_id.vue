@@ -13,21 +13,27 @@
                     <el-button type="primary" class="view-detail">申诉</el-button>
                 </router-link>
             </div>
-            <div class="with-margin-top today-limit" v-if="todayLimit">
-                <span>当日取消订单次数过多限制：</span>
-                <span v-if="!todayLimit.can_place_order">
-                    限制下单
-                    <el-button type="danger" @click="allowPlaceOrder">
-                        恢复交易权限
-                    </el-button>
-                </span>
-                <span v-if="!todayLimit.can_publish_item">
-                    限制发布广告
-                    <el-button type="danger" @click="allowPublishItem">
-                        恢复广告权限
-                    </el-button>
-                </span>
-                <span v-if="todayLimit.can_place_order&&todayLimit.can_publish_item">未限制</span>
+            <div class="with-margin-top today-limit" v-if="userLimit">
+                <div>
+                    当日违规限制交易
+                    <span v-if="userLimit.day_limit">
+                        已限制
+                        <el-button type="warning" @click="cancelUserLimit('day_limit')">
+                            恢复交易权限
+                        </el-button>
+                    </span>
+                    <span v-els>未限制</span>
+                </div>
+                <div class="with-margin-top">
+                    30天违规限制交易
+                    <span v-if="userLimit.month_limit">
+                        已限制
+                        <el-button type="warning" @click="cancelUserLimit('month_limit')">
+                            恢复交易权限
+                        </el-button>
+                    </span>
+                    <span v-else>未限制</span>
+                </div>
             </div>
             <el-tabs type="border-card" v-model="currentTab" @tab-click="tabClick" class="with-margin-top">
                 <el-tab-pane label="基本信息" name="basic">
@@ -345,7 +351,7 @@
         historyPageNum: 1,
         changeNameDialogVisible: false,
         newName: '',
-        todayLimit: {},
+        userLimit: {},
         balanceColumns: [{
           prop: 'coin_type',
           label: '币种',
@@ -397,7 +403,7 @@
     },
     mounted() {
       this.getUserInfo();
-      this.getTodayLimit();
+      this.getUserLimit();
     },
     computed: {
       counterpartyLimit() {
@@ -421,10 +427,13 @@
         this.getOTCBalance();
         this.getBalanceHistory();
       },
-      getTodayLimit() {
-        this.$axios.get(`/users/${this.id}/today/limit`).then(response => {
-          this.todayLimit = response.data.data;
+      getUserLimit() {
+        this.$axios.get(`/users/${this.id}/limit`).then(response => {
+          this.userLimit = response.data.data;
         });
+      },
+      cancelUserLimit(limit) {
+        this.$axios.post(`/users/${this.id}/limit`, {[limit]: false}).then(this.getUserLimit());
       },
       getMerchantInfo() {
         this.$axios.get(`/users/merchant/${this.id}`).then(response => {
@@ -535,18 +544,18 @@
       },
       allowPublishItem() {
         this.$axios.post(`/users/${this.id}/today/limit`, {
-          ...this.todayLimit,
+          ...this.userLimit,
           can_publish_item: true,
         }).then(response => {
-          this.getTodayLimit();
+          this.getUserLimit();
         });
       },
       allowPlaceOrder() {
         this.$axios.post(`/users/${this.id}/today/limit`, {
-          ...this.todayLimit,
+          ...this.userLimit,
           can_place_order: true,
         }).then(response => {
-          this.getTodayLimit();
+          this.getUserLimit();
         });
       },
     }

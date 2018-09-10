@@ -196,6 +196,13 @@
             },
             className: 'time',
           }, {
+            prop: 'is_first_auth',
+            label: '首次申请认证',
+            formatter: (row, column, cellValue) => {
+              return cellValue ? '是' : '否';
+            },
+            className: 'time',
+          }, {
             prop: 'id_type',
             label: '证件',
             formatter: (row, column, cellValue) => {
