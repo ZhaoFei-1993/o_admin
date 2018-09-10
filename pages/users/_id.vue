@@ -22,7 +22,7 @@
                             恢复交易权限
                         </el-button>
                     </span>
-                    <span v-els>未限制</span>
+                    <span v-else>未限制</span>
                 </div>
                 <div class="with-margin-top">
                     30天违规限制交易
