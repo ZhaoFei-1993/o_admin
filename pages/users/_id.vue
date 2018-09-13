@@ -491,7 +491,7 @@
         });
       },
       getUserOperations() {
-        this.$axios.get(`/users/${this.id}/operations?page=${this.operationsPage}`).then(response => {
+        this.$axios.get(`/users/${this.id}/operations?page=${this.operationsPage}&limit=10`).then(response => {
           this.userOperations = response.data.data.data;
           this.operationsPage = response.data.data.curr_page;
           this.operationsTotal = response.data.data.total;
