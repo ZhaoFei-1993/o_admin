@@ -76,6 +76,7 @@
                 </template>
             </el-table-column>
         </el-table>
+        <no-ssr>
         <el-pagination
                 class="with-margin-top"
                 background
@@ -84,6 +85,7 @@
                 :current-page.sync="pageNum"
                 :total="totalNum">
         </el-pagination>
+        </no-ssr>
     </div>
 </template>
 <script>

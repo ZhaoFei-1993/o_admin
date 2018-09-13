@@ -105,14 +105,16 @@
                 </template>
             </el-table-column>
         </el-table>
-        <el-pagination
-                class="with-margin-top"
-                background
-                layout="prev, pager, next"
-                @current-change="changePage"
-                :current-page.sync="pageNum"
-                :total="totalNum">
-        </el-pagination>
+        <no-ssr>
+            <el-pagination
+                    class="with-margin-top"
+                    background
+                    layout="prev, pager, next"
+                    @current-change="changePage"
+                    :current-page.sync="pageNum"
+                    :total="totalNum">
+            </el-pagination>
+        </no-ssr>
         <el-dialog
                 v-if="currentMerchant"
                 title="认证不通过"

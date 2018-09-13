@@ -286,7 +286,11 @@
                 </el-tab-pane>
                 <el-tab-pane label="操作记录" name="operation">
                     <el-table :data="userOperations">
-                        <el-table-column prop="create_time" label="操作时间"></el-table-column>
+                        <el-table-column prop="create_time" label="操作时间">
+                            <template slot-scope="scope">
+                                {{scope.row.create_time |formatTime}}
+                            </template>
+                        </el-table-column>
                         <el-table-column prop="operator" label="操作人">
                             <template slot-scope="scope">
                                 <span v-if="scope.row.operator_id===0">系统</span>
@@ -654,6 +658,9 @@
         if (tab.name === 'transaction') {
           this.getPaymentMethods();
           this.getUserExtra();
+        }
+        if (tab.name === 'operation') {
+          this.getUserOperations();
         }
       },
       allowPublishItem() {
