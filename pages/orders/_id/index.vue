@@ -44,10 +44,11 @@
                         <el-col :span="9">
                             {{currentResource.pay_time | formatTime}}
                         </el-col>
-                        <el-col :span="3">{{lastUpdateLabel}}</el-col>
+                        <el-col :span="3">广告方</el-col>
                         <el-col :span="9">
-                            {{currentResource.complete_time | formatTime}}
+                            {{currentResource.maker}}
                         </el-col>
+
                     </el-row>
                     <el-row>
                         <el-col :span="3">币种</el-col>
@@ -71,8 +72,12 @@
                     </el-row>
                     <el-row>
                         <el-col :span="3">支付方式</el-col>
-                        <el-col :span="21">
+                        <el-col :span="9">
                             {{paymentMethod}}
+                        </el-col>
+                        <el-col :span="3">{{lastUpdateLabel}}</el-col>
+                        <el-col :span="9">
+                            {{currentResource.complete_time | formatTime}}
                         </el-col>
                     </el-row>
                 </div>
@@ -318,9 +323,11 @@
           if (order.merchant_side === 'sell') {
             order.sell_user = order.merchant;
             order.buy_user = order.user;
+            order.maker = '卖方';
           } else {
             order.sell_user = order.user;
             order.buy_user = order.merchant;
+            order.maker = '买方';
           }
           if (order.status === 'created') {
             this.orderExpireTime = (order.place_time + ORDER_PAY_TIME * 60) * 1000;

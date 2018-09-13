@@ -230,8 +230,13 @@
                     <div class="info-block">
                         <div class="info-header">最近30天交易</div>
                         <el-table :data="userExtra">
-                            <el-table-column prop="deal_count" label="最近成交单数"></el-table-column>
-                            <el-table-column prop="order_count" label="最近总单数"></el-table-column>
+                            <el-table-column prop="deal_count" label="实际成交订单数"></el-table-column>
+                            <el-table-column prop="order_count" label="总订单数"></el-table-column>
+                            <el-table-column prop="order_count" label="完成率">
+                                <template slot-scope="scope">
+                                    {{ (scope.row.deal_count/scope.row.order_count) | percentage}}
+                                </template>
+                            </el-table-column>
                             <el-table-column prop="pay_time" label="平均付款时间">
                                 <template slot-scope="scope">
                                     {{ scope.row.pay_time | formatDuration}}

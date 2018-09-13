@@ -41,6 +41,11 @@ export const itemText = (value, options) => {
   const item = options.find(r => r.value === value);
   return item ? (item.text) : '--';
 };
+
+export function percentage(num) {
+  return `${num * 100}`.round(2) + '%';
+}
+
 /**
  * 根据输入的en/cn/hk名称的配置，和当前语言，输出对应的语言文本
  * @param location {Object} {cn_name: '', hk_name: '', en_name: '', name: ''}
@@ -103,6 +108,7 @@ export default ({
       },
       translateName: location => translateName(location, store.state.lang),
       itemText,
+      percentage,
     }
   });
 };
