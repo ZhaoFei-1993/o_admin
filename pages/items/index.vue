@@ -123,10 +123,11 @@
         itemColumns: [{
           prop: 'id',
           label: 'ID',
+          width: 60,
         }, {
           prop: 'user',
           label: '商家',
-          width: 80,
+          width: 140,
           text: 'name',
           link: '/users',
         }, {

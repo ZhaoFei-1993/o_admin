@@ -142,6 +142,9 @@ main.el-main {
       color: #fff;
       background-color: #545c64;
     }
+    td {
+      padding: 2px 0;
+    }
   }
 }
 
@@ -225,4 +228,13 @@ button:focus {
 
 .float-right {
   float: right !important;
+}
+
+.keep-short-string{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+  white-space: nowrap;
+  display: inline-block;
+  vertical-align: middle;
 }

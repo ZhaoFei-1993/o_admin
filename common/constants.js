@@ -343,3 +343,16 @@ export const statsProps = {
     link: 'report/merchant',
   },
 };
+export const operationTypes = [{
+  value: 'forbid_user', text: '封禁用户交易',
+}, {
+  value: 'forbid_merchant', text: '封禁商家发布广告',
+}, {
+  value: 'permit_user', text: '解封用户交易',
+}, {
+  value: 'permit_merchant', text: '解封商家发布广告',
+}, {
+  value: 'release_day_limit', text: '解除日交易限制',
+}, {
+  value: 'release_month_limit', text: '解除30天交易限制',
+}];

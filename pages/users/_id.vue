@@ -46,11 +46,11 @@
                             <el-col :span="9" :class="currentResource.status">
                                 {{currentResource.status | itemText(userStatusTypes)}}
                                 <el-button v-if="currentResource.status==='normal'" type="danger"
-                                           @click="toggleUserStatus(false)"
+                                           @click="forbidUser"
                                 >
                                     限制交易
                                 </el-button>
-                                <el-button v-else type="danger" @click="toggleUserStatus(true)" class="float-right">
+                                <el-button v-else type="danger" @click="allowUser" class="float-right">
                                     取消限制
                                 </el-button>
                             </el-col>
@@ -165,10 +165,10 @@
                             <el-col :span="9">
                                 {{merchant.status | itemText(merchantStatusTypes)}}
                                 <el-button v-if="merchant.status==='normal'" type="danger"
-                                           @click="toggleMerchantStatus(false)">
+                                           @click="forbidMerchant">
                                     限制发布广告
                                 </el-button>
-                                <el-button v-else type="danger" @click="toggleMerchantStatus(true)">
+                                <el-button v-else type="danger" @click="allowMerchant">
                                     取消限制
                                 </el-button>
                             </el-col>
@@ -227,6 +227,25 @@
 
                 </el-tab-pane>
                 <el-tab-pane label="交易信息" name="transaction">
+                    <div class="info-block">
+                        <div class="info-header">最近30天交易</div>
+                        <el-table :data="userExtra">
+                            <el-table-column prop="deal_count" label="最近成交单数"></el-table-column>
+                            <el-table-column prop="order_count" label="最近总单数"></el-table-column>
+                            <el-table-column prop="pay_time" label="平均付款时间">
+                                <template slot-scope="scope">
+                                    {{ scope.row.pay_time | formatDuration}}
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="receipt_time" label="平均放行时间">
+                                <template slot-scope="scope">
+                                    {{ scope.row.receipt_time | formatDuration}}
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="total_appeal" label="申诉数"></el-table-column>
+                            <el-table-column prop="lose_appeal" label="败诉数"></el-table-column>
+                        </el-table>
+                    </div>
                     <div class="info-block" v-if="paymentMethods">
                         <div class="info-header">支付方式</div>
                         <el-table
@@ -265,35 +284,51 @@
                         </el-table>
                     </div>
                 </el-tab-pane>
+                <el-tab-pane label="操作记录" name="operation">
+                    <el-table :data="userOperations">
+                        <el-table-column prop="create_time" label="操作时间"></el-table-column>
+                        <el-table-column prop="operator" label="操作人">
+                            <template slot-scope="scope">
+                                <span v-if="scope.row.operator_id===0">系统</span>
+                                <router-link v-else :to="'/users/'+scope.row.operator_id" class="keep-short-string">
+                                    {{scope.row.operator}}
+                                </router-link>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="operation" label="操作类型">
+                            <template slot-scope="scope">
+                                {{scope.row.operation|itemText(operationTypes)}}
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="remark" label="备注信息"></el-table-column>
+                    </el-table>
+                    <no-ssr>
+                        <el-pagination
+                                class="with-margin-top"
+                                background
+                                layout="prev, pager, next"
+                                @current-change="changeOperationPage"
+                                :current-page.sync="operationsPage"
+                                :total="operationsTotal">
+                        </el-pagination>
+                    </no-ssr>
+                </el-tab-pane>
             </el-tabs>
             <el-dialog
-                    title="限制交易"
-                    :visible.sync="forbidUserDialogVisible"
+                    :title="constraintDialogProps.title"
+                    :visible.sync="constraintDialogProps.dialogVisible"
                     width="30%">
-                <p>确认限制用户{{currentResource.name}}交易吗？该用户将无法创建订单。</p>
-                <el-input :rows="4" type="textarea" placeholder="请填写限制用户交易的原因(五个字符以上)"
-                          v-model="forbidUserRemark"></el-input>
+                <p>{{constraintDialogProps.content}}</p>
+                <el-input :rows="4" type="textarea" placeholder="请填写原因"
+                          v-model="constraintDialogProps.remark"></el-input>
                 <div slot="footer" class="dialog-footer">
-                    <el-button @click="forbidUserDialogVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="confirmForbidUser"
-                               :disabled="!forbidUserRemark||forbidUserRemark.length<5">确 定
+                    <el-button @click="constraintDialogProps.dialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="confirmToggleConstraint"
+                               :disabled="!constraintDialogProps.remark||constraintDialogProps.remark.length<5">确 定
                     </el-button>
                 </div>
             </el-dialog>
-            <el-dialog
-                    title="限制发布广告"
-                    :visible.sync="forbidMerchantDialogVisible"
-                    width="30%">
-                <p>确认限制商家{{currentResource.name}}发布广告吗？该商家将无法发布广告。</p>
-                <el-input :rows="4" type="textarea" placeholder="请填写限制发布广告的原因(五个字符以上)"
-                          v-model="forbidMerchantRemark"></el-input>
-                <div slot="footer" class="dialog-footer">
-                    <el-button @click="forbidMerchantDialogVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="confirmForbidMerchant"
-                               :disabled="!forbidMerchantRemark||forbidMerchantRemark.length<5">确 定
-                    </el-button>
-                </div>
-            </el-dialog>
+
             <el-dialog
                     title="修改用户昵称"
                     :visible.sync="changeNameDialogVisible"
@@ -321,6 +356,7 @@
     merchantStatusTypes, counterpartyLimitTypes,
     balanceHistoryTypes, paymentTypes,
     licenseTypes, paymentStatusTypes,
+    operationTypes,
   } from '~/common/constants';
   import {findMatchedItems} from '~/common/utilities';
   import {timeToLocale} from '../../common/utilities';
@@ -336,6 +372,7 @@
         balanceHistoryTypes,
         licenseTypes,
         paymentStatusTypes,
+        operationTypes,
         id: this.$route.params.id,
         currentTab: this.$route.query.tab || 'basic',
         balance: [],
@@ -352,6 +389,13 @@
         changeNameDialogVisible: false,
         newName: '',
         userLimit: {},
+        constraintDialogProps: {
+          title: '',
+          content: '',
+          remark: '',
+          dialogVisible: false,
+          constraint: '',
+        },
         balanceColumns: [{
           prop: 'coin_type',
           label: '币种',
@@ -399,11 +443,16 @@
             return value;
           }
         }],
+        userOperations: [],
+        operationsPage: 1,
+        operationsTotal: 10,
+        userExtra: [],
       };
     },
     mounted() {
       this.getUserInfo();
       this.getUserLimit();
+      this.getUserOperations();
     },
     computed: {
       counterpartyLimit() {
@@ -432,8 +481,28 @@
           this.userLimit = response.data.data;
         });
       },
+      getUserOperations() {
+        this.$axios.get(`/users/${this.id}/operations?page=${this.operationsPage}`).then(response => {
+          this.userOperations = response.data.data.data;
+          this.operationsPage = response.data.data.curr_page;
+          this.operationsTotal = response.data.data.total;
+        });
+      },
+      changeOperationPage() {
+        this.$nextTick(this.getUserOperations);
+      },
       cancelUserLimit(limit) {
-        this.$axios.post(`/users/${this.id}/limit`, {[limit]: false}).then(this.getUserLimit());
+        this.constraintDialogProps = {
+          title: `取消用户${limit === 'day_limit' ? '当天' : '30天'}交易限制`,
+          content: '确认取消限制？取消后该用户将可以进行交易',
+          remark: '',
+          isAllow: false,
+          dialogVisible: true,
+          constraint: limit,
+        };
+      },
+      confirmCancelUserLimit(isAllow, remark, limit) {
+        this.$axios.post(`/users/${this.id}/limit`, {[limit]: false, remark}).then(this.getUserLimit());
       },
       getMerchantInfo() {
         this.$axios.get(`/users/merchant/${this.id}`).then(response => {
@@ -467,15 +536,30 @@
           this.paymentMethods = response.data.data;
         });
       },
+      getUserExtra() {
+        this.$axios.get(`/users/${this.id}/extra`).then(response => {
+          this.userExtra = [response.data.data];
+        });
+      },
       allowUser() {
-        this.toggleUserStatus(true, '');
+        this.constraintDialogProps = {
+          title: '取消用户交易限制',
+          content: '确认取消限制？取消后该用户将可以进行交易',
+          remark: '',
+          isAllow: true,
+          dialogVisible: true,
+          constraint: 'user',
+        };
       },
       forbidUser() {
-        this.forbidUserRemark = null;
-        this.forbidUserDialogVisible = true;
-      },
-      confirmForbidUser() {
-        this.toggleUserStatus(false, this.forbidUserRemark);
+        this.constraintDialogProps = {
+          title: '限制用户交易',
+          content: '确认限制用户交易？',
+          remark: '',
+          isAllow: false,
+          dialogVisible: true,
+          constraint: 'user',
+        };
       },
       toggleUserStatus(isAllow, remark) {
         this.$axios.patch('/users/' + this.currentResource.id, {
@@ -488,14 +572,43 @@
         });
       },
       allowMerchant() {
-        this.toggleMerchantStatus(true, '');
+        this.constraintDialogProps = {
+          title: '取消商家广告限制',
+          content: '确认取消限制？取消后该商家将可以发布广告',
+          remark: '',
+          isAllow: true,
+          dialogVisible: true,
+          constraint: 'merchant',
+        };
       },
       forbidMerchant() {
-        this.forbidMerchantRemark = null;
-        this.forbidMerchantDialogVisible = true;
+        this.constraintDialogProps = {
+          title: '限制商家发布广告',
+          content: '确认限制该商家发布广告？',
+          remark: '',
+          isAllow: false,
+          dialogVisible: true,
+          constraint: 'merchant',
+        };
       },
-      confirmForbidMerchant() {
-        this.toggleMerchantStatus(false, this.forbidMerchantRemark);
+      confirmToggleConstraint() {
+        this.constraintDialogProps.dialogVisible = false;
+        let toggleFunction;
+        switch (this.constraintDialogProps.constraint) {
+          case 'merchant':
+            toggleFunction = this.toggleMerchantStatus;
+            break;
+          case 'user':
+            toggleFunction = this.toggleUserStatus;
+            break;
+          case 'day_limit':
+          case 'month_limit':
+            toggleFunction = this.confirmCancelUserLimit;
+            break;
+        }
+        if (toggleFunction) {
+          toggleFunction(this.constraintDialogProps.isAllow, this.constraintDialogProps.remark, this.constraintDialogProps.constraint);
+        }
       },
       toggleMerchantStatus(isAllow, remark) {
         this.$axios.patch('/users/merchant/' + this.currentResource.id, {
@@ -540,6 +653,7 @@
         }
         if (tab.name === 'transaction') {
           this.getPaymentMethods();
+          this.getUserExtra();
         }
       },
       allowPublishItem() {

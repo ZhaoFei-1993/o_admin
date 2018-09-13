@@ -69,6 +69,7 @@
             <el-table-column
                     key="action"
                     label="操作"
+                    min-width="160"
             >
                 <template slot-scope="scope">
                     <template v-if="scope.row.auth_status === 'created'">
@@ -170,6 +171,7 @@
           formatter: (row, column, cellValue) => {
             return this.itemText(cellValue, merchantAuthStatusTypes);
           },
+          width: 90,
         }];
         if (this.resourceFilters.auth_status === 'cancelled') {
           defaultColums = defaultColums.concat([{
@@ -197,11 +199,11 @@
             className: 'time',
           }, {
             prop: 'is_first_auth',
-            label: '首次申请认证',
+            label: '首次认证',
             formatter: (row, column, cellValue) => {
               return cellValue ? '是' : '否';
             },
-            className: 'time',
+            width: 60,
           }, {
             prop: 'id_type',
             label: '证件',

@@ -86,14 +86,16 @@
                 </template>
             </el-table-column>
         </el-table>
-        <el-pagination
-                class="with-margin-top"
-                background
-                layout="prev, pager, next"
-                @current-change="changePage"
-                :current-page.sync="pageNum"
-                :total="totalNum">
-        </el-pagination>
+        <no-ssr>
+            <el-pagination
+                    class="with-margin-top"
+                    background
+                    layout="prev, pager, next"
+                    @current-change="changePage"
+                    :current-page.sync="pageNum"
+                    :total="totalNum">
+            </el-pagination>
+        </no-ssr>
     </div>
 </template>
 <script>
@@ -116,7 +118,7 @@
         }, {
           prop: 'create_time',
           label: '注册时间',
-          width: 96,
+          width: 130,
           formatter: (row, column, cellValue) => {
             return timeToLocale(cellValue);
           },
@@ -128,7 +130,7 @@
         }, {
           prop: 'kyc_status',
           label: '实名状态',
-          width: 72,
+          width: 90,
           formatter: (row, column, cellValue) => {
             return this.itemText(cellValue, kycStatusTypes);
           },
@@ -156,7 +158,7 @@
         }, {
           prop: 'email',
           label: '邮箱',
-          width: 200,
+          width: 160,
         }, {
           prop: 'status',
           label: '用户状态',

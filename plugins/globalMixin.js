@@ -3,7 +3,7 @@ import API from '../config/api';
 import {getDate, toBackendTimeStamp} from '../common/utilities';
 import {reportError} from './sentry';
 
-export default ({app, store, redirect}) => {
+export default ({app, store, route, redirect}) => {
   if (Vue.$plugins_facility_installed) {
     return;
   }
@@ -11,14 +11,16 @@ export default ({app, store, redirect}) => {
 
   Vue.mixin({
     data() {
+      const page = parseInt(route.query.page) || 1;
+      const limit = 10;
       return {
         loadingResources: false,
-        totalNum: 0,
+        totalNum: limit * page,
         resources: [],
         resourcesPath: '',
         currentResource: null,
         currentResourceId: 0,
-        pageNum: 1,
+        pageNum: page,
         resourceFilters: {},
         statsFilters: {},
         statsData: [],
@@ -47,10 +49,10 @@ export default ({app, store, redirect}) => {
       },
       initResources(resourcesPath, loadedCallback, filters) {
         this.resourcesPath = resourcesPath;
-        this.pageNum = 1;
+        this.pageNum = parseInt(this.$route.query.page) || 1;
         this.resources = [];
         this.resourceFilters = filters || {};
-        this.totalNum = 0;
+        this.totalNum = this.pageNum * 10;
         this.resourcesDateRange = null;
         this.resoucesLoadedCallback = loadedCallback;
         this.sortProp = null;
@@ -143,6 +145,9 @@ export default ({app, store, redirect}) => {
       },
       changePage() {
         // pageNum 要先改变
+        this.$router.replace({
+          query: {...this.$route.query, page: this.pageNum}
+        });
         Vue.nextTick(this.getFilteredResources);
       },
       changeStatsPage() {

@@ -8,6 +8,7 @@ const priceSymbolMap = {
 const noop = () => '';
 
 export const formatDuration = (durationNum, format, $t = noop) => {
+  console.log(durationNum, format);
   if (!durationNum) {
     return '--';
   }
@@ -18,7 +19,7 @@ export const formatDuration = (durationNum, format, $t = noop) => {
   if (format) {
     return format.replace(/d/i, day).replace(/h/i, hour).replace(/m/i, minute).replace(/s/i, second);
   }
-  return (day ? (day + $t(`global.misc.天`)) : '') + (hour ? (hour + $t(`global.misc.小时`)) : '') + (durationNum < 86400 && minute ? (minute + $t(`global.misc.分钟`)) : '') + (durationNum < 3600 && second ? (second + $t(`global.misc.秒`)) : '');
+  return (day ? (day + '天') : '') + (hour ? (hour + '小时') : '') + (durationNum < 86400 && minute ? (minute + '分钟') : '') + (durationNum < 3600 && second ? (second + '秒') : '');
 };
 export const formatTime = (time, lang) => {
   // 后端返回的是秒

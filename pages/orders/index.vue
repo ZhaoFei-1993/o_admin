@@ -96,6 +96,30 @@
                              :min-width="column.width">
             </el-table-column>
             <el-table-column
+                    key="buy_user"
+                    label="买方"
+                    min-width="190"
+            >
+                <template slot-scope="scope">
+                    <el-tag v-if="scope.row.buy_user.isMaker">广告</el-tag>
+                    <router-link :to="'/users/'+scope.row.buy_user.id" class="keep-short-string">
+                        {{scope.row.buy_user.name}}
+                    </router-link>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    key="sell_user"
+                    label="卖方"
+                    min-width="190"
+            >
+                <template slot-scope="scope">
+                    <el-tag v-if="scope.row.sell_user.isMaker">广告</el-tag>
+                    <router-link :to="'/users/'+scope.row.sell_user.id" class="keep-short-string">
+                        {{scope.row.sell_user.name}}
+                    </router-link>
+                </template>
+            </el-table-column>
+            <el-table-column
                     key="action"
                     label="操作"
                     min-width="80"
@@ -107,14 +131,17 @@
                 </template>
             </el-table-column>
         </el-table>
-        <el-pagination
-                class="with-margin-top"
-                background
-                layout="prev, pager, next"
-                @current-change="changePage"
-                :current-page.sync="pageNum"
-                :total="totalNum">
-        </el-pagination>
+        <no-ssr>
+            <el-pagination
+                    class="with-margin-top"
+                    background
+                    layout="prev, pager, next"
+                    @current-change="changePage"
+                    :current-page.sync="pageNum"
+                    :total="totalNum">
+            </el-pagination>
+        </no-ssr>
+
     </div>
 </template>
 <script>
@@ -136,34 +163,25 @@
         }, {
           prop: 'create_time',
           label: '下单时间',
-          width: 96,
+          width: 110,
           formatter: (row, column, cellValue) => {
             return timeToLocale(cellValue);
           },
-        }, {
-          prop: 'buy_user',
-          label: '买方',
-          width: 80,
-          link: '/users',
-          text: 'name',
-        }, {
-          prop: 'sell_user',
-          label: '卖方',
-          width: 80,
-          link: '/users',
-          text: 'name',
         }, {
           prop: 'status',
           label: '订单状态',
           formatter: (row, column, cellValue) => {
             return this.itemText(cellValue, orderStatusTypes);
           },
+          width: 90,
         }, {
           prop: 'coin_type',
           label: '币种',
+          width: 60,
         }, {
           prop: 'coin_amount',
           label: '数量',
+          width: 100,
         }, {
           prop: 'price',
           label: '价格',
@@ -179,10 +197,12 @@
           this.resources.forEach(order => {
             if (order.merchant_side === 'sell') {
               order.sell_user = order.merchant;
+              order.sell_user.isMaker = true;
               order.buy_user = order.user;
             } else {
               order.sell_user = order.user;
               order.buy_user = order.merchant;
+              order.buy_user.isMaker = true;
             }
           });
         }
