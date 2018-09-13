@@ -191,7 +191,7 @@ export const itemStatsColumns = [
     chartLine: true,
   }, {
     prop: 'merchant_count',
-    label: '上架商家数',
+    label: '上架广告商家数',
     chartLine: true,
   }, {
     prop: 'deal_count',
@@ -199,10 +199,10 @@ export const itemStatsColumns = [
     chartLine: true,
   }, {
     prop: 'cash_amount',
-    label: '成交额',
+    label: '总成交金额',
   }, {
     prop: 'cash_avg_amount',
-    label: '广告平均成交',
+    label: '广告平均成交额',
   },
 ];
 export const orderStatsColumns = [
@@ -221,28 +221,32 @@ export const orderStatsColumns = [
     },
   }, {
     prop: 'order_count',
-    label: '下单笔数',
+    label: '总订单',
     chartLine: true,
   }, {
     prop: 'deal_count',
-    label: '成交笔数',
-    chartLine: true,
-  }, {
-    prop: 'coin_amount',
-    label: '成交币量',
+    label: '实际成交订单',
     chartLine: true,
   }, {
     prop: 'deal_rate',
-    label: '成交率',
+    label: '订单成交率',
+  }, {
+    prop: 'coin_amount',
+    label: '总成交币数',
+    chartLine: true,
+  }, {
+    prop: 'cash_amount',
+    label: '总成交金额',
+    chartLine: true,
   }, {
     prop: 'cash_avg_amount',
-    label: '每笔平均成交额',
+    label: '订单平均成交额',
   }, {
     prop: 'appeal_count',
-    label: '申诉数',
+    label: '申诉订单数',
   }, {
     prop: 'appeal_rate',
-    label: '申诉率',
+    label: '申诉订单占比',
   },
 ];
 export const userStatsColumns = [
@@ -255,7 +259,7 @@ export const userStatsColumns = [
     xAxis: true,
   }, {
     prop: 'total_count',
-    label: '用户数',
+    label: '总用户数',
     chartLine: true,
   }, {
     prop: 'new_count',
@@ -263,18 +267,18 @@ export const userStatsColumns = [
     chartLine: true,
   }, {
     prop: 'trade_count',
-    label: '交易过的用户数',
+    label: '下单用户数',
     chartLine: true,
   }, {
     prop: 'trade_rate',
-    label: '交易率',
+    label: '下单用户占比',
     chartLine: true,
   }, {
     prop: 'deal_count',
-    label: '成交过用户数',
+    label: '实际成交用户数',
   }, {
     prop: 'deal_rate',
-    label: '成交率',
+    label: '实际成交用户占比',
   },
 ];
 export const merchantStatsColumns = [
@@ -299,17 +303,17 @@ export const merchantStatsColumns = [
     chartLine: true,
   }, {
     prop: 'trade_rate',
-    label: '挂单率',
+    label: '挂单商家占比',
     chartLine: true,
   }, {
     prop: 'deal_count',
-    label: '成交笔数',
+    label: '商家成交订单数',
   }, {
     prop: 'cash_amount',
-    label: '成交额',
+    label: '商家成交总金额',
   }, {
     prop: 'cash_avg_amount',
-    label: '平均成交额',
+    label: '商家平均成交额',
   },
 ];
 export const statsProps = {
