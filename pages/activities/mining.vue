@@ -82,14 +82,16 @@
                                      :min-width="column.width">
                     </el-table-column>
                 </el-table>
-                <el-pagination
-                        class="with-margin-top"
-                        background
-                        layout="prev, pager, next"
-                        @current-change="changePage"
-                        :current-page.sync="page"
-                        :total="total">
-                </el-pagination>
+                <no-ssr>
+                    <el-pagination
+                            class="with-margin-top"
+                            background
+                            layout="prev, pager, next"
+                            @current-change="changeMiningPage"
+                            :current-page.sync="pageNum"
+                            :total="totalNum">
+                    </el-pagination>
+                </no-ssr>
             </el-tab-pane>
         </el-tabs>
 
@@ -151,8 +153,6 @@
         miningDate: getDate(),
         currentTab: this.$route.query.tab || 'rank',
         userMining: null,
-        page: 1,
-        total: 1,
       };
     },
     mounted() {
@@ -176,10 +176,19 @@
           this.userMining = null;
           return;
         }
-        this.$axios.get(`/mining/${this.userId}`).then(res => {
-          this.total = res.data.data.total;
+        this.getMiningByUserId();
+      },
+      getMiningByUserId() {
+        this.$axios.get(`/mining/${this.userId}?page=${this.pageNum}&limit=10`).then(res => {
+          this.totalNum = res.data.data.total;
           this.userMining = res.data.data.data;
         });
+      },
+      changeMiningPage() {
+        this.$router.replace({
+          query: {...this.$route.query, page: this.pageNum}
+        });
+        this.$nextTick(this.getMiningByUserId);
       },
       getMiningRank() {
         // 后端分成两个接口的。。。
