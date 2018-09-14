@@ -1,5 +1,5 @@
 import {timeToLocale} from './utilities';
-import {itemText} from '../plugins/filters';
+import {itemText, percentage} from '../plugins/filters';
 
 const baseDomain = require('../config/baseURL');
 export const loginURL = baseDomain.loginURL;
@@ -230,6 +230,9 @@ export const orderStatsColumns = [
   }, {
     prop: 'deal_rate',
     label: '订单成交率',
+    formatter: (row, col, cell) => {
+      return percentage(cell);
+    },
   }, {
     prop: 'coin_amount',
     label: '总成交币数',
@@ -247,6 +250,9 @@ export const orderStatsColumns = [
   }, {
     prop: 'appeal_rate',
     label: '申诉订单占比',
+    formatter: (row, col, cell) => {
+      return percentage(cell);
+    },
   },
 ];
 export const userStatsColumns = [
@@ -273,12 +279,18 @@ export const userStatsColumns = [
     prop: 'trade_rate',
     label: '下单用户占比',
     chartLine: true,
+    formatter: (row, col, cell) => {
+      return percentage(cell);
+    },
   }, {
     prop: 'deal_count',
     label: '实际成交用户数',
   }, {
     prop: 'deal_rate',
     label: '实际成交用户占比',
+    formatter: (row, col, cell) => {
+      return percentage(cell);
+    },
   },
 ];
 export const merchantStatsColumns = [
@@ -305,6 +317,9 @@ export const merchantStatsColumns = [
     prop: 'trade_rate',
     label: '挂单商家占比',
     chartLine: true,
+    formatter: (row, col, cell) => {
+      return percentage(cell);
+    },
   }, {
     prop: 'deal_count',
     label: '商家成交订单数',
