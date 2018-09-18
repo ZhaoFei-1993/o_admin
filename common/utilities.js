@@ -277,6 +277,10 @@ export const toBackendTimeStamp = (date) => {
   return parseInt(date.getTime() / 1000, 10) - 8 * 3600;// 后端用的是北京时间零点。。。。
 };
 
+export const toFrontendDate = (stamp) => {
+  return new Date((parseInt(stamp) + 8 * 3600) * 1000);
+};
+
 export const getDate = (date) => {
   // 某一天的0点或者今天0点
   const d = date || new Date();

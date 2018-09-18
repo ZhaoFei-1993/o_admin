@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import API from '../config/api';
-import {getDate, toBackendTimeStamp} from '../common/utilities';
+import {getDate, toBackendTimeStamp, toFrontendDate} from '../common/utilities';
 import {reportError} from './sentry';
 
 export default ({app, store, route, redirect}) => {
@@ -71,9 +71,13 @@ export default ({app, store, route, redirect}) => {
         this.statsName = statsName;
         this.resources = [];
         this.statsFilters = {};
-        const startDate = new Date();
-        startDate.setMonth(startDate.getMonth() - 1);
-        this.statsRange = [startDate, new Date()];
+        if (this.$route.query.start) {
+          this.statsRange = [toFrontendDate(this.$route.query.start), toFrontendDate(this.$route.query.end)];
+        } else {
+          const startDate = new Date();
+          startDate.setMonth(startDate.getMonth() - 1);
+          this.statsRange = [startDate, new Date()];
+        }
         this.statsPeriod = 'daily';
         this.loadingStats = false;
         this.statsLoadedCallback = loadedCallback;
@@ -113,9 +117,14 @@ export default ({app, store, route, redirect}) => {
         this.loadingStats = true;
         const start = toBackendTimeStamp(getDate(this.statsRange[0]));
         const end = toBackendTimeStamp(getDate(this.statsRange[1]));
-        this.$axios.get(API.getStats(this.statsName, this.statsFilters, this.statsPeriod, start, end)).then(response => {
+        this.$router.replace({
+          query: {...this.$route.query, start, end, page: this.pageNum}
+        });
+        this.$axios.get(API.getStats(this.statsName, this.statsFilters, this.statsPeriod, start, end, this.pageNum, this.limit)).then(response => {
           this.loadingStats = false;
-          this.statsData = response.data.data.data;
+          const data = response.data.data;
+          this.statsData = data.data;
+          this.totalNum = data.total;
           if (this.statsLoadedCallback && this.statsLoadedCallback instanceof Function) {
             this.statsLoadedCallback(response);
           }
@@ -151,7 +160,10 @@ export default ({app, store, route, redirect}) => {
         Vue.nextTick(this.getFilteredResources);
       },
       changeStatsPage() {
-        // pageNum 要先改变
+        Vue.nextTick(this.getFilteredStats);
+      },
+      changeStatsRange() {
+        this.pageNum = 1;
         Vue.nextTick(this.getFilteredStats);
       },
       confirmAction(message, accepted, refused) {
