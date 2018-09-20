@@ -19,8 +19,8 @@ export default {
     }
     return queryString;
   },
-  getStats: (resources, filters, period, start, end) => {
-    let queryString = `/${resources}?period=${period}&start_time=${start}&end_time=${end}`;
+  getStats: (resources, filters, period, start, end, page = 1, limit = 10) => {
+    let queryString = `/${resources}?period=${period}&start_time=${start}&end_time=${end}&page=${page}&limit=${limit}`;
     if (filters) {
       for (const prop in filters) {
         if (filters.hasOwnProperty(prop) && filters[prop] !== undefined && filters[prop] !== null && filters[prop] !== '') { // can be 0

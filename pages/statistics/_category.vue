@@ -37,14 +37,14 @@
                                 v-model="statsRange[0]"
                                 type="week"
                                 :clearable="false"
-                                @change="getFilteredStats"
+                                @change="changeStatsRange"
                                 placeholder="开始周">
                         </el-date-picker>
                         <el-date-picker
                                 v-model="statsRange[1]"
                                 type="week"
                                 :clearable="false"
-                                @change="getFilteredStats"
+                                @change="changeStatsRange"
                                 placeholder="结束周">
                         </el-date-picker>
                     </span>
@@ -53,7 +53,7 @@
                                         v-model="statsRange"
                                         type="daterange"
                                         :clearable="false"
-                                        @change="getFilteredStats"
+                                        @change="changeStatsRange"
                                         start-placeholder="开始日期"
                                         end-placeholder="结束日期"
                                         :default-time="['00:00:00', '23:59:59']">
@@ -81,6 +81,16 @@
         <el-tabs class="with-margin-top" type="border-card">
             <el-tab-pane label="表格展示">
                 <StatsTable :data="statsData" :columns="category.columns"></StatsTable>
+                <no-ssr>
+                    <el-pagination
+                            class="with-margin-top"
+                            background
+                            layout="prev, pager, next"
+                            @current-change="changeStatsPage"
+                            :current-page.sync="pageNum"
+                            :total="totalNum">
+                    </el-pagination>
+                </no-ssr>
             </el-tab-pane>
             <el-tab-pane v-if="chartOption" label="图形展示">
                 <div class="chart-container">

@@ -34,6 +34,16 @@
                     </span>
                     <span v-else>未限制</span>
                 </div>
+                <div class="with-margin-top">
+                    挖矿积分限制
+                    <span v-if="userLimit.mining_limit">
+                        已限制
+                        <el-button type="warning" @click="cancelUserLimit('mining_limit')">
+                            恢复挖矿积分权限
+                        </el-button>
+                    </span>
+                    <span v-else>未限制</span>
+                </div>
             </div>
             <el-tabs type="border-card" v-model="currentTab" @tab-click="tabClick" class="with-margin-top">
                 <el-tab-pane label="基本信息" name="basic">
@@ -501,8 +511,13 @@
         this.$nextTick(this.getUserOperations);
       },
       cancelUserLimit(limit) {
+        const labelMap = {
+          day_limit: '当天',
+          month_limit: '30天',
+          mining_limit: '挖矿积分',
+        };
         this.constraintDialogProps = {
-          title: `取消用户${limit === 'day_limit' ? '当天' : '30天'}交易限制`,
+          title: `取消用户${labelMap[limit]}交易限制`,
           content: '确认取消限制？取消后该用户将可以进行交易',
           remark: '',
           isAllow: false,
@@ -610,10 +625,8 @@
           case 'user':
             toggleFunction = this.toggleUserStatus;
             break;
-          case 'day_limit':
-          case 'month_limit':
+          default:
             toggleFunction = this.confirmCancelUserLimit;
-            break;
         }
         if (toggleFunction) {
           toggleFunction(this.constraintDialogProps.isAllow, this.constraintDialogProps.remark, this.constraintDialogProps.constraint);
