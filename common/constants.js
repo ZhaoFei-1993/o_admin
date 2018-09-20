@@ -374,4 +374,6 @@ export const operationTypes = [{
   value: 'release_day_limit', text: '解除日交易限制',
 }, {
   value: 'release_month_limit', text: '解除30天交易限制',
+}, {
+  value: 'release_mining_limit', text: '解除挖矿积分限制',
 }];
