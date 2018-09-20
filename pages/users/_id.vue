@@ -12,9 +12,6 @@
                 <router-link :to="'/operations/appeals?user_search='+currentResource.id">
                     <el-button type="primary" class="view-detail">申诉</el-button>
                 </router-link>
-                <!-- <router-link> -->
-                    <el-button type="primary" class="view-detail">恢复积分资格</el-button>
-                <!-- </router-link> -->
             </div>
             <div class="with-margin-top today-limit" v-if="userLimit">
                 <div>
