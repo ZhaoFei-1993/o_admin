@@ -97,7 +97,7 @@ export const orderResultTypes = [{
 }];
 
 export const coinTypes = ['BCH', 'BTC', 'ETH', 'USDT', 'CET'];
-export const activeCoinTypes = ['BCH', 'BTC', 'ETH', 'USDT'];
+export const activeCoinTypes = ['ALL', 'BCH', 'BTC', 'ETH', 'USDT'];
 
 export const paymentTypes = [{
   value: 'alipay', text: '支付宝',
@@ -107,6 +107,8 @@ export const paymentTypes = [{
   value: 'bankcard', text: '银行卡',
 }];
 export const sides = [{
+  value: 'ALL', text: 'ALL',
+}, {
   value: 'buy', text: '买入',
 }, {
   value: 'sell', text: '卖出',
@@ -339,8 +341,8 @@ export const statsProps = {
     label: '广告',
     columns: itemStatsColumns,
     filters: [
-      {name: 'side', text: '方向', value: 'buy', options: sides, clearable: true},
-      {name: 'coin_type', text: '币种', value: 'BCH', options: activeCoinTypes, clearable: true},
+      {name: 'side', text: '方向', value: 'ALL', options: sides, clearable: true},
+      {name: 'coin_type', text: '币种', value: 'ALL', options: activeCoinTypes, clearable: true},
     ],
     link: 'report/item',
   },
@@ -355,13 +357,13 @@ export const statsProps = {
   user: {
     label: '用户',
     columns: userStatsColumns,
-    filters: null,
+    filters: [],
     link: 'report/user',
   },
   merchant: {
     label: '商家',
     columns: merchantStatsColumns,
-    filters: null,
+    filters: [],
     link: 'report/merchant',
   },
 };

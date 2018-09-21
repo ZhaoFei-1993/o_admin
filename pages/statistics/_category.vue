@@ -86,6 +86,7 @@
                             class="with-margin-top"
                             background
                             layout="prev, pager, next"
+                            :page-size="20"
                             @current-change="changeStatsPage"
                             :current-page.sync="pageNum"
                             :total="totalNum">
@@ -128,9 +129,11 @@
         this.$router.push('/404');
       }
       const query = {};
-      this.category.filters.forEach(item => {
-        query[item.name] = item.value;
-      });
+      if (this.category.filters) {
+        this.category.filters.forEach(item => {
+          query[item.name] = item.value;
+        });
+      }
       this.initStats(
         this.category.link,
         null,
