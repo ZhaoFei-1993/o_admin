@@ -193,7 +193,7 @@
           }]);
         } else {
           defaultColums = defaultColums.concat([{
-            prop: 'create_time',
+            prop: 'auth_apply_time',
             label: '申请认证时间',
             formatter: (row, column, cellValue) => {
               return cellValue ? timeToLocale(cellValue) : '--';
