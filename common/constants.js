@@ -245,6 +245,9 @@ export const orderStatsColumns = [
     prop: 'cash_avg_amount',
     label: '订单平均成交额',
   }, {
+    prop: 'user_cash_amount',
+    label: '非商家间成交',
+  }, {
     prop: 'appeal_count',
     label: '申诉订单数',
   }, {
@@ -345,7 +348,7 @@ export const statsProps = {
     label: '订单',
     columns: orderStatsColumns,
     filters: [
-      {name: 'coin_type', text: '币种', value: 'BCH', options: activeCoinTypes, clearable: true},
+      {name: 'coin_type', text: '币种', value: 'ALL', options: activeCoinTypes, clearable: true},
     ],
     link: 'report/order',
   },

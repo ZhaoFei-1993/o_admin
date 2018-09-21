@@ -127,15 +127,14 @@
       if (statsCategories.indexOf(this.categoryName) < 0) {
         this.$router.push('/404');
       }
+      const query = {};
+      this.category.filters.forEach(item => {
+        query[item.name] = item.value;
+      });
       this.initStats(
         this.category.link,
-        // () => {
-        //   this.chartOption = areaStackChartOption(this.sortedData, {
-        //     title: this.category.label + '曲线图',
-        //     xAxis: this.stats_colums.find(c => c.xAxis),
-        //     yAxisLines: this.stats_colums.filter(c => c.chartLine),
-        //   });
-        // }
+        null,
+        query,
       );
     }
   };
