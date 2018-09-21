@@ -67,10 +67,10 @@ export default ({app, store, route, redirect}) => {
         this.singleResLoadedCallback = loadedCallback;
         this.getSingleResource();
       },
-      initStats(statsName, loadedCallback) {
+      initStats(statsName, loadedCallback, filters = {}) {
         this.statsName = statsName;
         this.resources = [];
-        this.statsFilters = {};
+        this.statsFilters = filters;
         if (this.$route.query.start) {
           this.statsRange = [toFrontendDate(this.$route.query.start), toFrontendDate(this.$route.query.end)];
         } else {
@@ -118,7 +118,7 @@ export default ({app, store, route, redirect}) => {
         const start = toBackendTimeStamp(getDate(this.statsRange[0]));
         const end = toBackendTimeStamp(getDate(this.statsRange[1]));
         this.$router.replace({
-          query: {...this.$route.query, start, end, page: this.pageNum}
+          query: {...this.$route.query, start, end, page: this.pageNum, ...this.statsFilters}
         });
         this.$axios.get(API.getStats(this.statsName, this.statsFilters, this.statsPeriod, start, end, this.pageNum, this.limit)).then(response => {
           this.loadingStats = false;
