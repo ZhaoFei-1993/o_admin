@@ -132,8 +132,8 @@
                                 <el-row>
                                     <el-col v-if="appeal.staff_id||appeal.operator" :span="3">处理人员</el-col>
                                     <el-col v-if="appeal.staff_id||appeal.operator" :span="9">
-                                        <router-link :to="`/users/${appeal.staff_id||appeal.operator.id}`">
-                                            {{appeal.staff_id||appeal.operator.name}}
+                                        <router-link :to="`/users/${appeal.operator.id}`">
+                                            {{appeal.operator.name}}
                                         </router-link>
                                     </el-col>
                                     <el-col v-if="appeal.staff_id||appeal.operator" :span="3">处理时间</el-col>
@@ -150,13 +150,13 @@
                     <el-card>
                         <div class="appeal-wrapper">
                             <div v-if="appeal">
+                                <div>当前处理中客服：<span class="staff">{{appeal.staff_id===0?'无客服':appeal.staff_name}}</span></div>
                                 <div class="chat-actions">
                                     <el-button type="success" v-if="appeal.status==='created'" @click="processAppeal">
                                         处理申诉
                                     </el-button>
                                     <template v-if="appeal.status==='processing'">
-                                        <el-button type="success" v-if="!joinedChat && !appeal.staff_id"
-                                                   @click="joinChat">
+                                        <el-button type="success" @click="joinChat">
                                             加入聊天
                                         </el-button>
                                         <el-button type="success" v-if="joinedChat" @click="exitChat">
@@ -184,7 +184,7 @@
                                 </div>
                             </div>
                             <div v-else>未发起申诉，无法查看聊天内容</div>
-                            <History :order="currentResource" :id="id" style="margin-left: 10px;"></History>
+                            <History :order="currentResource" :id="id" style="margin:21px 0 0 10px;"></History>
                         </div>
                     </el-card>
                 </el-col>
@@ -367,10 +367,29 @@
         });
       },
       joinChat() {
-        this.$axios.post(`orders/${this.id}/conversation`).then(response => {
-          this.joinedChat = true;
-          this.$message('成功加入聊天', 'success');
-        });
+        if (this.appeal.staff_id === 0) {
+          this.$axios.post(`orders/${this.id}/conversation`).then(response => {
+            this.joinedChat = true;
+            this.$message('成功加入聊天', 'success');
+          });
+        } else if (this.appeal.staff_id !== this.user.account.id) {
+          this.$confirm('该会话已有客服正在处理中，继续加入将导致当前客服退出会话。是否确认加入聊天？', '确认加入聊天',
+            {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              center: true
+            }
+          ).then(() => {
+            this.$axios.post(`orders/${this.id}/conversation`).then(response => {
+              this.joinedChat = true;
+              this.appeal.staff_id = this.user.account.id;
+              this.appeal.staff_name = this.user.account.name;
+              this.$message('成功加入聊天', 'success');
+            });
+          }).catch(() => {
+            this.$message('取消加入聊天');
+          });
+        }
       },
       exitChat() {
         this.$axios.delete(`orders/${this.id}/conversation`).then(response => {
@@ -434,6 +453,9 @@
         .appeal-wrapper {
             display: flex;
             justify-content: flex-start;
+            .staff{
+                color:#e35555;
+            }
         }
         #appeal-dialog {
             .el-select {
@@ -446,6 +468,8 @@
             }
         }
     }
-
+    .el-message-box__message p{
+        text-align: left;
+    }
 
 </style>
