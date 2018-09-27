@@ -273,26 +273,25 @@ export const userStatsColumns = [
     label: '总用户数',
     chartLine: true,
   }, {
+    prop: 'total_kyc_count',
+    label: '高级实名用户数',
+    chartLine: true,
+  }, {
     prop: 'new_count',
     label: '新增用户数',
     chartLine: true,
   }, {
+    prop: 'new_kyc_count',
+    label: '新增高级实名用户数',
+    chatLine: true,
+  }, {
     prop: 'trade_count',
-    label: '下单用户数',
+    label: '交易用户数',
     chartLine: true,
   }, {
     prop: 'trade_rate',
-    label: '下单用户占比',
+    label: '交易用户占比',
     chartLine: true,
-    formatter: (row, col, cell) => {
-      return percentage(cell);
-    },
-  }, {
-    prop: 'deal_count',
-    label: '实际成交用户数',
-  }, {
-    prop: 'deal_rate',
-    label: '实际成交用户占比',
     formatter: (row, col, cell) => {
       return percentage(cell);
     },
