@@ -66,7 +66,7 @@
                     </no-ssr>
                     <el-col :span="10">
                         <el-select
-                                v-for="(filter,index) in filters"
+                                v-for="(filter,index) in giftFilters"
                                 :key="index"
                                 v-model="statsFilters[filter.name]"
                                 @change="getFilteredStats"
@@ -81,7 +81,7 @@
                         </el-select>
                     </el-col>
                 </el-row>
-                <StatsTable :data="statsData" :columns="giftColumns"></StatsTable>
+                <StatsTable :data="statsData" :columns="giftColumns" name="gift"></StatsTable>
                 <no-ssr>
                     <el-pagination
                             class="with-margin-top"
@@ -95,29 +95,30 @@
             </el-tab-pane>
             <el-tab-pane label="用户奖励记录" name="record">
                 <el-row type="flex" justify="start">
-                    <el-col :md="12" :lg="10" class="resource-filter">
+                    <el-col :span="8">
                         <el-input placeholder="请输入用户昵称/姓名/手机/邮箱/身份证号" clearable v-model="userSearch"
-                                  @clear="getUserMining">
-                            <el-button slot="append" icon="el-icon-search" @click="getUserMining(userSearch)"></el-button>
+                                  @clear="getUserGiftRecord">
+                            <el-button slot="append" icon="el-icon-search"
+                                       @click="getUserGiftRecord(userSearch)"></el-button>
                         </el-input>
                     </el-col>
-                    <el :span="8">
+                    <el-col :span="8">
                         <el-date-picker
                                 v-model="statsRange"
                                 type="daterange"
                                 :clearable="false"
-                                @change="changeStatsRange"
+                                @change="getUserGiftRecord()"
                                 start-placeholder="开始日期"
                                 end-placeholder="结束日期"
                                 :default-time="['00:00:00', '23:59:59']">
                         </el-date-picker>
-                    </el>
+                    </el-col>
                     <el-col :span="10">
                         <el-select
-                                v-for="(filter,index) in filters"
+                                v-for="(filter,index) in recordFilters"
                                 :key="index"
                                 v-model="statsFilters[filter.name]"
-                                @change="getFilteredStats"
+                                @change="getUserGiftRecord()"
                                 :clearable="filter.clearable"
                                 :placeholder="filter.text">
                             <el-option
@@ -135,20 +136,18 @@
                             class="with-margin-top"
                             background
                             layout="prev, pager, next"
-                            @current-change="changeStatsPage"
+                            @current-change="changeRecordPage"
                             :current-page.sync="pageNum"
                             :total="totalNum">
                     </el-pagination>
                 </no-ssr>
             </el-tab-pane>
         </el-tabs>
-
-
     </div>
 </template>
 <script>
   import {statsPeriodTypes} from '~/common/constants';
-  import {timeToLocale} from '~/common/utilities';
+  import {getDate, toBackendTimeStamp, timeToLocale, toFrontendDate} from '~/common/utilities';
   import StatsTable from '../../components/StatsTable';
 
   export default {
@@ -175,6 +174,8 @@
             clearable: true
           },
         ],
+        giftFilters: null,
+        recordFilters: null,
         giftColumns: [
           {
             prop: 'report_date',
@@ -245,14 +246,47 @@
         }
       },
       getGiftsStatistics() {
+        this.giftFilters = this.filters;
         this.initStats('report/gift/history', null, this.filters);
       },
       getGiftRecord() {
         this.currentTab = 'record';
-        this.initStats('users/gift/history', null, this.filters);
+        this.recordFilters = this.filters;
+        // this.initStats('users/gift/history', null, this.filters);
+        if (this.$route.query.start) {
+          this.statsRange = [toFrontendDate(this.$route.query.start), toFrontendDate(this.$route.query.end)];
+        } else {
+          const startDate = new Date();
+          startDate.setMonth(startDate.getMonth() - 1);
+          this.statsRange = [startDate, new Date()];
+        }
+        this.getUserGiftRecord(this.userSearch);
       },
-      getUserMining() {
-
+      getUserGiftRecord(userSearch) {
+        this.currentTab = 'record';
+        const start = toBackendTimeStamp(getDate(this.statsRange[0]));
+        const end = toBackendTimeStamp(getDate(this.statsRange[1]));
+        userSearch = userSearch || '';
+        let queryString = `/users/gift/history?user_search=${encodeURIComponent(userSearch)}&start_time=${start}&end_time=${end}&page=${this.pageNum}&limit=10`;
+        console.log(this.filters)
+        if (this.filters) {
+          for (const prop in this.filters) {
+            if (this.filters.hasOwnProperty(prop) && this.filters[prop] !== undefined && this.filters[prop] !== null && this.filters[prop] !== '') { // can be 0
+              queryString += '&' + prop + '=' + encodeURIComponent(this.filters[prop]);
+            }
+          }
+        }
+        this.$axios.get(queryString).then(res => {
+          // console.log(res.data.data.data);
+          this.statsData = res.data.data.data;
+          this.totalNum = res.data.data.total;
+        });
+      },
+      changeRecordPage() {
+        this.$router.replace({
+          query: {...this.$route.query, page: this.pageNum}
+        });
+        this.$nextTick(this.getUserGiftRecord(this.userSearch));
       },
       tabClick(tab) {
         this.currentTab = tab.name;
