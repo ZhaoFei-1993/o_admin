@@ -150,7 +150,8 @@
                     <el-card>
                         <div class="appeal-wrapper">
                             <div v-if="appeal">
-                                <div>当前处理中客服：<span class="staff">{{appeal.staff_id===0?'无客服':appeal.staff_name}}</span></div>
+                                <div>当前处理中客服：<span class="staff">{{appeal.staff_id===0?'无客服':appeal.staff_name}}</span>
+                                </div>
                                 <div class="chat-actions">
                                     <el-button type="success" v-if="appeal.status==='created'" @click="processAppeal">
                                         处理申诉
@@ -367,37 +368,44 @@
         });
       },
       joinChat() {
-        if (this.appeal.staff_id === 0) {
-          this.$axios.post(`orders/${this.id}/conversation`).then(response => {
-            this.joinedChat = true;
-            this.appeal.staff_id = this.user.account.id;
-            this.appeal.staff_name = this.user.account.name;
-            this.$message('成功加入聊天', 'success');
-          });
-        } else if (this.appeal.staff_id !== this.user.account.id) {
-          this.$confirm('该会话已有客服正在处理中，继续加入将导致当前客服退出会话。是否确认加入聊天？', '确认加入聊天',
-            {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              center: true
+        this.$axios.get(`orders/${this.id}/appeal`).then(response => {
+          if (response.data.data) {
+            this.appeal = response.data.data;
+            if (!this.joinedChat && this.appeal.staff_id === 0) {
+              this.$axios.post(`orders/${this.id}/conversation`).then(response => {
+                this.joinedChat = true;
+                this.appeal.staff_id = this.user.account.id;
+                this.appeal.staff_name = this.user.account.name;
+                this.$message('成功加入聊天', 'success');
+              });
+            } else if (this.appeal.staff_id !== this.user.account.id) {
+              this.$confirm('该会话已有客服正在处理中，继续加入将导致当前客服退出会话。是否确认加入聊天？', '确认加入聊天',
+                {
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消',
+                  center: true
+                }
+              ).then(() => {
+                this.$axios.post(`orders/${this.id}/conversation`).then(response => {
+                  this.joinedChat = true;
+                  this.appeal.staff_id = this.user.account.id;
+                  this.appeal.staff_name = this.user.account.name;
+                  this.$message('成功加入聊天', 'success');
+                });
+              }).catch(() => {
+                this.$message('取消加入聊天');
+              });
             }
-          ).then(() => {
-            this.$axios.post(`orders/${this.id}/conversation`).then(response => {
-              this.joinedChat = true;
-              this.appeal.staff_id = this.user.account.id;
-              this.appeal.staff_name = this.user.account.name;
-              this.$message('成功加入聊天', 'success');
-            });
-          }).catch(() => {
-            this.$message('取消加入聊天');
-          });
-        }
+          }
+        });
       },
       exitChat() {
         this.$axios.delete(`orders/${this.id}/conversation`).then(response => {
           console.log(response);
           if (response.data.data && !response.data.data.staff_id) {
             this.joinedChat = false;
+            this.appeal.staff_id = 0;
+            this.appeal.staff_name = '';
             this.$message('已经退出聊天');
           } else {
             this.$message('退出聊天出错，请刷新页面重试或联系开发人员', 'error');
@@ -455,8 +463,8 @@
         .appeal-wrapper {
             display: flex;
             justify-content: flex-start;
-            .staff{
-                color:#e35555;
+            .staff {
+                color: #e35555;
             }
         }
         #appeal-dialog {
@@ -470,7 +478,8 @@
             }
         }
     }
-    .el-message-box__message p{
+
+    .el-message-box__message p {
         text-align: left;
     }
 
