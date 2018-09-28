@@ -370,6 +370,8 @@
         if (this.appeal.staff_id === 0) {
           this.$axios.post(`orders/${this.id}/conversation`).then(response => {
             this.joinedChat = true;
+            this.appeal.staff_id = this.user.account.id;
+            this.appeal.staff_name = this.user.account.name;
             this.$message('成功加入聊天', 'success');
           });
         } else if (this.appeal.staff_id !== this.user.account.id) {
