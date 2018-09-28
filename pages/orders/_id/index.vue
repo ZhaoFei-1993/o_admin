@@ -157,7 +157,7 @@
                                         处理申诉
                                     </el-button>
                                     <template v-if="appeal.status==='processing'">
-                                        <el-button type="success" @click="joinChat">
+                                        <el-button type="success" @click="joinChat" :disabled="joinedChat">
                                             加入聊天
                                         </el-button>
                                         <el-button type="success" v-if="joinedChat" @click="exitChat">
