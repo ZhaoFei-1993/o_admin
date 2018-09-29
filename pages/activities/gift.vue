@@ -146,9 +146,10 @@
     </div>
 </template>
 <script>
-  import {statsPeriodTypes} from '~/common/constants';
+  import {statsPeriodTypes, businessTypes} from '~/common/constants';
   import {getDate, toBackendTimeStamp, timeToLocale, toFrontendDate} from '~/common/utilities';
   import StatsTable from '../../components/StatsTable';
+  import {itemText} from '~/plugins/filters';
 
   export default {
     components: {StatsTable},
@@ -163,7 +164,7 @@
             name: 'business_type',
             text: '类型',
             value: 'ALL',
-            options: ['ALL', 'first_award', 'mining_award'],
+            options: businessTypes,
             clearable: true,
           },
           {
@@ -179,7 +180,7 @@
             name: 'business_type',
             text: '类型',
             value: 'first_award',
-            options: ['first_award', 'mining_award'],
+            options: businessTypes.slice(1),
             clearable: true,
           },
           {
@@ -201,6 +202,9 @@
           {
             prop: 'business_type',
             label: '奖励类型',
+            formatter: (row, col, cell) => {
+              return itemText(cell, businessTypes);
+            },
           },
           {
             prop: 'coin_type',
@@ -236,6 +240,9 @@
           {
             prop: 'business_type',
             label: '奖励类型',
+            formatter: (row, col, cell) => {
+              return itemText(cell, businessTypes);
+            },
           },
           {
             prop: 'coin_type',

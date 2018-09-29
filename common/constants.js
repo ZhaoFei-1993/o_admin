@@ -113,6 +113,11 @@ export const sides = [{
 }, {
   value: 'sell', text: '卖出',
 }];
+export const businessTypes = [
+  {value: 'ALL', text: 'ALL'},
+  {value: 'first_award', text: '首单奖励'},
+  {value: 'mining_award', text: '挖矿奖励'},
+];
 
 export const counterpartyLimitTypes = [{
   text: '交易方必须通过手机验证',
