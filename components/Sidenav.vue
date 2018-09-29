@@ -37,6 +37,7 @@
                 <el-menu-item index="/statistics/order">订单统计</el-menu-item>
                 <el-menu-item index="/statistics/user">用户统计</el-menu-item>
                 <el-menu-item index="/statistics/merchant">商家统计</el-menu-item>
+                <el-menu-item index="/activities/gift">奖励统计</el-menu-item>
                 <el-menu-item index="/activities/mining">
                     挖矿活动
                 </el-menu-item>
