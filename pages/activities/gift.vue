@@ -158,7 +158,7 @@
         currentTab: this.$route.query.tab || 'gift',
         statsPeriodTypes,
         userSearch: '',
-        filters: [
+        giftFilters: [
           {
             name: 'business_type',
             text: '类型',
@@ -169,13 +169,27 @@
           {
             name: 'coin_type',
             text: '币种',
-            value: 'ALL',
+            value: 'CET',
             options: ['CET', 'BCH', 'BTC', 'ETH', 'USDT'],
             clearable: true
           },
         ],
-        giftFilters: null,
-        recordFilters: null,
+        recordFilters: [
+          {
+            name: 'business_type',
+            text: '类型',
+            value: 'first_award',
+            options: ['first_award', 'mining_award'],
+            clearable: true,
+          },
+          {
+            name: 'coin_type',
+            text: '币种',
+            value: 'CET',
+            options: ['CET', 'BCH', 'BTC', 'ETH', 'USDT'],
+            clearable: true
+          },
+        ],
         giftColumns: [
           {
             prop: 'report_date',
@@ -246,19 +260,27 @@
         }
       },
       getGiftsStatistics() {
-        this.giftFilters = this.filters;
-        this.initStats('report/gift/history', null, this.filters);
+        const query = {};
+        if (this.giftFilters) {
+          this.giftFilters.forEach(item => {
+            query[item.name] = item.value;
+          });
+        }
+        this.initStats('report/gift/history', null, query);
       },
       getGiftRecord() {
         this.currentTab = 'record';
-        this.recordFilters = this.filters;
-        // this.initStats('users/gift/history', null, this.filters);
         if (this.$route.query.start) {
           this.statsRange = [toFrontendDate(this.$route.query.start), toFrontendDate(this.$route.query.end)];
         } else {
           const startDate = new Date();
           startDate.setMonth(startDate.getMonth() - 1);
           this.statsRange = [startDate, new Date()];
+        }
+        if (this.recordFilters) {
+          this.recordFilters.forEach(item => {
+            this.statsFilters[item.name] = item.value;
+          });
         }
         this.getUserGiftRecord(this.userSearch);
       },
@@ -268,16 +290,14 @@
         const end = toBackendTimeStamp(getDate(this.statsRange[1]));
         userSearch = userSearch || '';
         let queryString = `/users/gift/history?user_search=${encodeURIComponent(userSearch)}&start_time=${start}&end_time=${end}&page=${this.pageNum}&limit=10`;
-        console.log(this.filters)
-        if (this.filters) {
-          for (const prop in this.filters) {
-            if (this.filters.hasOwnProperty(prop) && this.filters[prop] !== undefined && this.filters[prop] !== null && this.filters[prop] !== '') { // can be 0
-              queryString += '&' + prop + '=' + encodeURIComponent(this.filters[prop]);
+        if (this.statsFilters) {
+          for (const prop in this.statsFilters) {
+            if (this.statsFilters.hasOwnProperty(prop) && this.statsFilters[prop] !== undefined && this.statsFilters[prop] !== null && this.statsFilters[prop] !== '') { // can be 0
+              queryString += '&' + prop + '=' + encodeURIComponent(this.statsFilters[prop]);
             }
           }
         }
         this.$axios.get(queryString).then(res => {
-          // console.log(res.data.data.data);
           this.statsData = res.data.data.data;
           this.totalNum = res.data.data.total;
         });
