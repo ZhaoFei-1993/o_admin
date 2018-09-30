@@ -96,7 +96,7 @@
             <el-tab-pane label="用户奖励记录" name="record">
                 <el-row type="flex" justify="start">
                     <el-col :span="8">
-                        <el-input placeholder="请输入用户昵称/姓名/手机/邮箱/身份证号" clearable v-model="userSearch"
+                        <el-input placeholder="请输入用户ID、昵称、手机、邮箱" clearable v-model="userSearch"
                                   @clear="getUserGiftRecord">
                             <el-button slot="append" icon="el-icon-search"
                                        @click="getUserGiftRecord(userSearch)"></el-button>
@@ -179,14 +179,14 @@
           {
             name: 'business_type',
             text: '类型',
-            value: 'first_award',
+            value: '',
             options: businessTypes.slice(1),
             clearable: true,
           },
           {
             name: 'coin_type',
             text: '币种',
-            value: 'CET',
+            value: '',
             options: ['CET', 'BCH', 'BTC', 'ETH', 'USDT'],
             clearable: true
           },
