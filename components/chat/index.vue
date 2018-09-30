@@ -438,7 +438,7 @@
             });
           }).catch(err => {
             console.error(err);
-            $toast.show(`发送失败: ${err}`, 1500);
+            $toast.show(`发送失败: 您可能已经退出了聊天，请刷新`, 1500);
           });
           this.message = '';
         }
