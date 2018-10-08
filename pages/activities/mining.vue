@@ -87,6 +87,7 @@
                             class="with-margin-top"
                             background
                             layout="prev, pager, next"
+                            :page-size="30"
                             @current-change="changeMiningPage"
                             :current-page.sync="pageNum"
                             :total="totalNum">

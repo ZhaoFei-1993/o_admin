@@ -87,6 +87,7 @@
                             class="with-margin-top"
                             background
                             layout="prev, pager, next"
+                            :page-size="30"
                             @current-change="changeStatsPage"
                             :current-page.sync="pageNum"
                             :total="totalNum">
@@ -136,6 +137,7 @@
                             class="with-margin-top"
                             background
                             layout="prev, pager, next"
+                            :page-size="30"
                             @current-change="changeRecordPage"
                             :current-page.sync="pageNum"
                             :total="totalNum">
@@ -295,7 +297,7 @@
         this.currentTab = 'record';
         const start = toBackendTimeStamp(getDate(this.statsRange[0]));
         const end = toBackendTimeStamp(getDate(this.statsRange[1]));
-        let queryString = `/users/gift/history?user_search=${encodeURIComponent(userSearch)}&start_time=${start}&end_time=${end}&page=${this.pageNum}&limit=10`;
+        let queryString = `/users/gift/history?user_search=${encodeURIComponent(userSearch)}&start_time=${start}&end_time=${end}&page=${this.pageNum}&limit=30`;
         if (this.statsFilters) {
           for (const prop in this.statsFilters) {
             if (this.statsFilters.hasOwnProperty(prop) && !!`${this.statsFilters[prop]}`) { // can be 0
