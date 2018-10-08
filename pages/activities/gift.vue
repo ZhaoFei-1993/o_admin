@@ -98,7 +98,7 @@
                 <el-row type="flex" justify="start">
                     <el-col :span="8">
                         <el-input placeholder="请输入用户ID、昵称、手机、邮箱" clearable v-model="userSearch"
-                                  @clear="getUserGiftRecord">
+                                  @clear="getUserGiftRecord" @keyup.enter.native="getUserGiftRecord(userSearch)">
                             <el-button slot="append" icon="el-icon-search"
                                        @click="getUserGiftRecord(userSearch)"></el-button>
                         </el-input>
