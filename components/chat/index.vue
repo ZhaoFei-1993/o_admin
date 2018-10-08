@@ -1,6 +1,7 @@
 <template>
   <div class="chat" ref="chatWrapper" :style="{width: `${width}px`, height: `${height}px`}">
-    <div class="content" ref="chatbox" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="0" infinite-scroll-reverse infinite-scroll-immediate-check="false">
+    <div class="content" ref="chatbox" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading"
+         infinite-scroll-distance="0" infinite-scroll-reverse infinite-scroll-immediate-check="false">
       <div v-for="item in msgLog" class="content-detail-box" :key="item.id">
         <div class="msg-time">
           {{ item._timestamp | formatTime }}
@@ -9,7 +10,8 @@
           <div class="order-text">
             <template v-if="eachUserId">
               <template v-if="['appeal_create', 'appeal_cancel'].indexOf(item.content._lctext) > -1">
-                {{ orderMessages[item.content._lctext].customer[item.from === eachUserId.buyer ? 'byBuyer' : 'bySeller'] }}
+                {{ orderMessages[item.content._lctext].customer[item.from === eachUserId.buyer ? 'byBuyer' : 'bySeller']
+                }}
               </template>
               <template v-else>
                 {{ orderMessages[item.content._lctext].customer }}
@@ -20,7 +22,8 @@
                 {{ isBuySide ? orderMessages[item.content._lctext].me : orderMessages[item.content._lctext].other }}
               </template>
               <template v-else>
-                {{ item.from === clientId ? orderMessages[item.content._lctext].me : orderMessages[item.content._lctext].other }}
+                {{ item.from === clientId ? orderMessages[item.content._lctext].me :
+                orderMessages[item.content._lctext].other }}
               </template>
             </template>
           </div>
@@ -36,12 +39,15 @@
                 </div>
                 <div class="msg-text my-text">
                   <span v-if="item.content._lctype === messageType.text">{{ item.content._lctext }}</span>
-                  <img v-else-if="item.content._lctype === messageType.image" @click="onClickImage(item.content._lcfile.url)" style="width: 100%" :src="item.content._lcfile.url">
+                  <img v-else-if="item.content._lctype === messageType.image"
+                       @click="onClickImage(item.content._lcfile.url)" style="width: 100%"
+                       :src="item.content._lcfile.url">
                   <span v-else-if="item.content._lctype === messageType.auto">{{ item.content._lctext }}</span>
                   <span v-else>[不支持当前消息类型]</span>
                 </div>
               </div>
-              <UserAvatar v-if="memberInfoMap[item.from]" :username="memberInfoMap[item.from].name" :color="memberInfoMap[item.from].color" :online="false" :size="30"></UserAvatar>
+              <UserAvatar v-if="memberInfoMap[item.from]" :username="memberInfoMap[item.from].name"
+                          :color="memberInfoMap[item.from].color" :online="false" :size="30"></UserAvatar>
             </div>
           </template>
           <template v-else-if="item.from === 'temporary'">
@@ -51,7 +57,8 @@
           </template>
           <template v-else>
             <div class="msg-box-left">
-              <UserAvatar v-if="memberInfoMap[item.from]" :username="memberInfoMap[item.from].name" :color="memberInfoMap[item.from].color" :online="false" :size="30"></UserAvatar>
+              <UserAvatar v-if="memberInfoMap[item.from]" :username="memberInfoMap[item.from].name"
+                          :color="memberInfoMap[item.from].color" :online="false" :size="30"></UserAvatar>
               <div class="msg-detail-wrapper">
                 <div class="msg-username username-left">{{ memberInfoMap[item.from].name }}</div>
                 <div class="msg-username username-left" v-if="item.status === MessageStatus.FAILED">
@@ -60,7 +67,9 @@
                 </div>
                 <div class="msg-text">
                   <span v-if="item.content._lctype === messageType.text">{{ item.content._lctext }}</span>
-                  <img v-else-if="item.content._lctype === messageType.image" @click="onClickImage(item.content._lcfile.url)" style="width: 100%" :src="item.content._lcfile.url">
+                  <img v-else-if="item.content._lctype === messageType.image"
+                       @click="onClickImage(item.content._lcfile.url)" style="width: 100%"
+                       :src="item.content._lcfile.url">
                   <span v-else-if="item.content._lctype === messageType.auto">{{ item.content._lctext }}</span>
                   <span v-else>[不支持当前消息类型]</span>
                 </div>
@@ -72,30 +81,46 @@
     </div>
     <div class="input-box" :style="{height: `${inputHeight}px`}">
       <div class="input-group">
-        <input placeholder="输入信息，回车发送" type="text" class="input-text" v-model="message" @keyup.enter="onSendMsg">
-        <input id="chat-file-image" type="file" accept="image/*" style="display: none;" ref="fileSelector" @change="onUpload">
+        <input ref="messageInput" @paste="onPaste" placeholder="输入信息，回车发送（支持粘贴发送图片）" type="text" class="input-text" v-model="message" @keyup.enter="onSendMsg">
+        <input id="chat-file-image" type="file" accept="image/*" style="display: none;" ref="fileSelector"
+               @change="onUpload">
         <button id="upload" @click="onSelectFile">
           <span style="color: #52cbca;"><i class="iconfont icon-attachment"></i></span>
         </button>
       </div>
     </div>
     <image-modal v-model="imageModalData.show" :src="imageModalData.src"></image-modal>
+    <div v-show="showImageConfirm" class="image-confirm-modal-wrapper">
+      <div class="image-confirm-modal"></div>
+      <div class="image-confirm-content">
+        <img :src="imageConfirmData.src">
+        <div class="image-confirm-button">
+          <button class="image-confirm-button-cancel" @click="onClearImage">取消</button>
+          <button class="image-confirm-button-ok" @click="onSendSingleImage">确认发送</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-  import { TextMessage, Event, MessageStatus } from 'leancloud-realtime';
+  import {TextMessage, Event, MessageStatus} from 'leancloud-realtime';
   import AV from 'leancloud-storage';
-  import { ImageMessage } from 'leancloud-realtime-plugin-typed-messages';
+  import {ImageMessage} from 'leancloud-realtime-plugin-typed-messages';
   import UserAvatar from './avatar';
   import ImageModal from './image-modal';
   import infiniteScroll from './infinite-scroll-directive.js';
   import $toast from './toast.js';
-  import { COLORS, MESSAGE_TYPE, ORDER_MESSAGES } from './constant.js';
+  import {COLORS, MESSAGE_TYPE, ORDER_MESSAGES} from './constant.js';
 
   export default {
     data() {
       return {
+        imageConfirmData: {
+          src: '',
+          blob: null,
+        },
+        showImageConfirm: false,
         orderMessages: ORDER_MESSAGES,
         messageType: MESSAGE_TYPE,
         MessageStatus,
@@ -206,8 +231,49 @@
       });
     },
     methods: {
+      onClearImage() {
+        this.imageConfirmData = {
+          src: '',
+          blob: null,
+        };
+        this.showImageConfirm = false;
+      },
+      onSendSingleImage() {
+        this.uploadHandler(this.imageConfirmData.blob, () => {
+          this.onClearImage();
+        });
+      },
+      retrieveImageFromClipboardAsBlob(pasteEvent, callback = () => {}) {
+        if (!pasteEvent.clipboardData) {
+          callback();
+        }
+
+        const items = pasteEvent.clipboardData.items;
+
+        if (!items) {
+          callback();
+        }
+
+        for (let i = 0; i < items.length; i++) {
+          if (items[i].type.indexOf('image') === -1) continue;
+          const blob = items[i].getAsFile();
+
+          callback(blob);
+        }
+      },
+      onPaste(event) {
+        this.retrieveImageFromClipboardAsBlob(event, (imageBlob) => {
+          if (imageBlob) {
+            this.$refs.messageInput.blur();
+            this.showImageConfirm = true;
+            const URLObj = window.URL || window.webkitURL;
+            this.imageConfirmData.src = URLObj.createObjectURL(imageBlob);
+            this.imageConfirmData.blob = imageBlob;
+          }
+        });
+      },
       init() { // 全部功能初始化
-        const { client, conversationId } = this;
+        const {client, conversationId} = this;
         if (!client) return;
         if (!conversationId) return;
 
@@ -270,8 +336,7 @@
         this.imageModalData.src = src;
         this.imageModalData.show = true;
       },
-      onUpload(evt) {
-        const file = evt.target.files[0];
+      uploadHandler(file, callback = () => {}) {
         if (!file) return;
         if (file.size > 5000000) {
           this.$refs.fileSelector.value = ''; // 需要重置dom
@@ -286,6 +351,7 @@
               $toast.show(`发送中...${Math.round(e.percent)}%`);
             },
           }).then(savedFile => {
+            callback(savedFile);
             const message = new ImageMessage(savedFile);
             return this.conversation.send(message);
           }).then((message) => {
@@ -302,6 +368,10 @@
             $toast.show(`发送失败 ${err}`, 1500);
           });
         }
+      },
+      onUpload(evt) {
+        const file = evt.target.files[0];
+        this.uploadHandler(file);
       },
       onSelectFile() {
         this.$refs.fileSelector.click();
@@ -341,7 +411,9 @@
             this.msgLog = this.memberInfoMapper(res.value).concat(this.msgLog);
             this.pushSystemMessage('现在可以开始聊天');
             this.scrollToBottom(); // 滚动到底部
-            this.conversation.read(); // 对话标记为已读
+            if (this.conversation) {
+              this.conversation.read(); // 对话标记为已读
+            }
           }
           const tid = setTimeout(() => {
             this.bindClientEvent(); // 需要初始化聊天记录后才能绑定事件，否则会出现重复消息问题
@@ -387,10 +459,14 @@
             self.messageHandler(message);
           },
           [Event.MEMBERS_JOINED]: (payload) => { // 有用户被添加至某个对话
-            self.pushSystemMessage(`${payload.invitedBy === 'REST_API' ? '客服' : payload.invitedBy}已加入对话`);
+            if (payload.invitedBy === 'REST_API') { // 只显示客服加入聊天
+              self.pushSystemMessage('客服已加入对话');
+            }
           },
           [Event.MEMBERS_LEFT]: (payload) => { // 有成员被从某个对话中移除
-            self.pushSystemMessage(`${payload.kickedBy === 'REST_API' ? '客服' : payload.kickedBy}已退出对话`);
+            if (payload.kickedBy === 'REST_API') {
+              self.pushSystemMessage('客服已退出对话');
+            }
           },
           [Event.KICKED]: (payload) => { // 当前用户被从某个对话中移除
             if (payload.kickedBy === 'REST_API') return; // 系统邀请信息不展示
@@ -474,6 +550,52 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    .image-confirm-modal-wrapper {
+      .image-confirm-modal {
+        background-color: #000;
+        opacity: 0.7;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      .image-confirm-content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        img {
+          display: block;
+          height: 250px;
+          width: 100%;
+        }
+        .image-confirm-button {
+          display: flex;
+          justify-content: space-around;
+          margin-top: 20px;
+          button {
+            cursor: pointer;
+            outline: none;
+            width: 100px;
+            height: 30px;
+            border-radius: 100px;
+          }
+          .image-confirm-button-cancel {
+            background-color: #fff;
+            color: #52cbca;
+            border: 1px solid #52cbca;
+            line-height: 28px;
+          }
+          .image-confirm-button-ok {
+            background-image: linear-gradient(to left, #ffe170, #ffb900);
+            color: #fff;
+            line-height: 28px;
+            border: none;
+          }
+        }
+      }
+    }
     .title {
       position: relative;
       width: 100%;
