@@ -19,7 +19,7 @@ export default {
     }
     return queryString;
   },
-  getStats: (resources, filters, period, start, end, page = 1, limit = 10) => {
+  getStats: (resources, filters, period, start, end, page = 1, limit = 30) => {
     let queryString = `/${resources}?period=${period}&start_time=${start}&end_time=${end}&page=${page}&limit=${limit}`;
     if (filters) {
       for (const prop in filters) {

@@ -86,7 +86,7 @@
                             class="with-margin-top"
                             background
                             layout="prev, pager, next"
-                            :page-size="20"
+                            :page-size="30"
                             @current-change="changeStatsPage"
                             :current-page.sync="pageNum"
                             :total="totalNum">

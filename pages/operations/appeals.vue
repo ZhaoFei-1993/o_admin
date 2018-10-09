@@ -9,13 +9,13 @@
             </el-col>
             <el-col :md="7">
                 <el-input placeholder="输入 订单ID 查询" clearable v-model="resourceFilters.order_id"
-                          @clear="getFilteredResources">
+                          @clear="getFilteredResources" @keyup.enter.native="getFilteredResources">
                     <el-button slot="append" icon="el-icon-search" @click="getFilteredResources"></el-button>
                 </el-input>
             </el-col>
             <el-col :md="7">
                 <el-input placeholder="输入 用户ID/手机号 查询" clearable v-model="resourceFilters.user_search"
-                          @clear="getFilteredResources">
+                          @clear="getFilteredResources" @keyup.enter.native="getFilteredResources">
                     <el-button slot="append" icon="el-icon-search" @click="getFilteredResources"></el-button>
                 </el-input>
             </el-col>
