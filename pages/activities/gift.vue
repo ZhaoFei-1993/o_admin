@@ -87,6 +87,7 @@
                             class="with-margin-top"
                             background
                             layout="prev, pager, next"
+                            :page-size="30"
                             @current-change="changeStatsPage"
                             :current-page.sync="pageNum"
                             :total="totalNum">
@@ -97,7 +98,7 @@
                 <el-row type="flex" justify="start">
                     <el-col :span="8">
                         <el-input placeholder="请输入用户ID、昵称、手机、邮箱" clearable v-model="userSearch"
-                                  @clear="getUserGiftRecord">
+                                  @clear="getUserGiftRecord" @keyup.enter.native="getUserGiftRecord(userSearch)">
                             <el-button slot="append" icon="el-icon-search"
                                        @click="getUserGiftRecord(userSearch)"></el-button>
                         </el-input>
@@ -136,6 +137,7 @@
                             class="with-margin-top"
                             background
                             layout="prev, pager, next"
+                            :page-size="30"
                             @current-change="changeRecordPage"
                             :current-page.sync="pageNum"
                             :total="totalNum">
@@ -295,7 +297,7 @@
         this.currentTab = 'record';
         const start = toBackendTimeStamp(getDate(this.statsRange[0]));
         const end = toBackendTimeStamp(getDate(this.statsRange[1]));
-        let queryString = `/users/gift/history?user_search=${encodeURIComponent(userSearch)}&start_time=${start}&end_time=${end}&page=${this.pageNum}&limit=10`;
+        let queryString = `/users/gift/history?user_search=${encodeURIComponent(userSearch)}&start_time=${start}&end_time=${end}&page=${this.pageNum}&limit=30`;
         if (this.statsFilters) {
           for (const prop in this.statsFilters) {
             if (this.statsFilters.hasOwnProperty(prop) && !!`${this.statsFilters[prop]}`) { // can be 0

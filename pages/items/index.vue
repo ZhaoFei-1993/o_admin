@@ -7,7 +7,7 @@
             </el-col>
             <el-col :md="20" :lg="10">
                 <el-input placeholder="请输入 用户名/用户ID/手机号" clearable v-model="resourceFilters.user_search"
-                          @clear="getFilteredResources">
+                          @clear="getFilteredResources" @keyup.enter.native="getFilteredResources">
                     <el-button slot="append" icon="el-icon-search" @click="getFilteredResources"></el-button>
                 </el-input>
             </el-col>

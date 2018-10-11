@@ -12,7 +12,7 @@ export default ({app, store, route, redirect}) => {
   Vue.mixin({
     data() {
       const page = parseInt(route.query.page) || 1;
-      const limit = 10;
+      const limit = 30;
       return {
         loadingResources: false,
         totalNum: limit * page,
@@ -52,7 +52,7 @@ export default ({app, store, route, redirect}) => {
         this.pageNum = parseInt(this.$route.query.page) || 1;
         this.resources = [];
         this.resourceFilters = filters || {};
-        this.totalNum = this.pageNum * 10;
+        this.totalNum = this.pageNum * 30;
         this.resourcesDateRange = null;
         this.resoucesLoadedCallback = loadedCallback;
         this.sortProp = null;

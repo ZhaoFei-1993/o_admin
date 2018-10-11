@@ -61,7 +61,7 @@
                 <el-row type="flex" justify="start">
                     <el-col :md="8" :lg="6" class="resource-filter">
                         <el-input placeholder="输入 用户ID 查询" clearable v-model="userId"
-                                  @clear="getUserMining">
+                                  @clear="getUserMining" @keyup.enter.native="getUserMining(userId)">
                             <el-button slot="append" icon="el-icon-search" @click="getUserMining(userId)"></el-button>
                         </el-input>
                     </el-col>
@@ -87,6 +87,7 @@
                             class="with-margin-top"
                             background
                             layout="prev, pager, next"
+                            :page-size="30"
                             @current-change="changeMiningPage"
                             :current-page.sync="pageNum"
                             :total="totalNum">

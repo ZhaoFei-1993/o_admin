@@ -7,19 +7,19 @@
             </el-col>
             <el-col :md="7">
                 <el-input placeholder="输入 用户id 查询" clearable v-model="resourceFilters.user_id"
-                          @clear="getFilteredResources">
+                          @clear="getFilteredResources" @keyup.enter.native="getFilteredResources">
                     <el-button slot="append" icon="el-icon-search" @click="getFilteredResources"></el-button>
                 </el-input>
             </el-col>
             <el-col :md="7">
                 <el-input placeholder="输入 订单id 查询" clearable v-model="resourceFilters.id"
-                          @clear="getFilteredResources">
+                          @clear="getFilteredResources" @keyup.enter.native="getFilteredResources">
                     <el-button slot="append" icon="el-icon-search" @click="getFilteredResources"></el-button>
                 </el-input>
             </el-col>
             <el-col :md="7">
                 <el-input placeholder="输入 广告id 查询" clearable v-model="resourceFilters.item_id"
-                          @clear="getFilteredResources">
+                          @clear="getFilteredResources" @keyup.enter.native="getFilteredResources">
                     <el-button slot="append" icon="el-icon-search" @click="getFilteredResources"></el-button>
                 </el-input>
             </el-col>
