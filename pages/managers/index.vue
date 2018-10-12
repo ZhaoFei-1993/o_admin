@@ -213,6 +213,9 @@
           .then(response => {
             if (Object.keys(response.data.data).length !== 0) {
               this.userData = response.data.data;
+              if (this.userData.user_kyc.first_name && this.userData.user_kyc.last_name) {
+                this.userData.kyc_name = this.userData.user_kyc.last_name + this.userData.user_kyc.first_name;
+              }
               this.currentRole = this.userData.role;
             } else {
               this.userData = null;
