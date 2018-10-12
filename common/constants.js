@@ -135,6 +135,13 @@ export const userRoles = [{
 }, {
   value: false, text: '普通用户',
 }];
+export const adminRoles = [{
+  value: '', text: '普通用户',
+}, {
+  value: 'staff', text: '普通管理员',
+}, {
+  value: 'super_admin', text: '超级管理员',
+}];
 export const balanceHistoryTypes = [{
   value: 'buy_order', text: '购买',
 }, {
