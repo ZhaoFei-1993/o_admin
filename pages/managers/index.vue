@@ -14,7 +14,7 @@
                     <el-col :md="8" :lg="6" class="resource-filter">
                         <el-select v-model="resourceFilters.role"
                                    clearable
-                                   @change="getFilteredResources"
+                                   @change="getFilters"
                                    placeholder="身份权限">
                             <el-option
                                     v-for="(status,index) in adminRoles.slice(1)"
@@ -77,7 +77,7 @@
                     </el-input>
                 </el-col>
             </el-row>
-            <template v-if="showedUserData">
+            <template v-if="showedUserData!==null">
                 <VerticalTable :data="[showedUserData]" :properties="itemColumns" :itemCount="[showedUserData].length" class="modify-dialog"></VerticalTable>
                 <div style="margin: 20px 0 10px;">身份权限</div>
                 <el-select v-model="currentRole"
@@ -113,6 +113,7 @@
 <script>
   import {adminRoles, kycStatusTypes, userStatusTypes, merchantAuthStatusTypes} from '~/common/constants';
   import VerticalTable from '~/components/VerticalTable';
+  import {timeToLocale} from '~/common/utilities';
 
   export default {
     layout: 'default',
@@ -174,6 +175,10 @@
         }, {
           prop: 'create_time',
           label: '账号激活时间',
+          formatter: (row, column, cellValue) => {
+            return timeToLocale(cellValue);
+          },
+          className: 'time',
         }],
       };
     },
@@ -183,12 +188,21 @@
     methods: {
       getManagers() {
         this.initResources('users/admin', () => {
+          this.resources.map(resource => {
+            if (resource.user_kyc.first_name && resource.user_kyc.last_name) {
+              resource.kyc_name = resource.user_kyc.last_name + resource.user_kyc.first_name;
+            }
+          });
           if (this.resources && this.resources.length === 1) {
             this.$router.push(`/users/${this.resources[0].id}`);
           }
         }, {
           user_search: this.$route.query.user_search
         });
+      },
+      getFilters() {
+        this.pageNum = 1;
+        this.getFilteredResources();
       },
       getUserData() {
         if (this.userSearch === '') {
@@ -197,7 +211,7 @@
         }
         this.$axios.get(`/users/search?user_search=${this.userSearch}`)
           .then(response => {
-            if (response.data.data) {
+            if (Object.keys(response.data.data).length !== 0) {
               this.showedUserData = response.data.data;
               this.currentRole = this.showedUserData.role;
             } else {
@@ -231,7 +245,6 @@
         this.$axios.post(`/users/admin/${id}`, {
           role: this.currentRole
         }).then(response => {
-          console.log(response.data);
           this.$message({message: '权限已修改', type: 'success'});
           this.getManagers();
         });
