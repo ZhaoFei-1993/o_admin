@@ -77,8 +77,8 @@
                     </el-input>
                 </el-col>
             </el-row>
-            <template v-if="showedUserData!==null">
-                <VerticalTable :data="[showedUserData]" :properties="itemColumns" :itemCount="[showedUserData].length" class="modify-dialog"></VerticalTable>
+            <template v-if="userData">
+                <VerticalTable :data="[userData]" :properties="itemColumns" :itemCount="1" class="modify-dialog"></VerticalTable>
                 <div style="margin: 20px 0 10px;">身份权限</div>
                 <el-select v-model="currentRole"
                            clearable
@@ -124,7 +124,7 @@
       return {
         addOrModify: 'add',
         dialogVisible: false,
-        showedUserData: null,
+        userData: null,
         userSearch: '',
         adminRoles,
         changeRoles: [],
@@ -206,16 +206,16 @@
       },
       getUserData() {
         if (this.userSearch === '') {
-          this.showedUserData = null;
+          this.userData = null;
           return;
         }
         this.$axios.get(`/users/search?user_search=${this.userSearch}`)
           .then(response => {
             if (Object.keys(response.data.data).length !== 0) {
-              this.showedUserData = response.data.data;
-              this.currentRole = this.showedUserData.role;
+              this.userData = response.data.data;
+              this.currentRole = this.userData.role;
             } else {
-              this.showedUserData = null;
+              this.userData = null;
             }
           });
       },
@@ -225,20 +225,20 @@
         this.changeRoles = this.adminRoles.slice(1);
       },
       confirm() {
-        if (this.currentRole === this.showedUserData.role) return;
-        this.changeUserAuth(this.showedUserData.id);
+        if (this.currentRole === this.userData.role) return;
+        this.changeUserAuth(this.userData.id);
         this.clearData();
       },
       clearData() {
         this.dialogVisible = false;
         this.userSearch = '';
-        this.showedUserData = null;
+        this.userData = null;
       },
       modifyAuth(item) {
         this.dialogVisible = true;
         this.addOrModify = 'modify';
         this.changeRoles = this.adminRoles;
-        this.showedUserData = item;
+        this.userData = item;
         this.currentRole = item.role;
       },
       changeUserAuth(id) {
