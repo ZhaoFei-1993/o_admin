@@ -36,7 +36,7 @@ export default ({app, store, route, redirect}) => {
     },
     computed: {
       isSuperAdmin() {
-        return this.$store.getters.isSuperAdmin;
+        return this.$store.getters['user/isSuperAdmin'];
       }
     },
     methods: {
