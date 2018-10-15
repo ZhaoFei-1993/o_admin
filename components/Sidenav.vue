@@ -42,10 +42,12 @@
                     挖矿活动
                 </el-menu-item>
             </el-submenu>
+<!-- 后端还没发，暂时屏蔽入口
             <el-menu-item index="/managers">
                 <i class="iconfont icon-team"></i>
                 <span slot="title">管理员管理</span>
             </el-menu-item>
+             -->
             <el-menu-item index="/configs">
                 <i class="iconfont icon-setting"></i>
                 <span slot="title">配置管理</span>
