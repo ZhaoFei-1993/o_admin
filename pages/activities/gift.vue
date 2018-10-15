@@ -173,7 +173,7 @@
             name: 'coin_type',
             text: '币种',
             value: 'CET',
-            options: ['CET', 'BCH', 'BTC', 'ETH', 'USDT'],
+            options: ['CET', 'BCH', 'BTC', 'ETH', 'USDT', 'USDC'],
             clearable: true
           },
         ],
@@ -189,7 +189,7 @@
             name: 'coin_type',
             text: '币种',
             value: '',
-            options: ['CET', 'BCH', 'BTC', 'ETH', 'USDT'],
+            options: ['CET', 'BCH', 'BTC', 'ETH', 'USDT', 'USDC'],
             clearable: true
           },
         ],
