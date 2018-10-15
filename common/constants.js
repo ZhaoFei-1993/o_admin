@@ -96,8 +96,8 @@ export const orderResultTypes = [{
   value: 'cancel_order', text: '订单取消(币还卖家)',
 }];
 
-export const coinTypes = ['BCH', 'BTC', 'ETH', 'USDT', 'CET'];
-export const activeCoinTypes = ['ALL', 'BCH', 'BTC', 'ETH', 'USDT'];
+export const coinTypes = ['BCH', 'BTC', 'ETH', 'USDT', 'CET', 'USDC'];
+export const activeCoinTypes = ['ALL', 'BCH', 'BTC', 'ETH', 'USDT', 'USDC'];
 
 export const paymentTypes = [{
   value: 'alipay', text: '支付宝',
